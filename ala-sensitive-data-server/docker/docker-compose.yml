@@ -1,0 +1,6 @@
+version: '3'
+services:
+  ala-sensitive-data-service:
+    build: .
+    ports:
+      - "9189:9189"

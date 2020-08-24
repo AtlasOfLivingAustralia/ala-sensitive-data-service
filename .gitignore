@@ -1,0 +1,5 @@
+/.idea/
+/ala-sensitive-data-client/target/
+/ala-sensitive-data-core/target/
+/ala-sensitive-data-server/target/
+/ala-sensitive-data-service.iml

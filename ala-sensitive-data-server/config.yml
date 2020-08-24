@@ -1,0 +1,30 @@
+logging:
+  level: INFO
+  loggers:
+    au.org.ala: WARN
+server:
+  applicationConnectors:
+    - type: http
+      port: 9189
+      outputBufferSize: 32KiB
+      idleTimeout: 30 seconds
+      minBufferPoolSize: 64 bytes
+      bufferPoolIncrement: 1KiB
+      maxBufferPoolSize: 64KiB
+      acceptorThreads: 1
+      selectorThreads: 2
+      acceptQueueSize: 1024
+      reuseAddress: true
+  adminConnectors:
+    - type: http
+      port: 9190
+conservation:
+  index: /data/lucene/namematching-20200214
+  speciesUrl: https://sds.ala.org.au/sensitive-species-data.xml
+  zonesUrl: https://sds.ala.org.au/sensitivity-zones.xml
+  categoriesUrl: https://sds.ala.org.au/sensitivity-categories.xml
+  layersUrl: https://sds.ala.org.au/ws/layers
+  layersServiceUrl: https://spatial.ala.org.au/layers-service
+  cache:
+    entryCapacity: 10000
+    enableJmx: true
