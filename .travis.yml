@@ -14,6 +14,10 @@ before_install:
 - sudo tar zxvf namematching-20200214.tgz
 - sudo ln -s namematching-20200214 namematching
 - ls -laF
+- sudo mkdir -p /data/sds
+- sudo wget -O /data/sds/sds-test-config.tgz https://archives.ala.org.au/archives/test/sds-test-config.tgz
+- cd /data/sds
+- sudo tar xvzf sds-test-config.tgz
 - cd $TRAVIS_BUILD_DIR
 - echo TRAVIS_PULL_REQUEST = ${TRAVIS_PULL_REQUEST}
 script:
