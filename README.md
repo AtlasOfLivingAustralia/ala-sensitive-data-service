@@ -58,5 +58,5 @@ docker build -f docker/Dockerfile . -t ala-sensitive-data-service:v20200214-1
 to use ALA namematching index and for use the GBIF backbone:
 
 ```shell script
-docker build -f docker/Dockerfile . -t  ala-namematching-service:v20200214-5 --build-arg ENV=gbif-backbone
+docker build -f docker/Dockerfile . -t  ala-sensitive-data-service:v20200214-1 --build-arg ENV=gbif-backbone
 ```
