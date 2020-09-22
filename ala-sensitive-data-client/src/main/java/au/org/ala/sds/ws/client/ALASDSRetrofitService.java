@@ -15,7 +15,7 @@ import java.util.Set;
  * @see ConservationApi
  */
 interface ALASDSRetrofitService {
-    @GET("/api/getSensitiveDataFields")
+    @GET("/api/sensitiveDataFields")
     @Headers({"Content-Type: application/json"})
     Call<Set<String>> getSensitiveDataFields();
 
