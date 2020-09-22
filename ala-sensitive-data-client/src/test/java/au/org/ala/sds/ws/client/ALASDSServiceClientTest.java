@@ -53,7 +53,7 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertEquals(1, server.getRequestCount());
         RecordedRequest req = server.takeRequest();
         assertEquals("GET", req.getMethod());
-        assertEquals("/api/getSensitiveDataFields", req.getPath());
+        assertEquals("/api/sensitiveDataFields", req.getPath());
     }
 
     /** Sensitive check */
