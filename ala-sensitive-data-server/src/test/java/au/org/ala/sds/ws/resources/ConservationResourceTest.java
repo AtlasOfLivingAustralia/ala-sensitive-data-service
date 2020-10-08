@@ -95,7 +95,7 @@ public class ConservationResourceTest {
         SensitiveTaxon taxon = vr.getTaxon();
         assertNotNull(taxon);
         assertEquals("Eucalyptus sparsa", taxon.getScientificName());
-        assertEquals("https://id.biodiversity.org.au/node/apni/2914499", taxon.getTaxonId());
+        assertEquals("http://id.biodiversity.org.au/node/apni/2914499", taxon.getTaxonId());
         assertNotNull(taxon.getInstances());
         assertEquals(1, taxon.getInstances().size());
         SensitivityInstance instance = taxon.getInstances().get(0);
