@@ -1,0 +1,4 @@
+{
+  "action" : "retain",
+  "field" : "dwc:stateProvince"
+}

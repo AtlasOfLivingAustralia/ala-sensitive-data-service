@@ -8,6 +8,8 @@ import au.org.ala.sds.api.ConservationApi;
 import au.org.ala.sds.api.SensitivityQuery;
 import au.org.ala.sds.api.SensitivityReport;
 import au.org.ala.sds.api.SpeciesCheck;
+import au.org.ala.sds.generalise.FieldAccessor;
+import au.org.ala.sds.generalise.Generalisation;
 import au.org.ala.sds.util.Configuration;
 import au.org.ala.sds.validation.FactCollection;
 import au.org.ala.sds.validation.ValidationOutcome;
@@ -21,14 +23,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.cache2k.Cache;
 import org.cache2k.integration.CacheLoader;
 import org.gbif.dwc.terms.DwcTerm;
+import org.gbif.dwc.terms.Term;
+import org.gbif.dwc.terms.TermFactory;
 
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Closeable;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * TODO add diagnostics to payload - similar to GBIF
@@ -41,6 +44,68 @@ import java.util.TreeSet;
 @Slf4j
 @Singleton
 public class ConservationResource implements ConservationApi, Closeable, Checkable {
+    public static final Set<Term> PROPERTIES_TO_REMOVE = new HashSet<Term>(Arrays.asList(
+        TermFactory.instance().findTerm("northing"),
+        TermFactory.instance().findTerm("easting"),
+        DwcTerm.locationRemarks,
+        DwcTerm.verbatimLatitude,
+        DwcTerm.verbatimLongitude,
+        DwcTerm.locality,
+        DwcTerm.verbatimLocality,
+        DwcTerm.verbatimCoordinates,
+        TermFactory.instance().findTerm("gridReference"),
+        DwcTerm.footprintWKT,
+        DwcTerm.coordinateUncertaintyInMeters,
+        TermFactory.instance().findTerm("bbox"),
+
+        DwcTerm.day,
+        DwcTerm.month,
+        DwcTerm.eventID,
+        DwcTerm.eventDate,
+        DwcTerm.eventTime,
+        TermFactory.instance().findTerm("eventDateEnd"),
+        DwcTerm.verbatimEventDate
+    ));
+
+    public static final Set<Term> PROPERTIES_TO_REQUEST = new HashSet<Term>(Arrays.asList(
+        DwcTerm.informationWithheld,
+        DwcTerm.dataGeneralizations,
+
+        DwcTerm.decimalLatitude,
+        DwcTerm.decimalLongitude,
+        DwcTerm.verbatimLatitude,
+        DwcTerm.verbatimLongitude,
+        DwcTerm.verbatimCoordinates,
+        DwcTerm.locality,
+        DwcTerm.verbatimLocality,
+        DwcTerm.municipality,
+        DwcTerm.stateProvince,
+        DwcTerm.country,
+        DwcTerm.locationRemarks,
+        TermFactory.instance().findTerm("gridReference"),
+        DwcTerm.footprintWKT,
+        DwcTerm.coordinateUncertaintyInMeters,
+        TermFactory.instance().findTerm("northing"),
+        TermFactory.instance().findTerm("easting"),
+        TermFactory.instance().findTerm("bbox"),
+
+        DwcTerm.eventID,
+        DwcTerm.eventDate,
+        DwcTerm.eventTime,
+        TermFactory.instance().findTerm("eventDateEnd"),
+        DwcTerm.verbatimEventDate,
+        DwcTerm.day,
+        DwcTerm.month,
+        DwcTerm.year,
+
+        DwcTerm.scientificName,
+        DwcTerm.family,
+        DwcTerm.genus,
+        DwcTerm.specificEpithet,
+        DwcTerm.infraspecificEpithet,
+        TermFactory.instance().findTerm("intraspecificEpithet") // Misspelling
+    ));
+    
     /** Name searcher */
     private final ALANameSearcher searcher;
     /** Find sensitive species */
@@ -49,6 +114,10 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     private final SensitiveDataService sds;
     /** The API translator */
     private ApiTranslator translator;
+    /** The list of generalisations to apply */
+    private List<Generalisation> generalisations;
+    /** The list of terms to request */
+    private Set<Term> requestTerms;
 
     //Cache2k instance
     private final Cache<SpeciesCheck, Boolean> isSensitiveCache;
@@ -59,7 +128,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             this.searcher = new ALANameSearcher(configuration.getIndex());
             this.finder = SensitiveSpeciesFinderFactory.getSensitiveSpeciesFinder(configuration.getSpeciesUrl(), this.searcher, true);
             this.sds = new SensitiveDataService();
-            this.translator = new ApiTranslator();
+            this.translator = new ApiTranslator(false);
+            this.generalisations = configuration.getGeneralisations();
             this.isSensitiveCache = configuration.getCache().builder(SpeciesCheck.class, Boolean.class)
                     .loader(new CacheLoader<SpeciesCheck, Boolean>() {
                         @Override
@@ -72,7 +142,28 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             log.error(e.getMessage(), e);
             throw new RuntimeException("Unable to initialise searcher: " + e.getMessage(), e);
         }
-    }
+        this.requestTerms = this.buildRequestTerms();
+     }
+
+    /**
+     * Build the list of terms that might be needed.
+     *
+     * @return A set of terms that get used somewhere
+     */
+    protected Set<Term> buildRequestTerms() {
+         TermFactory factory = TermFactory.instance();
+         Set<Term> fields = new HashSet<>();
+         Configuration config = Configuration.getInstance();
+         for (String flag: config.getFlagRules().split(",")) {
+             fields.add(factory.findTerm(flag));
+         }
+         for (Generalisation generalisation: this.generalisations)
+             fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
+         for (String fact: FactCollection.FACT_NAMES) {
+             fields.add(factory.findTerm(fact));
+         }
+         return fields;
+     }
 
     /**
      * Make sure that the system is still operating.
@@ -90,28 +181,13 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     }
 
     @ApiOperation(
-        value = "Get a list of the fields that the SDS service uses and can manipulate",
+        value = "Get a list of the fields that the SDS service uses and can manipulate, as URIs",
         notes = "The list of occurrence, event, location and taxonomy fields that the SDS can alter or fuzz, depending on sensitivity rules."
     )
     @GET
     @Path("/sensitiveDataFields")
-    public Set<String> getSensitiveDataFields() {
-        Set<String> fields = new TreeSet<String>();
-        Configuration config = Configuration.getInstance();
-        fields.addAll(Arrays.asList(config.getFlagRules().split(",")));
-        fields.addAll(Arrays.asList(FactCollection.FACT_NAMES));
-        fields.add(DwcTerm.locationRemarks.simpleName());
-        fields.add(DwcTerm.verbatimLatitude.simpleName());
-        fields.add(DwcTerm.verbatimLongitude.simpleName());
-        fields.add(DwcTerm.locality.simpleName());
-        fields.add(DwcTerm.verbatimLocality.simpleName());
-        fields.add(DwcTerm.verbatimCoordinates.simpleName());
-        fields.add(DwcTerm.footprintWKT.simpleName());
-        fields.add(DwcTerm.eventID.simpleName());
-        fields.add(DwcTerm.eventDate.simpleName());
-        fields.add(DwcTerm.day.simpleName());
-        fields.add(DwcTerm.infraspecificEpithet.simpleName());
-        return fields;
+    public List<String> getSensitiveDataFields() {
+        return this.requestTerms.stream().map(Term::qualifiedName).sorted().collect(Collectors.toList());
     }
 
     @ApiOperation(
@@ -165,13 +241,31 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @POST
     @Path("/process")
     public SensitivityReport process(SensitivityQuery query) {
+        Map<String, String> properties = new HashMap<>(query.getProperties());
+        // Ensure key facts are present in the way expected
+        for (String fact: FactCollection.FACT_NAMES) {
+            if (properties.containsKey(fact))
+                continue;
+            Term term = TermFactory.instance().findTerm(fact);
+            if (properties.containsKey(term.qualifiedName())) {
+                properties.put(fact, properties.get(term.qualifiedName()));
+                continue;
+            }
+            if (properties.containsKey(term.prefixedName())) {
+                properties.put(fact, properties.get(term.prefixedName()));
+            }
+        }
         ValidationOutcome outcome = this.sds.testMapDetails(
             this.finder,
-            query.getProperties(),
+            properties,
             query.getScientificName(),
             query.getTaxonId()
         );
+        this.amendOutcome(query, outcome);
         SensitivityReport report = this.translator.buildSensitivityReport(outcome);
+        for (Generalisation generalisation: this.generalisations) {
+            generalisation.process(query, report);
+        }
         return report;
     }
 
@@ -180,5 +274,17 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
      */
     @Override
     public void close()  {
+    }
+
+    /**
+     * Make additional amendments to the outcome not covered by
+     * the SDS library
+     * @param outcome
+     */
+    private void amendOutcome(SensitivityQuery query, ValidationOutcome outcome) {
+        if (!outcome.isSensitive())
+            return;
+        Map<String, String> original = query.getProperties();
+
     }
 }

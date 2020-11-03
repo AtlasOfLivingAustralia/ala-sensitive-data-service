@@ -7,6 +7,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.gbif.dwc.terms.DwcTerm;
 import org.junit.*;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,6 @@ public class ConservationResourceTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ((Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(Level.INFO); // Stop logging insanity
-        configuration = new SDSConfiguration();
         configuration = new SDSConfiguration();
         configuration.setIndex("/data/lucene/namematching-20200214"); // Ensure consistent index
         configuration.setSpeciesUrl(ModelResourceTest.class.getResource("/sensitive-species-data-1.xml").toExternalForm());
@@ -41,10 +41,10 @@ public class ConservationResourceTest {
 
     @Test
     public void testGetSensitiveDataFields1() throws Exception {
-        Set<String> fields = resource.getSensitiveDataFields();
-        assertTrue(fields.contains("scientificName"));
-        assertTrue(fields.contains("decimalLatitude"));
-        assertTrue(fields.contains("eventDate"));
+        List<String> fields = resource.getSensitiveDataFields();
+        assertTrue(fields.contains("http://rs.tdwg.org/dwc/terms/scientificName"));
+        assertTrue(fields.contains("http://rs.tdwg.org/dwc/terms/decimalLatitude"));
+        assertTrue(fields.contains("http://rs.tdwg.org/dwc/terms/eventDate"));
     }
 
     @Test
@@ -80,9 +80,9 @@ public class ConservationResourceTest {
     @Test
     public void testProcess1() throws Exception {
         Map<String, String> properties = new HashMap<>();
-        properties.put(FactCollection.DECIMAL_LATITUDE_KEY, "-33.757122");
-        properties.put(FactCollection.DECIMAL_LONGITUDE_KEY, "121.9266423");
-        properties.put(FactCollection.EVENT_DATE_KEY, "2020-08-14");
+        properties.put(DwcTerm.decimalLatitude.qualifiedName(), "-33.757122");
+        properties.put(DwcTerm.decimalLongitude.qualifiedName(), "121.9266423");
+        properties.put(DwcTerm.eventDate.qualifiedName(), "2020-08-14");
         SensitivityQuery query = SensitivityQuery.builder().scientificName("Eucalyptus sparsa").properties(properties).build();
         SensitivityReport report = resource.process(query);
         assertNotNull(report);
@@ -100,16 +100,18 @@ public class ConservationResourceTest {
         assertEquals(1, taxon.getInstances().size());
         SensitivityInstance instance = taxon.getInstances().get(0);
         assertEquals("WA DEC", instance.getAuthority());
+        assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
+        assertEquals("10km", instance.getGeneralisation().getGeneralisation());
         assertNotNull(instance.getCategory());
         assertEquals("Sensitive", instance.getCategory().getId());
         assertEquals("dr467", instance.getDataResourceId());
         assertNotNull(instance.getZone());
         assertEquals("WA", instance.getZone().getId());
-        Map<String, Object> result = report.getResult();
+        Map<String, Object> result = report.getUpdated();
         assertNotNull(result);
-        assertEquals("121.9", result.get("decimalLongitude"));
-        assertEquals("-33.8", result.get("decimalLatitude"));
-        assertEquals("10000", result.get("generalisationInMetres"));
+        assertEquals("122.0", result.get(DwcTerm.decimalLongitude.qualifiedName()));
+        assertEquals("-33.7", result.get(DwcTerm.decimalLatitude.qualifiedName()));
+        assertEquals("10000", result.get(DwcTerm.coordinateUncertaintyInMeters.simpleName()));
     }
 
     @Test
@@ -136,16 +138,20 @@ public class ConservationResourceTest {
         assertEquals(1, taxon.getInstances().size());
         SensitivityInstance instance = taxon.getInstances().get(0);
         assertEquals("Qld DEHP", instance.getAuthority());
+        assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
+        assertEquals("10km", instance.getGeneralisation().getGeneralisation());
         assertNotNull(instance.getCategory());
         assertEquals("Sensitive", instance.getCategory().getId());
         assertEquals("dr493", instance.getDataResourceId());
         assertNotNull(instance.getZone());
         assertEquals("QLD", instance.getZone().getId());
-        Map<String, Object> result = report.getResult();
+        Map<String, Object> result = report.getUpdated();
         assertNotNull(result);
-        assertEquals("152.5", result.get("decimalLongitude"));
-        assertEquals("-27.3", result.get("decimalLatitude"));
+        assertEquals("152.5", result.get(FactCollection.DECIMAL_LONGITUDE_KEY));
+        assertEquals("-27.4", result.get(FactCollection.DECIMAL_LATITUDE_KEY));
+        assertEquals("10000", result.get("coordinateUncertaintyInMeters"));
         assertEquals("10000", result.get("generalisationInMetres"));
+        assertEquals("10000", result.get("generalisationToApplyInMetres"));
     }
 
     @Test
@@ -172,12 +178,14 @@ public class ConservationResourceTest {
         assertEquals(1, taxon.getInstances().size());
         SensitivityInstance instance = taxon.getInstances().get(0);
         assertEquals("Qld DEHP", instance.getAuthority());
+        assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
+        assertEquals("10km", instance.getGeneralisation().getGeneralisation());
         assertNotNull(instance.getCategory());
         assertEquals("Sensitive", instance.getCategory().getId());
         assertEquals("dr493", instance.getDataResourceId());
         assertNotNull(instance.getZone());
         assertEquals("QLD", instance.getZone().getId());
-        Map<String, Object> result = report.getResult();
+        Map<String, Object> result = report.getUpdated();
         assertNotNull(result);
         assertNull(result.get("decimalLongitude"));
         assertNull(result.get("decimalLatitude"));

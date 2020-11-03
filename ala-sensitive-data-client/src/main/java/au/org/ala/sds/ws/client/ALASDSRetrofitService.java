@@ -7,7 +7,7 @@ import au.org.ala.sds.api.SpeciesCheck;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * ALA name matching Retrofit Service client.
@@ -17,7 +17,7 @@ import java.util.Set;
 interface ALASDSRetrofitService {
     @GET("/api/sensitiveDataFields")
     @Headers({"Content-Type: application/json"})
-    Call<Set<String>> getSensitiveDataFields();
+    Call<List<String>> getSensitiveDataFields();
 
     @POST("/api/isSensitive")
     @Headers({"Content-Type: application/json"})

@@ -1,6 +1,6 @@
 package au.org.ala.sds.api;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Conservation status API.
@@ -13,7 +13,7 @@ public interface ConservationApi {
      *
      * @return The list of potentially sensitive fields
      */
-    public Set<String> getSensitiveDataFields();
+    public List<String> getSensitiveDataFields();
 
     /**
      * Test to see whether a taxon is potentially sensitive

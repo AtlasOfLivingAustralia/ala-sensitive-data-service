@@ -3,18 +3,17 @@ package au.org.ala.sds.ws.client;
 import au.org.ala.sds.api.*;
 import au.org.ala.util.TestUtils;
 import au.org.ala.ws.ClientConfiguration;
-import au.org.ala.ws.ClientException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import retrofit2.HttpException;
 
-import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +44,7 @@ public class ALASDSServiceClientTest extends TestUtils {
         String response = this.getResource("response-gsdf-1.json");
 
         server.enqueue(new MockResponse().setBody(response));
-        Set<String> fields = client.getSensitiveDataFields();
+        List<String> fields = client.getSensitiveDataFields();
 
         assertNotNull(fields);
         assertTrue(fields.contains("decimalLatitude"));
@@ -157,7 +156,7 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertEquals("dr493", instance.getDataResourceId());
         assertNotNull(instance.getZone());
         assertEquals("QLD", instance.getZone().getId());
-        Map<String, Object> result = report.getResult();
+        Map<String, Object> result = report.getUpdated();
         assertNotNull(result);
         assertEquals("152.5", result.get("decimalLongitude"));
         assertEquals("-27.3", result.get("decimalLatitude"));

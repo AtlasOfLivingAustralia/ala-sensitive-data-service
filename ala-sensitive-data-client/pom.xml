@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ala-sensitive-data-service</artifactId>
         <groupId>au.org.ala.sds</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>au.org.ala.ws</groupId>
             <artifactId>ala-ws-client-common</artifactId>
-            <version>${project.version}</version>
+            <version>${ala-ws.version}</version>
         </dependency>
        <dependency>
             <groupId>au.org.ala.sds</groupId>

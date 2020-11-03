@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -48,7 +49,7 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
      * @return The list of potentially sensitive fields
      */
     @Override
-    public Set<String> getSensitiveDataFields() {
+    public List<String> getSensitiveDataFields() {
         return this.call(this.alaSdsService.getSensitiveDataFields());
     }
 
