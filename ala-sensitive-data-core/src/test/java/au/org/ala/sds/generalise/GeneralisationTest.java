@@ -22,7 +22,7 @@ public class GeneralisationTest {
         Map<String, Object> updated = new HashMap<>();
         supplied.put(localityName, "Somewhere else");
         supplied.put(longitudeName, "145.786");
-        SensitivityQuery query = SensitivityQuery.builder()
+        ProcessQuery query = ProcessQuery.builder()
             .properties(supplied)
             .scientificName("Acacia filifolia")
             .build();
@@ -62,7 +62,7 @@ public class GeneralisationTest {
         Map<String, Object> updated = new HashMap<>();
         supplied.put(localityName, "Somewhere else");
         supplied.put(longitudeName, "145.786");
-        SensitivityQuery query = SensitivityQuery.builder()
+        ProcessQuery query = ProcessQuery.builder()
             .properties(supplied)
             .scientificName("Acacia filifolia")
             .build();

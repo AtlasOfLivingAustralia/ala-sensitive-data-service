@@ -4,10 +4,7 @@ import au.org.ala.names.search.ALANameSearcher;
 import au.org.ala.sds.SensitiveDataService;
 import au.org.ala.sds.SensitiveSpeciesFinder;
 import au.org.ala.sds.SensitiveSpeciesFinderFactory;
-import au.org.ala.sds.api.ConservationApi;
-import au.org.ala.sds.api.SensitivityQuery;
-import au.org.ala.sds.api.SensitivityReport;
-import au.org.ala.sds.api.SpeciesCheck;
+import au.org.ala.sds.api.*;
 import au.org.ala.sds.generalise.FieldAccessor;
 import au.org.ala.sds.generalise.Generalisation;
 import au.org.ala.sds.util.Configuration;
@@ -20,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.cache2k.Cache;
 import org.cache2k.integration.CacheLoader;
 import org.gbif.dwc.terms.DwcTerm;
@@ -190,6 +188,17 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         return this.requestTerms.stream().map(Term::qualifiedName).sorted().collect(Collectors.toList());
     }
 
+
+    @ApiOperation(
+        value = "Get the list of generalisation rules to apply to an occurrence record if the record is sensitive.",
+        notes = "The list of actions to take. These are rules to apply to fields and use the sensitivity instance to determine parameters, such as distance to generalise."
+    )
+    @GET
+    @Path("/generalisations")
+    public List<Generalisation> getGeneralisations() {
+        return this.generalisations;
+    }
+
     @ApiOperation(
             value = "Check to see if a species is potentially sensitive",
             notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
@@ -235,12 +244,65 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     }
 
     @ApiOperation(
+        value = "Provide a sensitivity report for a taxon/zone combination.",
+        notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
+          "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+    )
+    @POST
+    @Path("/report")
+    public SensitivityReport report(SensitivityQuery query) {
+        return this.report(
+            query.getScientificName(),
+            query.getTaxonId(),
+            query.getDataResourceUid(),
+            query.getStateProvince(),
+            query.getCountry(),
+            query.getZones()
+        );
+    }
+
+    @ApiOperation(
+        value = "Provide a sensitivity report for a taxon/zone combination.",
+        notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
+            "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+    )
+    @GET
+    @Path("/report")
+    public SensitivityReport report(
+        @ApiParam(value = "The scientific name of the taxon", required = true, example = "Psilotum complanatum") @QueryParam("scientificName") String scientificName,
+        @ApiParam(value = "The taxon identifier", example = "https://id.biodiversity.org.au/node/apni/2914286") @QueryParam("taxonId")String taxonId,
+        @ApiParam(value = "The source data resource identifier", example = "dr1654") @QueryParam("dataResourceUid")String dataResourceUid,
+        @ApiParam(value = "The state or province zone identifier", example = "NSW") @QueryParam("stateProvince") String stateProvince,
+        @ApiParam(value = "The country zone identifier", example = "AUS") @QueryParam("country") String country,
+        @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("samplesProvided", "yes");
+        if (dataResourceUid != null && !dataResourceUid.isEmpty())
+            properties.put("dataResourceUid", dataResourceUid);
+        if (stateProvince != null && !stateProvince.isEmpty())
+            properties.put("stateProvince", stateProvince);
+        if (country != null && !country.isEmpty())
+            properties.put("country", country);
+        if (zones != null && !zones.isEmpty())
+            properties.put("zone", String.join(",", zones));
+        ValidationOutcome outcome = this.sds.testMapDetails(
+            this.finder,
+            properties,
+            scientificName,
+            taxonId
+        );
+        SensitivityReport report = this.translator.buildSensitivityReport(outcome);
+        return report;
+    }
+
+
+    @ApiOperation(
         value = "Process occurrence properties for a sensitive species",
         notes = "Applies the sensitivity processing rules for a sensitive species to properties from an occurrence record."
     )
     @POST
     @Path("/process")
-    public SensitivityReport process(SensitivityQuery query) {
+    public SensitivityReport process(ProcessQuery query) {
         Map<String, String> properties = new HashMap<>(query.getProperties());
         // Ensure key facts are present in the way expected
         for (String fact: FactCollection.FACT_NAMES) {
@@ -281,7 +343,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
      * the SDS library
      * @param outcome
      */
-    private void amendOutcome(SensitivityQuery query, ValidationOutcome outcome) {
+    private void amendOutcome(ProcessQuery query, ValidationOutcome outcome) {
         if (!outcome.isSensitive())
             return;
         Map<String, String> original = query.getProperties();

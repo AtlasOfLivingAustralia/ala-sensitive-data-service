@@ -1,5 +1,6 @@
 package au.org.ala.sds.generalise;
 
+import au.org.ala.sds.api.ProcessQuery;
 import au.org.ala.sds.api.SensitivityInstance;
 import au.org.ala.sds.api.SensitivityQuery;
 import au.org.ala.sds.api.SensitivityReport;
@@ -61,7 +62,7 @@ abstract public class Generalisation {
      *
      * @see #process(Map, Map, Map, SensitivityInstance)
      */
-    public void process(SensitivityQuery query, SensitivityReport report) {
+    public void process(ProcessQuery query, SensitivityReport report) {
         if (!report.isSensitive())
             return;
         for (SensitivityInstance instance: report.getReport().getTaxon().getInstances())
