@@ -32,16 +32,5 @@
         }
       ]
     }
-  },
-  "original" : {
-      "decimalLongitude" : "152.527914",
-      "decimalLatitude" : "-27.327739"
-  },
-  "updated" : {
-    "dataGeneralizations" : "Location in Queensland, Australia generalised to 0.1 degrees. \nSensitive in QLD, Name: Queensland, Zone: STATE [Sensitive, Qld DEHP]",
-    "decimalLongitude" : "152.5",
-    "decimalLatitude" : "-27.3",
-    "generalisationToApplyInMetres" : "10000",
-    "generalisationInMetres" : "10000"
   }
 }

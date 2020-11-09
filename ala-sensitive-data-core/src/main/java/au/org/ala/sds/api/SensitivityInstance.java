@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.util.Date;
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = SensitivityInstance.SensitivityInstanceBuilder.class)
 @Value
@@ -18,6 +21,12 @@ import lombok.Value;
     description = "A specific sensitivity rule applying to a taxon in a particular zone."
 )
 public class SensitivityInstance {
+    @ApiModelProperty(
+        value = "The type of sensitivity this instance manages",
+        required = true
+    )
+    @JsonProperty
+    private SensitivityType type;
     @ApiModelProperty(
         value = "The sensitivity category"
     )
@@ -48,4 +57,79 @@ public class SensitivityInstance {
     )
     @JsonProperty
     private String remarks;
+    @ApiModelProperty(
+        value = "The generalisation to apply to coordinates"
+    )
+    @JsonProperty
+    private GeneralisationRule generalisation;
+    @ApiModelProperty(
+        value = "The date this instance applies from"
+    )
+    @JsonProperty
+    private Date fromDate;
+    @ApiModelProperty(
+        value = "The date this instance applies to"
+    )
+    @JsonProperty
+    private Date toDate;
+    @ApiModelProperty(
+        value = "Any transient events attached to this instance."
+    )
+    @JsonProperty
+    private List<TransientEvent> transientEvents;
+
+
+    /**
+     * Generalise a latitude value according to this instance's genealisation rules.
+     *
+     * @param latitude The latitude
+     * @param longitude The longitude
+     *
+     * @return The generalised latitude
+     */
+    public double generaliseLatitude(double latitude, double longitude) {
+        return this.generalisation == null ? latitude : this.generalisation.generaliseLatitude(latitude, longitude);
+    }
+
+    /**
+     * Generalise a longitude value according to this instance's generalisation rules.
+     *
+     * @param latitude The latitude
+     * @param longitude The longitude
+     *
+     * @return The generalised longitude
+     */
+    public double generaliseLongitude(double latitude, double longitude) {
+        return this.generalisation == null ? latitude : this.generalisation.generaliseLongitude(latitude, longitude);
+    }
+
+    /**
+     * Format a lat/long to the precision specified, via the generalisation rule if available.
+     *
+     * @param v The value
+     *
+     * @return The value, appropriately formatted
+     */
+    public String format(double v) {
+        return this.generalisation == null ? Double.toString(v) : this.generalisation.format(v);
+    }
+
+    /**
+     * Withhold results entirely
+     *
+     * @retyrn True if the result should be withheld.
+     */
+    public boolean isWithhold() {
+        return this.generalisation != null && this.generalisation.isWithhold();
+    }
+
+    /**
+     * Provides the type of
+     */
+    public enum SensitivityType {
+        /** An occurrence sensitive for conservation reasons */
+        CONSERVATION,
+        /** An occurrence sensitive for notifiable pest reasons */
+        PEST
+    }
 }
