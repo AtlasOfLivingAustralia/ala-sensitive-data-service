@@ -1,0 +1,11 @@
+{
+  "scientificName" : "Varanus semiremex",
+  "taxonId" : "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739",
+  "dataResourceUid" : "dr839",
+  "stateProvince" : "Queensland",
+  "country" : "Australia",
+  "properties" : {
+    "decimalLongitude" : "152.158576",
+    "decimalLatitude" : "-27.1529712"
+  }
+}

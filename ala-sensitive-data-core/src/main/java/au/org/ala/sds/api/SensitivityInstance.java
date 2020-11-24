@@ -1,5 +1,6 @@
 package au.org.ala.sds.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -119,6 +120,7 @@ public class SensitivityInstance {
      *
      * @retyrn True if the result should be withheld.
      */
+    @JsonIgnore
     public boolean isWithhold() {
         return this.generalisation != null && this.generalisation.isWithhold();
     }

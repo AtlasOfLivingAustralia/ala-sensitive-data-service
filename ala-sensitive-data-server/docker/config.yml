@@ -2,6 +2,7 @@ logging:
   level: INFO
   loggers:
     au.org.ala: WARN
+    org.reflections: ERROR
 server:
   applicationConnectors:
     - type: http
@@ -29,10 +30,16 @@ conservation:
     entryCapacity: 10000
     enableJmx: true
   generalisations:
-    - action: retain
+    - action: message
       field: dwc:informationWithheld
-    - action: retain
+      message: Record is {2} in {1}. Information withheld by {0}.
+      append: true
+      trigger: WITHHOLD
+    - action: message
       field: dwc:dataGeneralizations
+      message: Record is {2} in {1}. Generalised to {3} by {0}.
+      append: true
+      trigger: GENERALISE
     - action: latLong
       latitudeField: dwc:decimalLatitude
       longitudeField: dwc:decimalLongitude

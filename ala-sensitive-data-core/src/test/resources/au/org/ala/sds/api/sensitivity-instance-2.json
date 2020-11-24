@@ -1,0 +1,17 @@
+{
+  "type" : "CONSERVATION",
+  "category" : {
+    "id" : "1",
+    "value" : "Highest Risk"
+  },
+  "authority" : "ALA",
+  "dataResourceId" : "dr1029",
+  "zone" : {
+    "id" : "NSW",
+    "name" : "New South Wales",
+    "type" : "State"
+  },
+  "generalisation" : {
+    "generalisation" : "WITHHOLD"
+  }
+}

@@ -7,9 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.Extension;
 import io.swagger.annotations.ExtensionProperty;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 import lombok.experimental.NonFinal;
 import lombok.experimental.SuperBuilder;
 
@@ -17,11 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = SensitivityQuery.SensitivityQueryBuilder.class)
 @Value
 @SuperBuilder
 @EqualsAndHashCode
 @NonFinal
+@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 @ApiModel(
     description = "The basic information needed to process an occurrence record, including taxon, broad location and source. "
 )
