@@ -2,5 +2,6 @@
   "action" : "message",
   "field" : "dwc:dataGeneralizations",
   "message" : "Well, hello",
-  "append" : true
+  "append" : true,
+  "trigger" : "GENERALISE"
 }

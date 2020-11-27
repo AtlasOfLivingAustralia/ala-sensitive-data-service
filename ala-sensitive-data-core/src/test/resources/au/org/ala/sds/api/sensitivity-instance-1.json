@@ -1,0 +1,17 @@
+{
+  "type" : "CONSERVATION",
+  "category" : {
+    "id" : "VU",
+    "value" : "Vulnerable"
+  },
+  "authority" : "ALA",
+  "dataResourceId" : "dr1023",
+  "zone" : {
+    "id" : "QLD",
+    "name" : "Queensland",
+    "type" : "State"
+  },
+  "generalisation" : {
+    "generalisation" : "10km"
+  }
+}

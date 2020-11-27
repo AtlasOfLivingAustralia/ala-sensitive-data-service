@@ -9,7 +9,7 @@ RUN mkdir -p /data/ala-sensitive-data-service/config
 RUN mkdir -p /data/sds/config
 RUN mkdir -p /data/biocache/layers
 
-COPY ./target/ala-sensitive-data-server-1.0-SNAPSHOT.jar /data/ala-sensitive-data-server.jar
+COPY ./target/ala-sensitive-data-server-1.1-SNAPSHOT.jar /data/ala-sensitive-data-server.jar
 COPY ./docker/config.yml /data/config.yml
 COPY ./docker/sds-config.properties /data/sds/config/sds-config.properties
 
