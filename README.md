@@ -1,4 +1,4 @@
-# ALA Sensitive Data Service [![Build Status](https://travis-ci.org/AtlasOfLivingAustralia/ala-sensitive-data-service.svg?branch=master)](https://travis-ci.org/AtlasOfLivingAustralia/ala-namematching-service)
+# ALA Sensitive Data Service [![Build Status](https://travis-ci.org/AtlasOfLivingAustralia/ala-sensitive-data-service.svg?branch=master)](https://travis-ci.org/AtlasOfLivingAustralia/ala-sensitive-data-service)
 
 This priovides a set of web services for sensitive data evaluation, using the `sds` library.
 It consists of three components. all with maven groupId `au.org.ala.sds`:
