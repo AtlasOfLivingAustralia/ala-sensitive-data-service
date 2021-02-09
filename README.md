@@ -1,4 +1,4 @@
-# ALA Sensitive Data Service [![Build Status](https://travis-ci.org/AtlasOfLivingAustralia/ala-sensitive-data-service.svg?branch=master)](https://travis-ci.org/AtlasOfLivingAustralia/ala-sensitive-data-service)
+# ALA Sensitive Data Service [![Build Status](https://travis-ci.com/AtlasOfLivingAustralia/ala-sensitive-data-service.svg?branch=master)](https://travis-ci.com/AtlasOfLivingAustralia/ala-sensitive-data-service)
 
 This priovides a set of web services for sensitive data evaluation, using the `sds` library.
 It consists of three components. all with maven groupId `au.org.ala.sds`:
@@ -106,11 +106,11 @@ same way that lat/long are.
 Change directory to the `ala-sensitive-data-server` module.
 
 ```shell script
-docker build -f docker/Dockerfile . -t ala-sensitive-data-service:v20200214-2
+docker build -f docker/Dockerfile . -t ala-sensitive-data-service:v20200214-3
 ```
 
 to use ALA namematching index and for use the GBIF backbone:
 
 ```shell script
-docker build -f docker/Dockerfile . -t  ala-sensitive-data-service:v20200214-2 --build-arg ENV=gbif-backbone
+docker build -f docker/Dockerfile . -t  ala-sensitive-data-service:v20200214-3 --build-arg ENV=gbif-backbone
 ```
