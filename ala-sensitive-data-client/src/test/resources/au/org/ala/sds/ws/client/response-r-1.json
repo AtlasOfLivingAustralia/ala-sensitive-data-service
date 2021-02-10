@@ -1,0 +1,36 @@
+{
+  "valid" : true,
+  "sensitive" : true,
+  "loadable" : true,
+  "accessControl" : false,
+  "report" : {
+    "taxon" : {
+      "scientificName" : "Varanus semiremex",
+      "taxonId" : "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739",
+      "family" : "Varanidae",
+      "commonName" : "rusty monitor",
+      "taxonRank" : "species",
+      "instances" : [
+        {
+          "type": "CONSERVATION",
+          "category" : {
+            "id" : "Sensitive",
+            "value" : "Sensitive",
+            "type" : "CONSERVATION"
+          },
+          "authority" : "Qld DEHP",
+          "dataResourceId" : "dr493",
+          "zone" : {
+            "id" : "QLD",
+            "name" : "Queensland",
+            "layerId" : "Queensland",
+            "type" : "STATE"
+          },
+          "generalisation": {
+            "generalisation": "10km"
+          }
+        }
+      ]
+    }
+  }
+}

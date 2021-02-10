@@ -1,0 +1,7 @@
+{
+  "action" : "add",
+  "field" : "dwc:coordinateUncertaintyInMeters",
+  "retainUnparsable" : true,
+  "useSensitivity" : true,
+  "add" : 10
+}

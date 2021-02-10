@@ -1,0 +1,5 @@
+{
+  "action" : "latLong",
+  "latitudeField" : "dwc:decimalLatitude",
+  "longitudeField" : "dwc:decimalLongitude"
+}

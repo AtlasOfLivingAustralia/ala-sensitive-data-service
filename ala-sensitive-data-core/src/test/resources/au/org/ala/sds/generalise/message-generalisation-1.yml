@@ -1,0 +1,5 @@
+action: message
+field: "dwc:dataGeneralizations"
+message: "Well, hello"
+append: true
+trigger: GENERALISE

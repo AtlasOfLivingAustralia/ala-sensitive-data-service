@@ -1,9 +1,7 @@
 package au.org.ala.sds.ws.client;
 
-import au.org.ala.sds.api.ConservationApi;
-import au.org.ala.sds.api.SensitivityQuery;
-import au.org.ala.sds.api.SensitivityReport;
-import au.org.ala.sds.api.SpeciesCheck;
+import au.org.ala.sds.api.*;
+import au.org.ala.sds.generalise.Generalisation;
 import au.org.ala.ws.ClientConfiguration;
 import au.org.ala.ws.ClientException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -48,8 +47,19 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
      * @return The list of potentially sensitive fields
      */
     @Override
-    public Set<String> getSensitiveDataFields() {
+    public List<String> getSensitiveDataFields() {
         return this.call(this.alaSdsService.getSensitiveDataFields());
+    }
+
+
+    /**
+     * Get the list of fields that should be provided for sensitivity checking.
+     *
+     * @return The list of potentially sensitive fields
+     */
+    @Override
+    public List<Generalisation> getGeneralisations() {
+        return this.call(this.alaSdsService.getGeneralisations());
     }
 
     /**
@@ -75,6 +85,33 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
         return this.call(this.alaSdsService.isSensitive(scientificName, taxonId));
     }
 
+
+    /**
+     * Provide a sensitivty report for an occurrence.
+     *
+     * @param query The information from the occurrence record.
+     * @return A sensitivitiy report
+     */
+    @Override
+    public SensitivityReport report(SensitivityQuery query) {
+        return this.call(this.alaSdsService.report(query));
+    }
+
+
+    /**
+     * Provide a sensitivty report for an occurrence.
+     *
+     * @param scientificName The scientific name
+     * @param taxonId        The taxon identifier
+     * @param dataResourceUid The source data resource
+     * @param zones          The occurrence record zones
+     * @return A sensitivitiy report
+     */
+    @Override
+    public SensitivityReport report(String scientificName, String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
+        return this.call(this.alaSdsService.report(scientificName, taxonId, dataResourceUid, stateProvince, country, zones));
+    }
+
     /**
      * Process an occurrence record and supply modified values.
      *
@@ -82,7 +119,7 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
      * @return A report giving what is sensitive and what values need to be altered
      */
     @Override
-    public SensitivityReport process(SensitivityQuery query) {
+    public SensitivityReport process(ProcessQuery query) {
         return this.call(this.alaSdsService.process(query));
     }
 

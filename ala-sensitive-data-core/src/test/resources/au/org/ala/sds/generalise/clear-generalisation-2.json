@@ -1,0 +1,4 @@
+{
+  "action" : "clear",
+  "field" : "http://rs.tdwg.org/dwc/terms/datasetName"
+}

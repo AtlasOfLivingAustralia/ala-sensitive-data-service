@@ -52,7 +52,7 @@ public class ModelResource implements Closeable, Checkable {
 
         try {
             log.info("Initialising ModelResource.....");
-            final ApiTranslator translator = new ApiTranslator();
+            final ApiTranslator translator = new ApiTranslator(false);
             zis = new URL(sdsConfig.getZoneUrl()).openStream();
             this.zones = new SensitivityZonesXmlDao().getMap(zis).values().stream()
                 .map(zone -> translator.buildSensitivityZone(zone))

@@ -46,8 +46,13 @@ public class SensitivityReport {
     @JsonProperty
     private ValidationReport report;
     @ApiModelProperty(
+        value = "Original occurrence properties"
+    )
+    @JsonProperty
+    private Map<String, Object> original;
+    @ApiModelProperty(
         value = "Updated occurrence properties"
     )
     @JsonProperty
-    private Map<String, Object> result;
+    private Map<String, Object> updated;
 }
