@@ -1,6 +1,4 @@
 # Override lint package errors here
 # https://lintian.debian.org/manual/section-2.4.html
-ala-sensitive-data-service: dir-or-file-in-opt opt/atlas/
-ala-sensitive-data-service: dir-or-file-in-opt opt/atlas/ala-sensitive-data-service/
-ala-sensitive-data-service: dir-or-file-in-opt opt/atlas/ala-sensitive-data-service/ala-sensitive-data-service.jar
-ala-sensitive-data-service: shell-script-fails-syntax-check opt/atlas/ala-sensitive-data-service/image-service.jar
+ala-sensitive-data-service: non-standard-toplevel-dir data/
+ala-sensitive-data-service: dir-or-file-in-opt
