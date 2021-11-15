@@ -14,7 +14,7 @@ Vcs-Git: https://github.com/AtlasOfLivingAustralia/ala-sensitive-data-service.gi
 
 Package: ala-sensitive-data-service
 Architecture: all
-Depends: ${misc:Depends}, openjdk-8-jdk, ca-certificates, tar (>= 1.0), rsync, curl, 
+Depends: ${misc:Depends}, openjdk-8-jdk, ca-certificates, tar (>= 1.0), curl, 
  ala-namematching-service
 Suggests:
 Description: The ALA Sensitive Data Service application
