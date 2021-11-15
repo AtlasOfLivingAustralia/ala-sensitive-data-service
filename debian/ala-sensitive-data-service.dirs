@@ -6,4 +6,4 @@
 data/lucene
 data/ala-sensitive-data-service/config
 data/sds/config
-data/biocache/layer
+data/biocache/layers
