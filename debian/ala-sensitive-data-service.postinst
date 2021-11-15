@@ -24,6 +24,14 @@ case "$1" in
         SDS_URL=$RET
         db_get ala-sensitive-data-service/layers-url
         LAYERS_URL=$RET
+        db_get ala-sensitive-data-service/spatial-url
+        SPATIAL_URL=$RET
+
+        CONF=/data/ala-sensitive-data-service/config/config.yml
+
+        # We configure the values read in the config
+        SPATIAL_URL_ESCAPED=$(printf '%s\n' "$SPATIAL_URL" | sed -e 's/[\/&]/\\&/g')
+        sed -i "s/https\:\/\/spatial\.ala\.org\.au/$SPATIAL_URL_ESCAPED/" "$CONF"
 
         echo "Downloading SDS configs..."
         for DEST in sensitive-species-data.xml sensitivity-zones.xml sensitivity-categories.xml
@@ -41,6 +49,12 @@ case "$1" in
         tar --warning=no-unknown-keyword -zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
 
         chown -R sds-data:sds-data /opt/atlas/ala-sensitive-data-service
+
+        # Restart the service with the new config and layers
+
+        if [ -d /run/systemd/system ]; then
+            deb-systemd-invoke restart ala-sensitive-data-service.service || true
+        fi
     ;;
 esac
 
