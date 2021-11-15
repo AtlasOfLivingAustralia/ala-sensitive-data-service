@@ -1,0 +1,4 @@
+# https://www.debian.org/doc/manuals/maint-guide/dother.en.html#install
+ala-sensitive-data-server/target/ala-sensitive-data-server.jar opt/atlas/ala-sensitive-data-service/
+# TODO: we should move this to other location and with other name referencing to this service
+ala-sensitive-data-server/docker/config.yml data/ala-sensitive-data-service/config
