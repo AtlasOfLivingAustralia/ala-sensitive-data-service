@@ -1,0 +1,11 @@
+[Unit]
+Description=ala-sensitive-data-service
+After=syslog.target
+
+[Service]
+User=sds-data
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/bin/java -jar /opt/atlas/ala-sensitive-data-service/ala-sensitive-data-server.jar server /data/ala-sensitive-data-service/config/config.yml
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

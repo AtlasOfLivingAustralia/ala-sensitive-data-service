@@ -6,5 +6,11 @@
 /ala-sensitive-data-server/ala-sensitive-data-server.iml
 /ala-sensitive-data-core/ala-sensitive-data-core.iml
 /ala-sensitive-data-client/ala-sensitive-data-client.iml
+*/*.debhelper
+*/*.debhelper.log
+*.buildinfo
+*.substvars
+debian/files
+debian/ala-sensitive-data-service
 
 
