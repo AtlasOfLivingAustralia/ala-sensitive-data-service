@@ -1,0 +1,61 @@
+#!/bin/sh
+
+#######################################################
+#
+# Add here the commands to be excuted after the package
+# has been installed
+#
+
+#Example: create some symbolic links
+#
+#chown -R ${user}:${group} /opt/${appName}-${appVersion}
+#ln -s /opt/${appName}-${appVersion} /opt/${appName}
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+#DEBHELPER#
+
+case "$1" in
+    configure)
+        # We read the URL of the sds service asked to the user in a interactive mode
+        db_get ala-sensitive-data-service/sds-url
+        SDS_URL=$RET
+        db_get ala-sensitive-data-service/layers-url
+        LAYERS_URL=$RET
+        db_get ala-sensitive-data-service/spatial-url
+        SPATIAL_URL=$RET
+
+        CONF=/data/ala-sensitive-data-service/config/config.yml
+
+        # We configure the values read in the config
+        SPATIAL_URL_ESCAPED=$(printf '%s\n' "$SPATIAL_URL" | sed -e 's/[\/&]/\\&/g')
+        sed -i "s/https\:\/\/spatial\.ala\.org\.au/$SPATIAL_URL_ESCAPED/" "$CONF"
+
+        echo "Downloading SDS configs..."
+        for DEST in sensitive-species-data.xml sensitivity-zones.xml sensitivity-categories.xml
+        do
+           curl -sL -o "/data/sds/$DEST" "$SDS_URL/$DEST"
+        done
+        curl -sf -o /data/sds/layers.json -L "$SDS_URL/ws/layers"
+
+        echo "Downloading SDS layers..."
+        curl -sf -o /data/biocache/layers/sds-layers.tgz -L $LAYERS_URL
+
+        echo "Extracting SDS layers..."
+        # SDS def ALA tgz is created with a MacOS tar
+        # https://github.com/yarnpkg/yarn/issues/770
+        tar --warning=no-unknown-keyword -zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
+
+        chown -R sds-data:sds-data /opt/atlas/ala-sensitive-data-service
+
+        # Restart the service with the new config and layers
+
+        if [ -d /run/systemd/system ]; then
+            deb-systemd-invoke restart ala-sensitive-data-service.service || true
+        fi
+    ;;
+esac
+
+echo ala-sensitive-data-service installed
