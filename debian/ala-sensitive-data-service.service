@@ -1,6 +1,5 @@
 [Unit]
 Description=ala-sensitive-data-service
-After=syslog.target
 
 [Service]
 User=sds-data
