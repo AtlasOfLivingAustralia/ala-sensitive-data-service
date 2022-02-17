@@ -1,0 +1,24 @@
+Template: ala-sensitive-data-service/sds-url
+Type: string
+Default: https://sds.ala.org.au
+Description: SDS service url:
+
+Template: ala-sensitive-data-service/spatial-url
+Type: string
+Default: https://spatial.ala.org.au
+Description: Spatial service url:
+
+Template: ala-sensitive-data-service/layers-url
+Type: string
+Default: https://archives.ala.org.au/archives/layers/sds-layers.tgz
+Description: Tar with SDS layers:
+
+Template: ala-sensitive-data-service/source
+Type: string
+Default: https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz
+Description: Pre-built name matching index tar:
+
+Template: ala-sensitive-data-service/sha1
+Type: string
+Default: f9e42325db8d41ca0c8afeb6aeadf670978a13ac
+Description: SHA1 of the previous tar:
