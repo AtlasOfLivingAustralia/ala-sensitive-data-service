@@ -5,7 +5,7 @@ Maintainer: ALA Development Team <support@ala.org.au>
 Uploaders: ALA Development Team <support@ala.org.au>
 Build-Depends:
  debhelper (>= 11),
- openjdk-8-jdk,
+ openjdk-11-jdk,
  maven
 Standards-Version: 4.2.1
 Homepage: https://github.com/AtlasOfLivingAustralia/ala-sensitive-data-service
@@ -14,10 +14,10 @@ Vcs-Git: https://github.com/AtlasOfLivingAustralia/ala-sensitive-data-service.gi
 
 Package: ala-sensitive-data-service
 Architecture: all
-Depends: ${misc:Depends}, openjdk-11-jdk, ca-certificates, tar (>= 1.0), curl,
- ala-namematching-service
+Depends: ${misc:Depends}, openjdk-11-jdk, ca-certificates, tar (>= 1.0), rsync,
+ curl, adduser
 Suggests:
-Description: The ALA Sensitive Data Service application
+Description: ALA Sensitive Data Service application
  This package contains the ala-sensitive-data-service package from
  Atlas of Living Australia, Free and open source IT infrastructure
  for the aggregation and delivery of biodiversity data.
