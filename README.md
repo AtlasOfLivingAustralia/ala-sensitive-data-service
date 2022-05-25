@@ -10,7 +10,7 @@ It consists of three components. all with maven groupId `au.org.ala.sds`:
 ## How to start the ALASensitiveDataService application
 
 1. Run `mvn clean install` to build your application
-1. Download a pre-built name matching index (e.g https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz), and untar in `/data/lucene` This will create a `/data/lucene/namematching-20200214` directory.
+1. Download a pre-built name matching index (e.g https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz), and untar in `/data/lucene` This will create a `/data/lucene/namematching-20210811-3` directory.
 1. cd to the `server` subdirectory
 1. Start the application with `java -jar target/ala-sensitive-data-server-1.1-SNAPSHOT.jar server config.yml`
 1. To check that your application is running enter url `http://localhost:9190`
@@ -106,11 +106,11 @@ same way that lat/long are.
 Change directory to the `ala-sensitive-data-server` module.
 
 ```shell script
-docker build -f docker/Dockerfile . -t ala-sensitive-data-service:v20200214-3
+docker build -f docker/Dockerfile . -t ala-sensitive-data-service:20210811-3-1
 ```
 
 to use ALA namematching index and for use the GBIF backbone:
 
 ```shell script
-docker build -f docker/Dockerfile . -t  ala-sensitive-data-service:v20200214-3 --build-arg ENV=gbif-backbone
+docker build -f docker/Dockerfile . -t  ala-sensitive-data-service:v20210811-3-1 --build-arg ENV=gbif-backbone
 ```

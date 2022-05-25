@@ -44,6 +44,7 @@ public class ApiTranslator {
             .sensitive(outcome.isSensitive())
             .loadable(outcome.isLoadable())
             .accessControl(outcome.isControlledAccess())
+            .instances(outcome.getInstances().stream().map(i -> this.buildSensitivityInstance(i)).collect(Collectors.toList()))
             .report(this.buildValidationReport(outcome.getReport()))
             .original(original)
             .updated(result)

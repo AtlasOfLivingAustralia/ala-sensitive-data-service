@@ -15,12 +15,12 @@ COPY ./docker/sds-config.properties /data/sds/config/sds-config.properties
 
 RUN if [ "$ENV" = "gbif-backbone" ]; then \
     curl -sf  -o /data/lucene/namematching.tgz -L https://datos.gbif.es/others/namematching-gbif-backbone-2020-06-18.tgz; else \
-    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz; fi
+    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/latest/namematching-20210811-3.tgz; fi
 #COPY namematching.tgz /data/lucene/namematching.tgz
 
 RUN tar zxf /data/lucene/namematching.tgz -C /data/lucene
 RUN if [ "$ENV" != "gbif-backbone" ]; then \
-    mv /data/lucene/namematching-20200214 /data/lucene/namematching; fi
+    mv /data/lucene/namematching-20210811-3 /data/lucene/namematching; fi
 
 RUN curl -sf -o /data/biocache/layers/sds-layers.tgz -L https://archives.ala.org.au/archives/layers/sds-layers.tgz
 RUN tar zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/

@@ -131,6 +131,10 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertTrue(report.isSensitive());
         assertTrue(report.isLoadable());
         assertFalse(report.isAccessControl());
+        List<SensitivityInstance> instances = report.getInstances();
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals("Queensland", instances.get(0).getZone().getName());
         ValidationReport vr = report.getReport();
         assertNotNull(vr);
         SensitiveTaxon taxon = vr.getTaxon();
@@ -173,6 +177,10 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertTrue(report.isSensitive());
         assertTrue(report.isLoadable());
         assertFalse(report.isAccessControl());
+        List<SensitivityInstance> instances = report.getInstances();
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals("QLD", instances.get(0).getZone().getId());
         ValidationReport vr = report.getReport();
         assertNotNull(vr);
         SensitiveTaxon taxon = vr.getTaxon();
@@ -221,6 +229,10 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertTrue(report.isSensitive());
         assertTrue(report.isLoadable());
         assertFalse(report.isAccessControl());
+        List<SensitivityInstance> instances = report.getInstances();
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals("QLD", instances.get(0).getZone().getId());
         ValidationReport vr = report.getReport();
         assertNotNull(vr);
         SensitiveTaxon taxon = vr.getTaxon();

@@ -4,6 +4,7 @@ import au.org.ala.sds.api.*;
 import au.org.ala.util.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.dwc.terms.DwcTerm;
+import org.gbif.dwc.terms.TermFactory;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -108,6 +109,23 @@ public class ClearGeneralisationTest extends TestUtils {
         assertTrue(updated.containsKey(localityName));
         assertNull(updated.get(localityName));
 
+    }
+
+    @Test
+    public void testProcess4() throws Exception {
+        String eventDateEnd = "eventDateEnd";
+        Generalisation generalisation = new ClearGeneralisation(TermFactory.instance().findTerm(eventDateEnd));
+        Map<String, String> supplied = new HashMap<>();
+        Map<String, Object> original = new HashMap<>();
+        Map<String, Object> updated = new HashMap<>();
+        supplied.put(eventDateEnd, "2021-05-24");
+        SensitivityInstance instance = SensitivityInstance.builder().build();
+        generalisation.process(supplied, original, updated, instance);
+        assertEquals(1, original.size());
+        assertEquals("2021-05-24", original.get(eventDateEnd));
+        assertEquals(1, updated.size());
+        assertTrue(updated.containsKey(eventDateEnd));
+        assertNull(updated.get(eventDateEnd));
     }
 
 }
