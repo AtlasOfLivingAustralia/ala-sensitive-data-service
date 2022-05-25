@@ -9,11 +9,11 @@ branches:
   - develop
 before_install:
 - mkdir -p ~/.m2; wget -q -O ~/.m2/settings.xml https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_maven_settings_simple.xml
-- sudo mkdir -p /data/lucene; sudo wget -O /data/lucene/namematching-20200214.tgz
-  https://archives.ala.org.au/archives/nameindexes/20200214/namematching-20200214.tgz
+- sudo mkdir -p /data/lucene; sudo wget -O /data/lucene/namematching-20210811-3.tgz
+  https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz
 - cd /data/lucene
-- sudo tar zxvf namematching-20200214.tgz
-- sudo ln -s namematching-20200214 namematching
+- sudo tar zxvf namematching-20210811-3.tgz
+- sudo ln -s namematching-20210811-3 namematching
 - ls -laF
 - sudo mkdir -p /data/sds
 - sudo wget -O /data/sds/sds-test-config.tgz https://archives.ala.org.au/archives/test/sds-test-config.tgz

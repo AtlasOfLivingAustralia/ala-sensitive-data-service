@@ -41,6 +41,7 @@ public class GeneralisationTest {
             .valid(true)
             .original(original)
             .updated(updated)
+            .instances(taxon.getInstances())
             .report(validation)
             .build();
         generalisation.process(query, report);
