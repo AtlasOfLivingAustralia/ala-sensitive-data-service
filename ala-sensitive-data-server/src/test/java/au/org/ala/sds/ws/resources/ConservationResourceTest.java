@@ -250,6 +250,19 @@ public class ConservationResourceTest {
         assertEquals("VIC", instance.getZone().getId());
     }
 
+    // Test for no instances
+    @Test
+    public void testReport7() throws Exception {
+        SensitivityReport report = resource.report("Trismegistia lancifolia", null, "dr1411", "Victoria", "Australia", null);
+        assertNotNull(report);
+        assertTrue(report.isValid());
+        assertFalse(report.isSensitive());
+        assertTrue(report.isLoadable());
+        assertFalse(report.isAccessControl());
+        ValidationReport vr = report.getReport();
+        assertNull(vr);
+    }
+
     @Test
     public void testProcess1() throws Exception {
         Map<String, String> properties = new HashMap<>();
