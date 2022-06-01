@@ -2,6 +2,7 @@
 /ala-sensitive-data-client/target/
 /ala-sensitive-data-core/target/
 /ala-sensitive-data-server/target/
+/ala-sensitive-data-tools/target/
 /ala-sensitive-data-service.iml
 /ala-sensitive-data-server/ala-sensitive-data-server.iml
 /ala-sensitive-data-core/ala-sensitive-data-core.iml
@@ -12,5 +13,3 @@
 *.substvars
 debian/files
 debian/ala-sensitive-data-service
-
-
