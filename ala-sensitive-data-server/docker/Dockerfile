@@ -17,11 +17,12 @@ RUN echo "deb [arch=amd64] https://apt.gbif.es/ bionic main" > /etc/apt/sources.
 # Install main dependencies
 RUN apt-get install -y -q openjdk-8-jdk tar curl
 
+RUN echo "ala-namematching-service ala-namematching-service/source string https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz" | debconf-set-selections
+RUN echo "ala-namematching-service ala-namematching-service/sha1 string b6d6a0b1e0baeaee6e8118058a4dc830c6531620" | debconf-set-selections
+
 RUN echo "ala-sensitive-data-service ala-sensitive-data-service/sds-url string https://sds.ala.org.au" | debconf-set-selections
 RUN echo "ala-sensitive-data-service ala-sensitive-data-service/spatial-url string https://spatial.ala.org.au" | debconf-set-selections
 RUN echo "ala-sensitive-data-service ala-sensitive-data-service/layers-url string https://archives.ala.org.au/archives/layers/sds-layers.tgz" | debconf-set-selections
-RUN echo "ala-sensitive-data-service ala-sensitive-data-service/source string https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz" | debconf-set-selections
-RUN echo "ala-sensitive-data-service ala-sensitive-data-service/sha1 string f9e42325db8d41ca0c8afeb6aeadf670978a13ac" | debconf-set-selections
 
 # Update the next commented date to force a new docker hub build with an updated deb version
 RUN apt-get -y update && \
