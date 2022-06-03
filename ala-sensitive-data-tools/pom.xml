@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ala-sensitive-data-service</artifactId>
         <groupId>au.org.ala.sds</groupId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,7 +28,8 @@
         <dependency>
             <groupId>au.org.ala.ws</groupId>
             <artifactId>ala-ws-client-testing</artifactId>
-            <version>${ala-ws.version}</version>
+            <!-- Use snapshot version until stable -->
+            <version>1.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
@@ -86,6 +87,20 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-release-constraints</id>
+                        <configuration>
+                            <!-- Turn off until testing client sorted -->
+                            <fail>false</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+             </plugin>
+
         </plugins>
     </build>
 </project>
