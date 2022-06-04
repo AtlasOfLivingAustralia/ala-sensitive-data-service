@@ -90,6 +90,14 @@
     </dependencies>
 
     <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <source>${targetJdk}</source>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <reporting>
