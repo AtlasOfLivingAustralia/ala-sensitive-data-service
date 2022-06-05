@@ -23,7 +23,7 @@ public class ModelResourceTest {
     public static void setUpClass() throws Exception {
         ((Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(Level.INFO); // Stop logging insanity
         configuration = new SDSConfiguration();
-        configuration.setIndex("/data/lucene/namematching-20200214"); // Ensure consistent index
+        configuration.setIndex("/data/lucene/namematching-20210811-3"); // Ensure consistent index
         configuration.setSpeciesUrl(ModelResourceTest.class.getResource("/sensitive-species-data-1.xml").toExternalForm());
         configuration.setZonesUrl(ModelResourceTest.class.getResource("/sensitivity-zones-1.xml").toExternalForm());
         configuration.setCategoriesUrl(ModelResourceTest.class.getResource("/sensitivity-categories-1.xml").toExternalForm());

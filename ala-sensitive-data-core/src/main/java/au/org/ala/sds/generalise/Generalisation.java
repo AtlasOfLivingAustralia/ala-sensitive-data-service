@@ -57,7 +57,7 @@ abstract public class Generalisation {
     public void process(Map<String, String> supplied, Map<String, Object> original, Map<String, Object> updated, SensitivityReport report) {
         if (!report.isSensitive())
             return;
-        for (SensitivityInstance instance: report.getReport().getTaxon().getInstances())
+        for (SensitivityInstance instance: report.getInstances())
             this.process(supplied, original, updated, instance);
     }
 

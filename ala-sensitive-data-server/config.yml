@@ -20,7 +20,7 @@ server:
     - type: http
       port: 9190
 conservation:
-  index: /data/lucene/namematching-20200214
+  index: /data/lucene/namematching-20210811-3
   speciesUrl: https://sds.ala.org.au/sensitive-species-data.xml
   zonesUrl: https://sds.ala.org.au/sensitivity-zones.xml
   categoriesUrl: https://sds.ala.org.au/sensitivity-categories.xml

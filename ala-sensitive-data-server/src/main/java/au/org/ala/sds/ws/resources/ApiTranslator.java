@@ -7,6 +7,7 @@ import au.org.ala.sds.model.PlantPestInstance;
 import au.org.ala.sds.validation.SdsValidationReport;
 import au.org.ala.sds.validation.ValidationOutcome;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ public class ApiTranslator {
             .sensitive(outcome.isSensitive())
             .loadable(outcome.isLoadable())
             .accessControl(outcome.isControlledAccess())
+            .instances(outcome.getInstances() == null ? Collections.emptyList() : outcome.getInstances().stream().map(i -> this.buildSensitivityInstance(i)).collect(Collectors.toList()))
             .report(this.buildValidationReport(outcome.getReport()))
             .original(original)
             .updated(result)

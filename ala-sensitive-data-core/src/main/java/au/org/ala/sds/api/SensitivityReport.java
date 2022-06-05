@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -40,6 +41,11 @@ public class SensitivityReport {
     )
     @JsonProperty
     private boolean accessControl;
+    @ApiModelProperty(
+        value = "The sensitivity instances that is occurrence has triggered"
+    )
+    @JsonProperty
+    private List<SensitivityInstance> instances;
     @ApiModelProperty(
         value = "The validation report for this occurrence"
     )
