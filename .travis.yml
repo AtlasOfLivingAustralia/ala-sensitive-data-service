@@ -1,8 +1,10 @@
-dist: trusty
+arch: amd64
+os: linux
+dist: jammy
 sudo: required
 language: java
 jdk:
-- openjdk8
+- openjdk11
 branches:
   only:
   - master
