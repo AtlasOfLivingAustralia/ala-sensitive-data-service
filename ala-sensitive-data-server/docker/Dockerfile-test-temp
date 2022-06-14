@@ -10,12 +10,12 @@ RUN mkdir -p /data/sds/config
 RUN mkdir -p /data/biocache/layers
 
 COPY ./target/ala-sensitive-data-server-1.1.1-SNAPSHOT.jar /data/ala-sensitive-data-server.jar
-COPY ./docker/config.yml /data/config.yml
-COPY ./docker/sds-config.properties /data/sds/config/sds-config.properties
+COPY ./docker/config-temp.yml /data/config.yml
+COPY ./docker/sds-config-temp.properties /data/sds/config/sds-config.properties
 
 RUN if [ "$ENV" = "gbif-backbone" ]; then \
     curl -sf  -o /data/lucene/namematching.tgz -L https://datos.gbif.es/others/namematching-gbif-backbone-2020-06-18.tgz; else \
-    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/latest/namematching-20210811-3.tgz; fi
+    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz; fi
 #COPY namematching.tgz /data/lucene/namematching.tgz
 
 RUN tar zxf /data/lucene/namematching.tgz -C /data/lucene
@@ -25,10 +25,10 @@ RUN if [ "$ENV" != "gbif-backbone" ]; then \
 RUN curl -sf -o /data/biocache/layers/sds-layers.tgz -L https://archives.ala.org.au/archives/layers/sds-layers.tgz
 RUN tar zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
 
-RUN curl -sf -o /data/sds/sensitive-species-data.xml -L https://sds.ala.org.au/sensitive-species-data.xml
-RUN curl -sf -o /data/sds/sensitivity-zones.xml -L https://sds.ala.org.au/sensitivity-zones.xml
-RUN curl -sf -o /data/sds/sensitivity-categories.xml -L https://sds.ala.org.au/sensitivity-categories.xml
-RUN curl -sf -o /data/sds/layers.json -L https://sds.ala.org.au/ws/layers
+RUN curl -sf -o /data/sds/sensitive-species-data.xml -L https://sds-temp.ala.org.au/sensitive-species-data.xml
+RUN curl -sf -o /data/sds/sensitivity-zones.xml -L https://sds-temp.ala.org.au/sensitivity-zones.xml
+RUN curl -sf -o /data/sds/sensitivity-categories.xml -L https://sds-temp.ala.org.au/sensitivity-categories.xml
+RUN curl -sf -o /data/sds/layers.json -L https://sds-temp.ala.org.au/ws/layers
 
 EXPOSE 9189
 EXPOSE 9190
