@@ -18,7 +18,7 @@
             <artifactId>ala-ws-client-common</artifactId>
             <version>${ala-ws.version}</version>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>au.org.ala.sds</groupId>
             <artifactId>ala-sensitive-data-core</artifactId>
             <version>${project.version}</version>
@@ -35,6 +35,12 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin-stdlib.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>au.org.ala.sds</groupId>
+            <artifactId>ala-sensitive-data-server</artifactId>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -55,6 +61,22 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-   </dependencies>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

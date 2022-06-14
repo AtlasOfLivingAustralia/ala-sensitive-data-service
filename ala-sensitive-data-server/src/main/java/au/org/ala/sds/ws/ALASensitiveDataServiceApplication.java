@@ -12,7 +12,16 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 public class ALASensitiveDataServiceApplication extends Application<ALASensitiveDataServiceConfiguration> {
+    /** Timeout for shutdown request */
+    private static final long SHUTDOWN_SECONDS = 30;
+    /** The application environment */
+    private Environment environment;
 
     public static void main(final String[] args) throws Exception {
         new ALASensitiveDataServiceApplication().run(args);
@@ -43,11 +52,22 @@ public class ALASensitiveDataServiceApplication extends Application<ALASensitive
     @Override
     public void run(final ALASensitiveDataServiceConfiguration configuration,
                     final Environment environment) {
+        this.environment = environment;
         final ConservationResource conservation = new ConservationResource(configuration.getConservation());
-        environment.jersey().register(conservation);
-        environment.healthChecks().register("conservation", new ResourceCheck(conservation));
+        this.environment.jersey().register(conservation);
+        this.environment.healthChecks().register("conservation", new ResourceCheck(conservation));
         final ModelResource model = new ModelResource(configuration.getConservation());
-        environment.jersey().register(model);
-        environment.healthChecks().register("model", new ResourceCheck(model));
+        this.environment.jersey().register(model);
+        this.environment.healthChecks().register("model", new ResourceCheck(model));
+    }
+
+    /**
+     * Shutdown with timeout
+     *
+     * @throws Exception if unable to complete the shutdown
+     */
+    public void shutdown() throws Exception {
+        Future<Void> future = this.environment.getApplicationContext().shutdown();
+        future.get(30, TimeUnit.SECONDS);
     }
 }

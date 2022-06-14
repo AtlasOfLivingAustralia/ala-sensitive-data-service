@@ -1,7 +1,7 @@
 logging:
   level: INFO
   loggers:
-    au.org.ala: WARN
+    au.org.ala: INFO
     org.reflections: ERROR
 server:
   applicationConnectors:
@@ -20,11 +20,11 @@ server:
     - type: http
       port: 9190
 conservation:
-  index: /data/lucene/namematching-20210811-3
-  speciesUrl: https://sds.ala.org.au/sensitive-species-data.xml
-  zonesUrl: https://sds.ala.org.au/sensitivity-zones.xml
-  categoriesUrl: https://sds.ala.org.au/sensitivity-categories.xml
-  layersUrl: https://sds.ala.org.au/ws/layers
+  index: /data/lucene/namematching
+  speciesUrl: file:./target/test-classes/sensitive-species-data-it-1.xml
+  zonesUrl: file:./target/test-classes/sensitivity-zones-it-1.xml
+  categoriesUrl: file:./target/test-classes/sensitivity-categories-it-1.xml
+  layersUrl: file:./target/test-classes/layers-it-1.json
   layersServiceUrl: https://spatial.ala.org.au/layers-service
   cache:
     entryCapacity: 10000
@@ -114,3 +114,4 @@ conservation:
       field: dwc:infraspecificEpithet
     - action: retain
       field: intraspecificEpithet
+

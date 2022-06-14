@@ -27,7 +27,7 @@ public class ConservationResourceTest {
     public static void setUpClass() throws Exception {
         ((Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(Level.INFO); // Stop logging insanity
         configuration = new SDSConfiguration();
-        configuration.setIndex("/data/lucene/namematching-20200214"); // Ensure consistent index
+        configuration.setIndex("/data/lucene/namematching-20210811-3"); // Ensure consistent index
         configuration.setSpeciesUrl(ModelResourceTest.class.getResource("/sensitive-species-data-1.xml").toExternalForm());
         configuration.setZonesUrl(ModelResourceTest.class.getResource("/sensitivity-zones-1.xml").toExternalForm());
         configuration.setCategoriesUrl(ModelResourceTest.class.getResource("/sensitivity-categories-1.xml").toExternalForm());
@@ -160,7 +160,7 @@ public class ConservationResourceTest {
         SensitiveTaxon taxon = vr.getTaxon();
         assertNotNull(taxon);
         assertEquals("Neochmia (Neochmia) phaeton", taxon.getScientificName());
-        assertEquals("urn:lsid:biodiversity.org.au:afd.taxon:87cea0e1-f2ce-496d-8e42-0c2f845a9843", taxon.getTaxonId());
+        assertEquals("https://biodiversity.org.au/afd/taxa/480b034f-0774-4cc5-9aa2-d31a3cb6cd30", taxon.getTaxonId());
         assertNotNull(taxon.getInstances());
         assertEquals(1, taxon.getInstances().size());
         SensitivityInstance instance = taxon.getInstances().get(0);
@@ -242,7 +242,7 @@ public class ConservationResourceTest {
         SensitiveTaxon taxon = vr.getTaxon();
         assertNotNull(taxon);
         assertEquals("Litoria lorica", taxon.getScientificName());
-        assertEquals("urn:lsid:biodiversity.org.au:afd.taxon:8002722e-d0f8-4de2-af61-5cba07d44cd2", taxon.getTaxonId());
+        assertEquals("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7", taxon.getTaxonId());
         assertEquals("little waterfall frog", taxon.getCommonName());
         assertNotNull(taxon.getInstances());
         assertEquals(1, taxon.getInstances().size());
@@ -282,7 +282,7 @@ public class ConservationResourceTest {
         SensitiveTaxon taxon = vr.getTaxon();
         assertNotNull(taxon);
         assertEquals("Litoria lorica", taxon.getScientificName());
-        assertEquals("urn:lsid:biodiversity.org.au:afd.taxon:8002722e-d0f8-4de2-af61-5cba07d44cd2", taxon.getTaxonId());
+        assertEquals("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7", taxon.getTaxonId());
         assertEquals("little waterfall frog", taxon.getCommonName());
         assertNotNull(taxon.getInstances());
         assertEquals(1, taxon.getInstances().size());
