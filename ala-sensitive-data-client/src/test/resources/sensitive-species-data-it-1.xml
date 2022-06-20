@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensitiveSpeciesList>
+  <sensitiveSpecies name="Pterostylis oreophila" family="Orchidaceae" guid="https://id.biodiversity.org.au/name/apni/75185" rank="SPECIES" commonName="Blue-tongued Greenhood">
+    <instances>
+      <conservationInstance category="High" authority="ACT Government" dataResourceId="dr2627" generalisation="1km" zone="ACT" />
+    </instances>
+  </sensitiveSpecies>
+</sensitiveSpeciesList>

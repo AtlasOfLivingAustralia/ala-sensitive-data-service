@@ -9,6 +9,7 @@ import au.org.ala.sds.dao.SensitivityZonesXmlDao;
 import au.org.ala.sds.util.Configuration;
 import au.org.ala.sds.ws.core.SDSConfiguration;
 import au.org.ala.sds.ws.health.Checkable;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +49,8 @@ public class ModelResource implements Closeable, Checkable {
 
     public ModelResource(SDSConfiguration configuration){
         InputStream zis = null, cis = null, sis = null;
+        configuration.configureSds();
         Configuration sdsConfig = Configuration.getInstance();
-
         try {
             log.info("Initialising ModelResource.....");
             final ApiTranslator translator = new ApiTranslator(false);

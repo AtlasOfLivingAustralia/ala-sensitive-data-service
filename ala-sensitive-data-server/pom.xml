@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ala-sensitive-data-service</artifactId>
         <groupId>au.org.ala.sds</groupId>
-        <version>1.1</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -49,23 +49,8 @@
 
         <dependency>
             <groupId>au.org.ala</groupId>
-            <artifactId>ala-name-matching</artifactId>
+            <artifactId>ala-name-matching-search</artifactId>
             <version>${ala-name-matching.version}</version>
-            <!-- Stop jetty 1.x infecting everything -->
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.gbif.registry</groupId>
-                    <artifactId>registry-ws-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Caching -->
