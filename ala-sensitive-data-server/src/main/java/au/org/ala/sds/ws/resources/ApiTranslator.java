@@ -8,6 +8,7 @@ import au.org.ala.sds.validation.SdsValidationReport;
 import au.org.ala.sds.validation.ValidationOutcome;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,17 +35,21 @@ public class ApiTranslator {
     /**
      * Generate a sensitivity report from the SDS outcome.
      */
-    public SensitivityReport buildSensitivityReport(ValidationOutcome outcome) {
+    public SensitivityReport buildSensitivityReport(ValidationOutcome outcome, boolean allInstances) {
         if (outcome == null)
             return null;
         Map<String, Object> original = this.useLibrary && outcome.getResult() != null ? (Map<String, Object>) outcome.getResult().remove(ORIGINAL_VALUES) : new HashMap<>();
         Map<String, Object> result = this.useLibrary ? outcome.getResult() : new HashMap<>();
+        List<au.org.ala.sds.model.SensitivityInstance> instances = outcome.getInstances();
+        if (allInstances && outcome.getReport() instanceof SdsValidationReport) {
+            instances = ((SdsValidationReport) outcome.getReport()).getSpecies().getInstances();
+        }
         return SensitivityReport.builder()
             .valid(outcome.isValid())
             .sensitive(outcome.isSensitive())
             .loadable(outcome.isLoadable())
             .accessControl(outcome.isControlledAccess())
-            .report(this.buildValidationReport(outcome.getReport()))
+            .report(this.buildValidationReport(outcome.getReport(), instances))
             .original(original)
             .updated(result)
             .build();
@@ -53,7 +58,7 @@ public class ApiTranslator {
     /**
      * Generate a validation report from an SDS validation report.
      */
-    public ValidationReport buildValidationReport(au.org.ala.sds.validation.ValidationReport report) {
+    public ValidationReport buildValidationReport(au.org.ala.sds.validation.ValidationReport report, List<au.org.ala.sds.model.SensitivityInstance> instances) {
         if (report == null)
             return null;
         ValidationReport.ValidationReportBuilder builder = ValidationReport.builder()
@@ -61,7 +66,7 @@ public class ApiTranslator {
             .category(report.getCategory())
             .assertion(report.getAssertion());
         if (report instanceof SdsValidationReport)
-            builder.taxon(this.buildSensitiveTaxon(((SdsValidationReport) report).getSpecies()));
+            builder.taxon(this.buildSensitiveTaxon(((SdsValidationReport) report).getSpecies(), instances));
         return builder.build();
     }
 
@@ -77,7 +82,7 @@ public class ApiTranslator {
     /**
      * Generate a sensitive taxon description from the SDS
      */
-    public SensitiveTaxon buildSensitiveTaxon(au.org.ala.sds.model.SensitiveTaxon taxon) {
+    public SensitiveTaxon buildSensitiveTaxon(au.org.ala.sds.model.SensitiveTaxon taxon, List<au.org.ala.sds.model.SensitivityInstance> instances) {
         if (taxon == null)
             return null;
         return SensitiveTaxon.builder()
@@ -87,7 +92,10 @@ public class ApiTranslator {
             .acceptedName(taxon.getAcceptedName())
             .commonName(taxon.getCommonName())
             .taxonRank(taxon.getRank() == null ? null : taxon.getRank().getRank())
-            .instances(taxon.getInstances().stream().map(i -> this.buildSensitivityInstance(i)).collect(Collectors.toList()))
+            .instances(instances.stream()
+                    .map(i -> this.buildSensitivityInstance(i))
+                    .collect(Collectors.toList())
+            )
             .build();
     }
 

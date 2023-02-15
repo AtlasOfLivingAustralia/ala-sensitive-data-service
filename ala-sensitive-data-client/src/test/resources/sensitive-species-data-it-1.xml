@@ -5,4 +5,10 @@
       <conservationInstance category="High" authority="ACT Government" dataResourceId="dr2627" generalisation="1km" zone="ACT" />
     </instances>
   </sensitiveSpecies>
+  <sensitiveSpecies name="Pandion haliaetus" family="Accipitridae" guid="https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c" rank="SPECIES" commonName="osprey">
+    <instances>
+      <conservationInstance category="" authority="WA DEC" dataResourceId="dr467" generalisation="10km" zone="WA" />
+      <conservationInstance category="C2" authority="SA DEWNR" dataResourceId="dr884" generalisation="10km" zone="SA" />
+    </instances>
+  </sensitiveSpecies>
 </sensitiveSpeciesList>

@@ -187,6 +187,64 @@ public class ConservationResourceTest {
     }
 
 
+    // Test taxon with multiple instances
+    @Test
+    public void testReport5() throws Exception {
+        SensitivityReport report = resource.report("Pandion haliaetus", null, "dr8359", "Western Australia", "Australia", null);
+        assertNotNull(report);
+        assertTrue(report.isValid());
+        assertTrue(report.isSensitive());
+        assertTrue(report.isLoadable());
+        assertFalse(report.isAccessControl());
+        ValidationReport vr = report.getReport();
+        assertNotNull(vr);
+        SensitiveTaxon taxon = vr.getTaxon();
+        assertNotNull(taxon);
+        assertEquals("Pandion haliaetus", taxon.getScientificName());
+        assertEquals("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", taxon.getTaxonId());
+        assertNotNull(taxon.getInstances());
+        assertEquals(1, taxon.getInstances().size());
+        SensitivityInstance instance = taxon.getInstances().get(0);
+        assertEquals("WA DEC", instance.getAuthority());
+        assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
+        assertEquals("10km", instance.getGeneralisation().getGeneralisation());
+        assertNotNull(instance.getCategory());
+        assertEquals("Sensitive", instance.getCategory().getId());
+        assertEquals("dr467", instance.getDataResourceId());
+        assertNotNull(instance.getZone());
+        assertEquals("WA", instance.getZone().getId());
+    }
+
+
+    // Test taxon with multiple instances - only one requested
+    @Test
+    public void testReport6() throws Exception {
+        SensitivityReport report = resource.report("Pandion haliaetus", null, "dr8359", "South Australia", "Australia", null);
+        assertNotNull(report);
+        assertTrue(report.isValid());
+        assertTrue(report.isSensitive());
+        assertTrue(report.isLoadable());
+        assertFalse(report.isAccessControl());
+        ValidationReport vr = report.getReport();
+        assertNotNull(vr);
+        SensitiveTaxon taxon = vr.getTaxon();
+        assertNotNull(taxon);
+        assertEquals("Pandion haliaetus", taxon.getScientificName());
+        assertEquals("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", taxon.getTaxonId());
+        assertNotNull(taxon.getInstances());
+        assertEquals(1, taxon.getInstances().size());
+        SensitivityInstance instance = taxon.getInstances().get(0);
+        assertEquals("SA DEWNR", instance.getAuthority());
+        assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
+        assertEquals("10km", instance.getGeneralisation().getGeneralisation());
+        assertNotNull(instance.getCategory());
+        assertEquals("C2", instance.getCategory().getId());
+        assertEquals("dr884", instance.getDataResourceId());
+        assertNotNull(instance.getZone());
+        assertEquals("SA", instance.getZone().getId());
+    }
+
+
     @Test
     public void testProcess1() throws Exception {
         Map<String, String> properties = new HashMap<>();
@@ -285,16 +343,7 @@ public class ConservationResourceTest {
         assertEquals("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7", taxon.getTaxonId());
         assertEquals("little waterfall frog", taxon.getCommonName());
         assertNotNull(taxon.getInstances());
-        assertEquals(1, taxon.getInstances().size());
-        SensitivityInstance instance = taxon.getInstances().get(0);
-        assertEquals("Qld DEHP", instance.getAuthority());
-        assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
-        assertEquals("10km", instance.getGeneralisation().getGeneralisation());
-        assertNotNull(instance.getCategory());
-        assertEquals("Sensitive", instance.getCategory().getId());
-        assertEquals("dr493", instance.getDataResourceId());
-        assertNotNull(instance.getZone());
-        assertEquals("QLD", instance.getZone().getId());
+        assertEquals(0, taxon.getInstances().size());
         Map<String, Object> result = report.getUpdated();
         assertNotNull(result);
         assertNull(result.get("decimalLongitude"));

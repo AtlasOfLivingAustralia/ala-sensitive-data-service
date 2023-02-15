@@ -64,7 +64,7 @@ public class ModelResource implements Closeable, Checkable {
                 .collect(Collectors.toList());
             sis = new URL(sdsConfig.getSpeciesUrl()).openStream();
             this.sensitive = new SensitiveSpeciesXmlDao(sis).getAll().stream()
-                .map(taxon -> translator.buildSensitiveTaxon(taxon))
+                .map(taxon -> translator.buildSensitiveTaxon(taxon, taxon.getInstances()))
                 .collect(Collectors.toList());
             this.layers = sdsConfig.getGeospatialLayers();
         } catch (Exception e){
