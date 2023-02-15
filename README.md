@@ -114,3 +114,9 @@ to use ALA namematching index and for use the GBIF backbone:
 ```shell script
 docker build -f docker/Dockerfile . -t  ala-sensitive-data-service:v20210811-3-1 --build-arg ENV=gbif-backbone
 ```
+
+## Building Debian packages
+
+If you are part of the larger ALA/GBIF infrastructure, you can trigger
+a build of the Debian packages by going to the jenkins server at
+https://jenkins.gbif.es/ and using the packaging view.
