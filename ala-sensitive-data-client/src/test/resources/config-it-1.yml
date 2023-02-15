@@ -20,11 +20,11 @@ server:
     - type: http
       port: 9190
 conservation:
-  index: /data/lucene/namematching
-  speciesUrl: file:./target/test-classes/sensitive-species-data-it-1.xml
-  zonesUrl: file:./target/test-classes/sensitivity-zones-it-1.xml
-  categoriesUrl: file:./target/test-classes/sensitivity-categories-it-1.xml
-  layersUrl: file:./target/test-classes/layers-it-1.json
+  index: /data/lucene/namematching-20210811-3
+  speciesUrl: file:./src/test/resources/sensitive-species-data-it-1.xml
+  zonesUrl: file:./src/test/resources/sensitivity-zones-it-1.xml
+  categoriesUrl: file:./src/test/resources//sensitivity-categories-it-1.xml
+  layersUrl: file:./src/test/resources/layers-it-1.json
   layersServiceUrl: https://spatial.ala.org.au/layers-service
   cache:
     entryCapacity: 10000

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Test annotations are to catch the SDS library sneaking off to /data/sds -->
 <sensitivity-categories>
-    <sensitivity-category id="High" name="High Vulnerability" type="Conservation"/>
+    <sensitivity-category id="Sensitive" name="Sensitive [Test]" type="Conservation"/>
+    <sensitivity-category id="High" name="High Vulnerability [Test]" type="Conservation"/>
+    <sensitivity-category id="C2" name="SA Category 2 Conservation [Test]" type="Conservation"/>
 </sensitivity-categories>

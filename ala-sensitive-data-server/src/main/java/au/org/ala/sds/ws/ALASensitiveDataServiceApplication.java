@@ -1,5 +1,7 @@
 package au.org.ala.sds.ws;
 
+import au.org.ala.sds.util.Configuration;
+import au.org.ala.sds.ws.core.SDSConfiguration;
 import au.org.ala.sds.ws.health.ResourceCheck;
 import au.org.ala.sds.ws.resources.ConservationResource;
 import au.org.ala.sds.ws.resources.ModelResource;
@@ -53,6 +55,7 @@ public class ALASensitiveDataServiceApplication extends Application<ALASensitive
     public void run(final ALASensitiveDataServiceConfiguration configuration,
                     final Environment environment) {
         this.environment = environment;
+        this.initSDSConfiguration(configuration.getConservation());
         final ConservationResource conservation = new ConservationResource(configuration.getConservation());
         this.environment.jersey().register(conservation);
         this.environment.healthChecks().register("conservation", new ResourceCheck(conservation));
@@ -69,5 +72,29 @@ public class ALASensitiveDataServiceApplication extends Application<ALASensitive
     public void shutdown() throws Exception {
         Future<Void> future = this.environment.getApplicationContext().shutdown();
         future.get(30, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Ensure that the SDS configuration is properly initialised before anything gets done
+     *
+     * @param configuration The expected configuration
+     */
+    protected void initSDSConfiguration(SDSConfiguration configuration) {
+        Configuration sds = Configuration.getInstance();
+        if (configuration.getCategoriesUrl() != null) {
+            sds.setCategoriesUrl(configuration.getCategoriesUrl());
+        }
+        if (configuration.getLayersServiceUrl() != null) {
+            sds.setLayersServiceUrl(configuration.getLayersServiceUrl());
+        }
+        if (configuration.getLayers() != null) {
+            sds.setSpatialLayers(configuration.getLayers());
+        }
+        if (configuration.getZonesUrl() != null) {
+            sds.setZoneUrl(configuration.getZonesUrl());
+        }
+        if (configuration.getSpeciesUrl() != null) {
+            sds.setSpeciesUrl(configuration.getSpeciesUrl());
+        }
     }
 }
