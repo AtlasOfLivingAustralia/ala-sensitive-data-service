@@ -274,7 +274,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         @ApiParam(value = "The source data resource identifier", example = "dr1654") @QueryParam("dataResourceUid")String dataResourceUid,
         @ApiParam(value = "The state or province zone identifier", example = "NSW") @QueryParam("stateProvince") String stateProvince,
         @ApiParam(value = "The country zone identifier", example = "AUS") @QueryParam("country") String country,
-        @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones) {
+        @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones
+    ) {
         Map<String, String> properties = new HashMap<>();
         properties.put("samplesProvided", "yes");
         if (dataResourceUid != null && !dataResourceUid.isEmpty())
@@ -291,7 +292,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             scientificName,
             taxonId
         );
-        SensitivityReport report = this.translator.buildSensitivityReport(outcome);
+        SensitivityReport report = this.translator.buildSensitivityReport(outcome, false);
         return report;
     }
 
@@ -324,7 +325,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             query.getTaxonId()
         );
         this.amendOutcome(query, outcome);
-        SensitivityReport report = this.translator.buildSensitivityReport(outcome);
+        SensitivityReport report = this.translator.buildSensitivityReport(outcome, false);
         for (Generalisation generalisation: this.generalisations) {
             generalisation.process(query, report);
         }

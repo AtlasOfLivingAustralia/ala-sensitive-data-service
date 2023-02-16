@@ -11,6 +11,7 @@ import org.junit.*;
 
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class ALASensitiveDataServiceApplicationIT {
     @BeforeClass
     public static void setUpClass() throws Exception {
         application = new ALASensitiveDataServiceApplication();
-        application.run("server", "./target/test-classes/config-it-1.yml");
+        application.run("server", "./src/test/resources/config-it-1.yml");
     }
 
     @Before
@@ -96,7 +97,7 @@ public class ALASensitiveDataServiceApplicationIT {
         URL req = new URL("http://localhost:9189/ws/zones");
         List result = readList(req);
         assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(4, result.size());
         assertTrue(result.get(0) instanceof Map);
         assertEquals("ACT", ((Map) result.get(0)).get("id"));
         assertEquals("Australian Capital Territory", ((Map) result.get(0)).get("layerId"));
@@ -107,10 +108,10 @@ public class ALASensitiveDataServiceApplicationIT {
         URL req = new URL("http://localhost:9189/ws/categories");
         List result = readList(req);
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertTrue(result.get(0) instanceof Map);
+        assertEquals(3, result.size());
+        assertTrue(result.get(1) instanceof Map);
         assertEquals("High", ((Map) result.get(0)).get("id"));
-        assertEquals("High Vulnerability", ((Map) result.get(0)).get("value"));
+        assertEquals("High Vulnerability [Test]", ((Map) result.get(0)).get("value"));
     }
 
     @Test
@@ -118,10 +119,10 @@ public class ALASensitiveDataServiceApplicationIT {
         URL req = new URL("http://localhost:9189/ws/species");
         List result = readList(req);
         assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(2, result.size());
         assertTrue(result.get(0) instanceof Map);
         Map instance = (Map) result.get(0);
-        assertEquals("Pterostylis oreophila", instance.get("scientificName"));
+        assertEquals("Pandion haliaetus", instance.get("scientificName"));
         assertEquals("species", instance.get("taxonRank"));
     }
 
@@ -184,6 +185,51 @@ public class ALASensitiveDataServiceApplicationIT {
         SensitivityReport report = this.client.report("Macropius rufus", null, null, "Victoria", "Australia", null);
         assertNotNull(report);
         assertFalse(report.isSensitive());
+    }
+
+    @Test
+    public void testGetReport4() throws Exception {
+        List<Generalisation> generalisations = this.client.getGeneralisations();
+        SensitivityReport report = this.client.report("Pandion haliaetus", null, null, "South Australia", "Australia", null);
+        assertNotNull(report);
+        assertTrue(report.isSensitive());
+        Map<String, String> supplied = new HashMap<>();
+        Map<String, Object> original = new HashMap<>();
+        Map<String, Object> updated = new HashMap<>();
+        supplied.put("stateProvince", "South Australia");
+        supplied.put("country", "Australia");
+        supplied.put("decimalLatitude", "-35.49386");
+        supplied.put("decimalLongitude", "138.54762");
+        supplied.put("eventDate", "2022-10-30");
+        for (Generalisation g: generalisations) {
+            g.process(supplied, original, updated, report);
+        }
+        assertEquals("Record is South Australia in SA Category 2 Conservation [Test]. Generalised to 10km by SA DEWNR.", updated.get("dataGeneralizations"));
+        assertEquals("138.6", updated.get("decimalLongitude"));
+        assertEquals("-35.5", updated.get("decimalLatitude"));
+        assertNull(updated.get("eventDate"));
+    }
+    @Test
+    public void testGetReport5() throws Exception {
+        List<Generalisation> generalisations = this.client.getGeneralisations();
+        SensitivityReport report = this.client.report("Pandion haliaetus", null, null, "Western Australia", "Australia", null);
+        assertNotNull(report);
+        assertTrue(report.isSensitive());
+        Map<String, String> supplied = new HashMap<>();
+        Map<String, Object> original = new HashMap<>();
+        Map<String, Object> updated = new HashMap<>();
+        supplied.put("stateProvince", "West Australia");
+        supplied.put("country", "Australia");
+        supplied.put("decimalLatitude", "-32.70613");
+        supplied.put("decimalLongitude", "124.97978");
+        supplied.put("eventDate", "2022-09-21");
+        for (Generalisation g: generalisations) {
+            g.process(supplied, original, updated, report);
+        }
+        assertEquals("Record is Western Australia in Sensitive [Test]. Generalised to 10km by WA DEC.", updated.get("dataGeneralizations"));
+        assertEquals("125.0", updated.get("decimalLongitude"));
+        assertEquals("-32.7", updated.get("decimalLatitude"));
+        assertNull(updated.get("eventDate"));
     }
 
 }

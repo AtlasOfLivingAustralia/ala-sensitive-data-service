@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre-alpine
+FROM amazoncorretto:11.0.18-alpine3.17
 
 ARG ENV
 
@@ -15,7 +15,7 @@ COPY ./docker/sds-config.properties /data/sds/config/sds-config.properties
 
 RUN if [ "$ENV" = "gbif-backbone" ]; then \
     curl -sf  -o /data/lucene/namematching.tgz -L https://datos.gbif.es/others/namematching-gbif-backbone-2020-06-18.tgz; else \
-    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/latest/namematching-20210811-3.tgz; fi
+    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz; fi
 #COPY namematching.tgz /data/lucene/namematching.tgz
 
 RUN tar zxf /data/lucene/namematching.tgz -C /data/lucene

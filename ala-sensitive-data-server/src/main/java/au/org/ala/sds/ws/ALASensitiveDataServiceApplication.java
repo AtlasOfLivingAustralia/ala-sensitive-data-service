@@ -1,5 +1,7 @@
 package au.org.ala.sds.ws;
 
+import au.org.ala.sds.util.Configuration;
+import au.org.ala.sds.ws.core.SDSConfiguration;
 import au.org.ala.sds.ws.health.ResourceCheck;
 import au.org.ala.sds.ws.resources.ConservationResource;
 import au.org.ala.sds.ws.resources.ModelResource;
@@ -53,6 +55,7 @@ public class ALASensitiveDataServiceApplication extends Application<ALASensitive
     public void run(final ALASensitiveDataServiceConfiguration configuration,
                     final Environment environment) {
         this.environment = environment;
+        configuration.getConservation().configureSds();
         final ConservationResource conservation = new ConservationResource(configuration.getConservation());
         this.environment.jersey().register(conservation);
         this.environment.healthChecks().register("conservation", new ResourceCheck(conservation));
