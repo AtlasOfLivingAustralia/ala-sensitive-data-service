@@ -1,36 +1,35 @@
-FROM amazoncorretto:11.0.18-alpine3.17
+FROM ubuntu:focal
 
 ARG ENV
 
-RUN apk --no-cache add curl
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN mkdir -p /data/lucene
-RUN mkdir -p /data/ala-sensitive-data-service/config
-RUN mkdir -p /data/sds/config
-RUN mkdir -p /data/biocache/layers
+# Install initial dependencies
+RUN apt-get -y update && \
+        apt-get install -y -q add-apt-key software-properties-common
 
-COPY ./target/ala-sensitive-data-server-1.1.1-SNAPSHOT.jar /data/ala-sensitive-data-server.jar
-COPY ./docker/config.yml /data/config.yml
-COPY ./docker/sds-config.properties /data/sds/config/sds-config.properties
+ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 
-RUN if [ "$ENV" = "gbif-backbone" ]; then \
-    curl -sf  -o /data/lucene/namematching.tgz -L https://datos.gbif.es/others/namematching-gbif-backbone-2020-06-18.tgz; else \
-    curl -sf  -o /data/lucene/namematching.tgz -L https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz; fi
-#COPY namematching.tgz /data/lucene/namematching.tgz
+# Add the apt.gbif.es repo and gpg key
+RUN echo "deb [arch=amd64] https://apt.gbif.es/ bionic main" > /etc/apt/sources.list.d/ala.list && \
+        apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F697D8D2ADB9E24A
 
-RUN tar zxf /data/lucene/namematching.tgz -C /data/lucene
-RUN if [ "$ENV" != "gbif-backbone" ]; then \
-    mv /data/lucene/namematching-20210811-3 /data/lucene/namematching; fi
+# Install main dependencies
+RUN apt-get install -y -q openjdk-8-jdk tar curl
 
-RUN curl -sf -o /data/biocache/layers/sds-layers.tgz -L https://archives.ala.org.au/archives/layers/sds-layers.tgz
-RUN tar zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
+RUN echo "ala-sensitive-data-service ala-sensitive-data-service/sds-url string https://sds.ala.org.au" | debconf-set-selections
+RUN echo "ala-sensitive-data-service ala-sensitive-data-service/spatial-url string https://spatial.ala.org.au" | debconf-set-selections
+RUN echo "ala-sensitive-data-service ala-sensitive-data-service/layers-url string https://archives.ala.org.au/archives/layers/sds-layers.tgz" | debconf-set-selections
+RUN echo "ala-sensitive-data-service ala-sensitive-data-service/source string https://archives.ala.org.au/archives/nameindexes/latest/namematching-20200214.tgz" | debconf-set-selections
+RUN echo "ala-sensitive-data-service ala-sensitive-data-service/sha1 string f9e42325db8d41ca0c8afeb6aeadf670978a13ac" | debconf-set-selections
 
-RUN curl -sf -o /data/sds/sensitive-species-data.xml -L https://sds.ala.org.au/sensitive-species-data.xml
-RUN curl -sf -o /data/sds/sensitivity-zones.xml -L https://sds.ala.org.au/sensitivity-zones.xml
-RUN curl -sf -o /data/sds/sensitivity-categories.xml -L https://sds.ala.org.au/sensitivity-categories.xml
-RUN curl -sf -o /data/sds/layers.json -L https://sds.ala.org.au/ws/layers
+# Update the next commented date to force a new docker hub build with an updated deb version
+RUN apt-get -y update && \
+        apt-get install -y -q ala-namematching-service ala-sensitive-data-service && \
+        rm -rf /var/lib/apt/lists/* && \
+        apt-get clean # 202111151821
 
 EXPOSE 9189
 EXPOSE 9190
 
-CMD ["java", "-jar", "/data/ala-sensitive-data-server.jar", "server", "/data/config.yml"]
+CMD ["java", "-jar", "/opt/atlas/ala-sensitive-data-service/ala-sensitive-data-server.jar", "server", "/data/ala-sensitive-data-service/config/config.yml"]
