@@ -37,7 +37,7 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
         this.swagger.setContactEmail("support@ala.org.au");
         this.swagger.setResourcePackage(ConservationResource.class.getPackage().getName());
         this.swagger.setLicense("Mozilla Public Licence 1.1");
-        this.swagger.setVersion("1.1.1-SNAPSHOT");
+        this.swagger.setVersion("1.1.1");
         this.swagger.getSwaggerViewConfiguration().setPageTitle("ALA Sensitive Data API");
     }
 }
