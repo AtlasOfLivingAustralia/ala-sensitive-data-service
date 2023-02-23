@@ -7,6 +7,7 @@ import au.org.ala.sds.model.PlantPestInstance;
 import au.org.ala.sds.validation.SdsValidationReport;
 import au.org.ala.sds.validation.ValidationOutcome;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class ApiTranslator {
             .acceptedName(taxon.getAcceptedName())
             .commonName(taxon.getCommonName())
             .taxonRank(taxon.getRank() == null ? null : taxon.getRank().getRank())
-            .instances(instances.stream()
+            .instances(instances == null ? Collections.emptyList() : instances.stream()
                     .map(i -> this.buildSensitivityInstance(i))
                     .collect(Collectors.toList())
             )

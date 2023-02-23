@@ -244,6 +244,24 @@ public class ConservationResourceTest {
         assertEquals("SA", instance.getZone().getId());
     }
 
+    // Test taxon with multiple instances - only one requested
+    @Test
+    public void testReport7() throws Exception {
+        SensitivityReport report = resource.report("Pandion haliaetus", null, "dr8359", "Tasmania", "Australia", null);
+        assertNotNull(report);
+        assertTrue(report.isValid());
+        assertFalse(report.isSensitive());
+        assertTrue(report.isLoadable());
+        assertFalse(report.isAccessControl());
+        ValidationReport vr = report.getReport();
+        assertNotNull(vr);
+        SensitiveTaxon taxon = vr.getTaxon();
+        assertNotNull(taxon);
+        assertEquals("Pandion haliaetus", taxon.getScientificName());
+        assertEquals("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", taxon.getTaxonId());
+        assertNotNull(taxon.getInstances());
+        assertEquals(0, taxon.getInstances().size());
+    }
 
     @Test
     public void testProcess1() throws Exception {
