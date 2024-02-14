@@ -16,6 +16,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.cache2k.Cache;
@@ -34,11 +35,9 @@ import java.util.stream.Collectors;
 /**
  * TODO add diagnostics to payload - similar to GBIF
  */
-@Api(
-    value = "Conservation status management"
-)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/api")
+@Tag(name = "Conservation status management")
 @Slf4j
 @Singleton
 public class ConservationResource implements ConservationApi, Closeable, Checkable {
@@ -103,7 +102,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         DwcTerm.infraspecificEpithet,
         TermFactory.instance().findTerm("intraspecificEpithet") // Misspelling
     ));
-    
+
     /** Name searcher */
     private final ALANameSearcher searcher;
     /** Find sensitive species */

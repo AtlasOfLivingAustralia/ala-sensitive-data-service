@@ -11,6 +11,7 @@ import au.org.ala.sds.ws.core.SDSConfiguration;
 import au.org.ala.sds.ws.health.Checkable;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Singleton;
@@ -29,9 +30,7 @@ import java.util.stream.Collectors;
 /**
  * TODO add diagnostics to payload - similar to GBIF
  */
-@Api(
-    value = "Sensitive data information"
-)
+@Tag(name = "Sensitive data information")
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/ws")
 @Slf4j

@@ -9,8 +9,8 @@ import io.dropwizard.bundles.redirect.PathRedirect;
 import io.dropwizard.bundles.redirect.RedirectBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.federecio.dropwizard.swagger.SwaggerBundle;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import in.vectorpro.dropwizard.swagger.SwaggerBundle;
+import in.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class ALASensitiveDataServiceApplication extends Application<ALASensitiveDataServiceConfiguration> {
 
@@ -25,13 +25,12 @@ public class ALASensitiveDataServiceApplication extends Application<ALASensitive
 
     @Override
     public void initialize(final Bootstrap<ALASensitiveDataServiceConfiguration> bootstrap) {
-        bootstrap.addBundle(new RedirectBundle(
-                new PathRedirect(ImmutableMap.<String, String>builder()
-                        .put("/", "/swagger")
-                        .put("/index.htm", "/swagger")
-                        .put("/index.html", "/swagger")
-                        .build())
-        ));
+        PathRedirect redirect = new PathRedirect(ImmutableMap.<String, String>builder()
+                .put("/", "/swagger")
+                .put("/index.htm", "/swagger")
+                .put("/index.html", "/swagger")
+                .build());
+        bootstrap.addBundle(new RedirectBundle(redirect));
         bootstrap.addBundle(new SwaggerBundle<ALASensitiveDataServiceConfiguration>() {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(ALASensitiveDataServiceConfiguration configuration) {

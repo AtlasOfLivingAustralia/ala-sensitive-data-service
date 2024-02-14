@@ -4,7 +4,7 @@ import au.org.ala.sds.ws.core.SDSConfiguration;
 import au.org.ala.sds.ws.resources.ConservationResource;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import in.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
