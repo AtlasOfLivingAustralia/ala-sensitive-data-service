@@ -13,3 +13,5 @@
 *.substvars
 debian/files
 debian/ala-sensitive-data-service
+*/target
+*/dependency-reduced-pom.xml
