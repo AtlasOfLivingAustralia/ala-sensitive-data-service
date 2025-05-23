@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function SensitiveDataServicePage() {
   const [xmlLastModified, setXmlLastModified] = useState('(loading...)');
@@ -30,10 +30,14 @@ function SensitiveDataServicePage() {
           });
           setXmlLastModified(formattedDate);
         } else {
-          setXmlLastModified('Last-Modified header not available');
+          setXmlLastModified('[Last-Modified header not available]');
         }
       } catch (error) {
-        setXmlLastModified('Error: ' + error.message);
+        if (error instanceof Error) {
+          setXmlLastModified('Error: ' + error.message);
+        } else {
+          setXmlLastModified('An unknown error occurred');
+        }
       }
     }
 
@@ -81,7 +85,7 @@ function SensitiveDataServicePage() {
             <td><a href="/sensitive-species-data.xml" target="_blank">Sensitive Species Data</a></td>
             <td>The xml file that supplies all the sensitive species and the categories and zones to which they
               belong.</td>
-            <td>This file was last generated on <span id="xmlLastModified">{xmlLastModified}</span>.</td>
+            <td>This file was last generated on: <span id="xmlLastModified">{xmlLastModified}</span>.</td>
             <td>
               {/* <a className="btn" href="/refresh">Refresh</a> */}
             </td>

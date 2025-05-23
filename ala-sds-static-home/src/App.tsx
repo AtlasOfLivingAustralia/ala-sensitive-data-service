@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from './components/Header';
 import Breadcrumb from './components/Breadcrumb';
 import Footer from './components/Footer';
 import SensitiveDataServicePage from './components/SensitiveDataServicePage';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/css/bootstrap-theme.min.css'; // For the theme if you're using it
 
+declare global {
+  interface Window {
+    FreshWidget?: any;
+  }
+}
 
 function App() {
   useEffect(() => {

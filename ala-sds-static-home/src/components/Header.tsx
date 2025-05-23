@@ -1,8 +1,7 @@
-import React from 'react';
 
 function Header() {
   return (
-    <div id="wrapper-navbar" itemScope="" itemType="http://schema.org/WebSite">
+    <div id="wrapper-navbar" itemType="http://schema.org/WebSite">
       <a className="skip-link sr-only sr-only-focusable" href="#INSERT_CONTENT_ID_HERE">Skip to content</a>
 
       <nav className="navbar navbar-inverse navbar-expand-md">
@@ -76,41 +75,41 @@ function Header() {
             <div className="main-nav-wrapper">
               <div id="navbarNavDropdown">
                 <ul id="main-menu" className="nav navbar-nav" role="menubar">
-                  <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                  <li itemType="https://www.schema.org/SiteNavigationElement"
                     className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown nav-item show">
                     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
                       className="dropdown-toggle nav-link" id="menu-item-dropdown-22">Search
                       &amp; analyse <span className="caret"></span></a>
                     <ul className="dropdown-menu" aria-labelledby="menu-item-dropdown-22" role="menu">
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41958"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41958"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-41958 nav-item">
                         <a href="https://bie.ala.org.au/" className="dropdown-item">Search
                           species</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-23"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-23"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-23 nav-item">
                         <a href="https://biocache.ala.org.au/search#tab_simpleSearch"
                           className="dropdown-item">Search &amp; download records</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-28"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-28"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-28 nav-item">
                         <a href="https://collections.ala.org.au/datasets"
                           className="dropdown-item">Search datasets</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41967"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41967"
                         role="separator" className="divider"></li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-24"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-24"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-24 nav-item">
                         <a href="https://spatial.ala.org.au/" className="dropdown-item">Spatial analysis
                           (Spatial Portal)</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-26"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-26"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-26 nav-item">
                         <a href="https://biocache.ala.org.au/explore/your-area"
                           className="dropdown-item">Explore
                           your area</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-31"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-31"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-31 nav-item">
                         <a href="https://collections.ala.org.au/" className="dropdown-item">Explore
                           natural
@@ -118,61 +117,61 @@ function Header() {
                       </li>
                     </ul>
                   </li>
-                  <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                  <li itemType="https://www.schema.org/SiteNavigationElement"
                     id="menu-item-32"
                     className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-32 nav-item">
                     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                       className="dropdown-toggle nav-link" id="menu-item-dropdown-32">Contribute
                       <span className="caret"></span></a>
                     <ul className="dropdown-menu" aria-labelledby="menu-item-dropdown-32" role="menu">
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40773"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40773"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-40773 nav-item">
                         <a href="https://support.ala.org.au/support/solutions/articles/6000261427-sharing-a-dataset-with-the-ala"
                           className="dropdown-item">Share your dataset</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40728"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40728"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-40728 nav-item">
                         <a href="https://lists.ala.org.au/public/speciesLists"
                           className="dropdown-item">Upload
                           species list</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41968"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41968"
                         role="separator" className="divider"></li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-33"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-33"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-33 nav-item">
                         <a href="https://www.ala.org.au/home/record-a-sighting/"
                           className="dropdown-item">Record a sighting</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-35"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-35"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-35 nav-item">
                         <a href="https://volunteer.ala.org.au/" className="dropdown-item">Transcribe
                           &amp;
                           digitise (DigiVol)</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-37"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-37"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-37 nav-item">
                         <a href="https://biocollect.ala.org.au/acsa" className="dropdown-item">Discover
                           citizen science projects</a>
                       </li>
                     </ul>
                   </li>
-                  <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                  <li itemType="https://www.schema.org/SiteNavigationElement"
                     className="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown nav-item">
                     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                       className="dropdown-toggle nav-link">Resources
                       <span className="caret"></span></a>
                     <ul className="dropdown-menu" aria-labelledby="menu-item-dropdown-199" role="menu">
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                      <li itemType="https://www.schema.org/SiteNavigationElement"
                         className="menu-item menu-item-type-post_type menu-item-object-page nav-item">
                         <a href="https://www.ala.org.au/publications/"
                           className="dropdown-item">Brochures and reports</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                      <li itemType="https://www.schema.org/SiteNavigationElement"
                         className="menu-item menu-item-type-post_type menu-item-object-page nav-item">
                         <a href="https://www.ala.org.au/ala-logo-and-identity/"
                           className="dropdown-item">ALA logo and identity</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                      <li itemType="https://www.schema.org/SiteNavigationElement"
                         className="menu-item menu-item-type-post_type menu-item-object-page nav-item">
                         <a href="https://www.ala.org.au/ala-cited-publications/"
                           className="dropdown-item">ALA-cited publications</a>
@@ -185,29 +184,29 @@ function Header() {
                     </ul>
                   </li>
 
-                  <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                  <li itemType="https://www.schema.org/SiteNavigationElement"
                     id="menu-item-178"
                     className="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-178 nav-item">
                     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                       className="dropdown-toggle nav-link" id="menu-item-dropdown-178">About
                       <span className="caret"></span></a>
                     <ul className="dropdown-menu" aria-labelledby="menu-item-dropdown-178" role="menu">
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-179"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-179"
                         className="menu-item menu-item-type-post_type menu-item-object-page menu-item-179 nav-item">
                         <a href="https://www.ala.org.au/about-ala/" className="dropdown-item">About
                           us</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40734"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40734"
                         className="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-40734 nav-item">
                         <a href="https://www.ala.org.au/governance"
                           className="dropdown-item">Governance</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40734"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40734"
                         className="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-40734 nav-item">
                         <a href="https://www.ala.org.au/blog/" className="dropdown-item">News &amp;
                           media</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40734"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40734"
                         className="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-40734 nav-item">
                         <a href="https://www.ala.org.au/careers/" className="dropdown-item">Careers</a>
                       </li>
@@ -216,31 +215,31 @@ function Header() {
                         <a href="https://www.ala.org.au/internships/"
                           className="dropdown-item">Internships</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-175"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-175"
                         className="menu-item menu-item-type-post_type menu-item-object-page menu-item-175 nav-item">
                         <a href="https://www.ala.org.au/contact-us/" className="dropdown-item">Contact
                           us</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41969"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41969"
                         role="separator" className="divider"></li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                      <li itemType="https://www.schema.org/SiteNavigationElement"
                         className="menu-item menu-item-type-post_type menu-item-object-page nav-item">
                         <a href="https://www.ala.org.au/current-projects/"
                           className="dropdown-item">Current projects</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40799"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-40799"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-40731 nav-item">
                         <a href="https://living-atlases.gbif.org/"
                           className="dropdown-item">International Living Atlases</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-177"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-177"
                         className="menu-item menu-item-type-post_type menu-item-object-page menu-item-177 nav-item">
                         <a href="https://www.ala.org.au/indigenous-ecological-knowledge/"
                           className="dropdown-item">Indigenous ecological knowledge</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41970"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41970"
                         role="separator" className="divider"></li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41796"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41796"
                         className="menu-item menu-item-type-post_type menu-item-object-page menu-item-41796 nav-item">
                         <a href="https://www.ala.org.au/sites-and-services/"
                           className="dropdown-item">All
@@ -248,40 +247,40 @@ function Header() {
                       </li>
                     </ul>
                   </li>
-                  <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                  <li itemType="https://www.schema.org/SiteNavigationElement"
                     id="menu-item-41391"
                     className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-41391 nav-item">
                     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                       className="dropdown-toggle nav-link" id="menu-item-dropdown-41391">Help
                       <span className="caret"></span></a>
                     <ul className="dropdown-menu" aria-labelledby="menu-item-dropdown-41391" role="menu">
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41959"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41959"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-41959 nav-item">
                         <a href="https://support.ala.org.au/support/home"
                           className="dropdown-item">Browse
                           all articles (FAQs)</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41960"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41960"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-41960 nav-item">
                         <a href="https://support.ala.org.au/support/solutions/6000137994"
                           className="dropdown-item">ALA Data help</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41961"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41961"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-41961 nav-item">
                         <a href="https://support.ala.org.au/support/solutions/6000138053"
                           className="dropdown-item">ALA Tools &amp; Apps help</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41962"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41962"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-41962 nav-item">
                         <a href="https://support.ala.org.au/support/solutions/6000138349"
                           className="dropdown-item">ALA Spatial Portal help</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement"
+                      <li itemType="https://www.schema.org/SiteNavigationElement"
                         className="menu-item menu-item-type-custom menu-item-object-custom nav-item">
                         <a href="https://support.ala.org.au/support/solutions/articles/6000261662-citing-the-ala"
                           className="dropdown-item">How to cite the ALA</a>
                       </li>
-                      <li itemScope="itemscope" itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41963"
+                      <li itemType="https://www.schema.org/SiteNavigationElement" id="menu-item-41963"
                         className="menu-item menu-item-type-custom menu-item-object-custom menu-item-41963 nav-item">
                         <a href="https://www.ala.org.au/contact-us/" className="dropdown-item">Contact
                           us</a>
@@ -293,8 +292,8 @@ function Header() {
               <button className="search-trigger hidden-xs hidden-sm collapsed collapse-trigger-button"
                 data-toggle="collapse" data-target="#autocompleteSearchALA"
                 onClick={() => { /* Implement focus logic in React if needed */ }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 22 22"
-                  title="Open search control">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 22 22">
+                  <title>Open search control</title>
                   <defs>
                     {/* CORRECTED LINE: Use a string literal for the CSS content */}
                     <style>{`.search-icon { fill: #fff; fill-rule: evenodd; }`}</style>
