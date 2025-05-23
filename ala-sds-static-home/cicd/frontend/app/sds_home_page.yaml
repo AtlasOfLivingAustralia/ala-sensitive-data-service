@@ -1,0 +1,169 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SDS Home Page frontend Infrastructure
+
+Parameters:
+  pAdminBucketPath:
+    Type: String
+    Description: path that the admin files are stored under
+  pAdminSubDomain:
+    Type: String
+    Description: The subdomain admin is accessed on
+  pSdsHomePage:
+    Type: String
+    Description: The WAF Web ACL to attach the CloudFront distribution to
+  pCleanBranch:
+    Type: String
+    Description: A cleaned version of the code branch name
+    Default: development
+  pDashboardBucketPath:
+    Type: String
+    Description: path that the dashboard files are stored under
+  pDashboardSubDomain:
+    Type: String
+    Description: The subdomain the dashboard is accessed on
+  pEnvironment:
+    Type: String
+    Description: The AWS environment this belongs to
+  pHostedZone:
+    Type: String
+    Description: The hosted zone the site are accessed under
+  pProductName:
+    Type: String
+    Description: The product name
+  pRegionsBucketPath:
+    Type: String
+    Description: path that the regions files are stored under
+  pRegionsSubDomain:
+    Type: String
+    Description: The subdomain regions are accessed on
+  pSourceBucket:
+    Type: String
+    Description: The bucket name for the site
+  pSslCertificate:
+    Type: String
+    Description: The arn of the SSL certificate to be used
+
+Conditions:
+  IsDev: !Equals
+    - !Ref pEnvironment
+    - development
+  NotDev: !Not [ Condition: IsDev ]
+
+Resources:
+  SdsHomePageBucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub ${pSourceBucket}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: TRUE
+        BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
+        RestrictPublicBuckets: TRUE
+      Tags:
+        - Key: component
+          Value: website
+        - Key: Name
+          Value: !Sub ${pSourceBucket}
+
+  SdsHomePageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SdsHomePageBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${SdsHomePageBucket}/*'
+            Principal:
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${SdsHomePageCloudFrontOai}'
+
+  SdsHomePageCloudFrontOai:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub CF Origin Access Identity for ${pProductName} ${pEnvironment}
+
+  DashboardCloudFrontDistro:
+     Type: AWS::CloudFormation::Stack
+     Properties:
+       Parameters:
+         pSubDomain : !Ref pDashboardSubDomain
+         pHostedZone : !Ref pHostedZone
+         pEnvironment : !Ref pEnvironment
+         pBucketPath : !Ref pDashboardBucketPath
+         pSourceBucket : !Ref pSourceBucket
+         pSslCertificate : !Ref pSslCertificate
+         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+         pSdsHomePage : !Ref pSdsHomePage
+         pComponent : dashboard
+       TemplateURL: cloudfront_distro.yaml
+       Tags:
+         - Key: product
+           Value: !Ref pProductName
+         - Key: component
+           Value: dashboard
+         - Key: environment
+           Value: !Ref pEnvironment
+         - Key: Name
+           Value: Atlas-index Dashboard
+       TimeoutInMinutes: 5
+
+  RegionsCloudFrontDistro:
+     Type: AWS::CloudFormation::Stack
+     Properties:
+       Parameters:
+         pSubDomain : !Ref pRegionsSubDomain
+         pHostedZone : !Ref pHostedZone
+         pEnvironment : !Ref pEnvironment
+         pBucketPath : !Ref pRegionsBucketPath
+         pSourceBucket : !Ref pSourceBucket
+         pSslCertificate : !Ref pSslCertificate
+         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+         pSdsHomePage : !Ref pSdsHomePage
+         pComponent : regions
+       TemplateURL: cloudfront_distro.yaml
+       Tags:
+         - Key: product
+           Value: !Ref pProductName
+         - Key: component
+           Value: regions
+         - Key: environment
+           Value: !Ref pEnvironment
+         - Key: Name
+           Value: Atlas-index Regions
+       TimeoutInMinutes: 5
+
+  AdminCloudFrontDistro:
+     Type: AWS::CloudFormation::Stack
+     Properties:
+       Parameters:
+         pSubDomain : !Ref pAdminSubDomain
+         pHostedZone : !Ref pHostedZone
+         pEnvironment : !Ref pEnvironment
+         pBucketPath : !Ref pAdminBucketPath
+         pSourceBucket : !Ref pSourceBucket
+         pSslCertificate : !Ref pSslCertificate
+         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+         pSdsHomePage : !Ref pSdsHomePage
+         pComponent : admin
+       TemplateURL: cloudfront_distro.yaml
+       Tags:
+         - Key: product
+           Value: !Ref pProductName
+         - Key: component
+           Value: admin
+         - Key: environment
+           Value: !Ref pEnvironment
+         - Key: Name
+           Value: Atlas-index Admin
+       TimeoutInMinutes: 5
+
+
+Outputs:
+  SdsHomePageBucketName:
+    Value: !Ref SdsHomePageBucket
+  SdsHomePageBucketArn:
+    Value: !GetAtt SdsHomePageBucket.Arn

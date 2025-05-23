@@ -1,0 +1,34 @@
+{
+  "Parameters" : {
+    "pAdminBucketPath"     : "{{ admin_bucket_path }}",
+    "pAdminSubDomain"      : "{{ admin_sub_domain }}"
+    "pCleanBranch"         : "{{ clean_branch }}",
+    "pDashboardBucketPath" : "{{ dashboard_bucket_path }}",
+    "pDashboardSubDomain"  : "{{ dashboard_sub_domain }}"
+    "pEnvironment"         : "{{ environment }}",
+    "pHostedZone"          : "{{ hosted_zone }}",
+    "pProductName"         : "{{ product_name }}",
+    "pRegionsBucketPath"   : "{{ regions_bucket_path }}",
+    "pRegionsSubDomain"    : "{{ regions_sub_domain }}"
+    "pSourceBucket"        : "{{ source_bucket }}",
+    "pSslCertificate"      : "{{ ssl_certificate }}",
+  },
+  "Tags" : {
+    "product"     : "{{ product_name }}",
+    "component"   : "{{ product_component }}",
+    "environment" : "{{ environment }}",
+    "branch"      : "{{ src_branch }}",
+    "version"     : "{{ commit_id }}",
+    "build"       : "{{ codebuild_build_number }}"
+  },
+  "StackPolicy" : {
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : "Update:*",
+        "Principal": "*",
+        "Resource" : "*"
+      }
+    ]
+  }
+}
