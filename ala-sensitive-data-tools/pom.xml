@@ -28,8 +28,7 @@
         <dependency>
             <groupId>au.org.ala.ws</groupId>
             <artifactId>ala-ws-client-testing</artifactId>
-            <!-- Use snapshot version until stable -->
-            <version>1.8-SNAPSHOT</version>
+            <version>${ala-ws.version}</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
