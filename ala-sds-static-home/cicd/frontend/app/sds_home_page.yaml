@@ -15,12 +15,12 @@ Parameters:
     Type: String
     Description: A cleaned version of the code branch name
     Default: development
-  pDashboardBucketPath:
+  pSdsBucketPath:
     Type: String
-    Description: path that the dashboard files are stored under
-  pDashboardSubDomain:
+    Description: path that the sds files are stored under
+  pSdsSubDomain:
     Type: String
-    Description: The subdomain the dashboard is accessed on
+    Description: The subdomain the sds is accessed on
   pEnvironment:
     Type: String
     Description: The AWS environment this belongs to
@@ -86,80 +86,80 @@ Resources:
       CloudFrontOriginAccessIdentityConfig:
         Comment: !Sub CF Origin Access Identity for ${pProductName} ${pEnvironment}
 
-  DashboardCloudFrontDistro:
-     Type: AWS::CloudFormation::Stack
-     Properties:
-       Parameters:
-         pSubDomain : !Ref pDashboardSubDomain
-         pHostedZone : !Ref pHostedZone
-         pEnvironment : !Ref pEnvironment
-         pBucketPath : !Ref pDashboardBucketPath
-         pSourceBucket : !Ref pSourceBucket
-         pSslCertificate : !Ref pSslCertificate
-         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-         pSdsHomePage : !Ref pSdsHomePage
-         pComponent : dashboard
-       TemplateURL: cloudfront_distro.yaml
-       Tags:
-         - Key: product
-           Value: !Ref pProductName
-         - Key: component
-           Value: dashboard
-         - Key: environment
-           Value: !Ref pEnvironment
-         - Key: Name
-           Value: Atlas-index Dashboard
-       TimeoutInMinutes: 5
+  SdsCloudFrontDistro:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        pSubDomain : !Ref psdsSubDomain
+        pHostedZone : !Ref pHostedZone
+        pEnvironment : !Ref pEnvironment
+        pBucketPath : !Ref psdsBucketPath
+        pSourceBucket : !Ref pSourceBucket
+        pSslCertificate : !Ref pSslCertificate
+        pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+        pSdsHomePage : !Ref pSdsHomePage
+        pComponent : sds
+      TemplateURL: cloudfront_distro.yaml
+      Tags:
+        - Key: product
+          Value: !Ref pProductName
+        - Key: component
+          Value: sds
+        - Key: environment
+          Value: !Ref pEnvironment
+        - Key: Name
+          Value: Atlas-index sds
+      TimeoutInMinutes: 5
 
   RegionsCloudFrontDistro:
-     Type: AWS::CloudFormation::Stack
-     Properties:
-       Parameters:
-         pSubDomain : !Ref pRegionsSubDomain
-         pHostedZone : !Ref pHostedZone
-         pEnvironment : !Ref pEnvironment
-         pBucketPath : !Ref pRegionsBucketPath
-         pSourceBucket : !Ref pSourceBucket
-         pSslCertificate : !Ref pSslCertificate
-         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-         pSdsHomePage : !Ref pSdsHomePage
-         pComponent : regions
-       TemplateURL: cloudfront_distro.yaml
-       Tags:
-         - Key: product
-           Value: !Ref pProductName
-         - Key: component
-           Value: regions
-         - Key: environment
-           Value: !Ref pEnvironment
-         - Key: Name
-           Value: Atlas-index Regions
-       TimeoutInMinutes: 5
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        pSubDomain : !Ref pRegionsSubDomain
+        pHostedZone : !Ref pHostedZone
+        pEnvironment : !Ref pEnvironment
+        pBucketPath : !Ref pRegionsBucketPath
+        pSourceBucket : !Ref pSourceBucket
+        pSslCertificate : !Ref pSslCertificate
+        pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+        pSdsHomePage : !Ref pSdsHomePage
+        pComponent : regions
+      TemplateURL: cloudfront_distro.yaml
+      Tags:
+        - Key: product
+          Value: !Ref pProductName
+        - Key: component
+          Value: regions
+        - Key: environment
+          Value: !Ref pEnvironment
+        - Key: Name
+          Value: Atlas-index Regions
+      TimeoutInMinutes: 5
 
   AdminCloudFrontDistro:
-     Type: AWS::CloudFormation::Stack
-     Properties:
-       Parameters:
-         pSubDomain : !Ref pAdminSubDomain
-         pHostedZone : !Ref pHostedZone
-         pEnvironment : !Ref pEnvironment
-         pBucketPath : !Ref pAdminBucketPath
-         pSourceBucket : !Ref pSourceBucket
-         pSslCertificate : !Ref pSslCertificate
-         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-         pSdsHomePage : !Ref pSdsHomePage
-         pComponent : admin
-       TemplateURL: cloudfront_distro.yaml
-       Tags:
-         - Key: product
-           Value: !Ref pProductName
-         - Key: component
-           Value: admin
-         - Key: environment
-           Value: !Ref pEnvironment
-         - Key: Name
-           Value: Atlas-index Admin
-       TimeoutInMinutes: 5
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        pSubDomain : !Ref pAdminSubDomain
+        pHostedZone : !Ref pHostedZone
+        pEnvironment : !Ref pEnvironment
+        pBucketPath : !Ref pAdminBucketPath
+        pSourceBucket : !Ref pSourceBucket
+        pSslCertificate : !Ref pSslCertificate
+        pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+        pSdsHomePage : !Ref pSdsHomePage
+        pComponent : admin
+      TemplateURL: cloudfront_distro.yaml
+      Tags:
+        - Key: product
+          Value: !Ref pProductName
+        - Key: component
+          Value: admin
+        - Key: environment
+          Value: !Ref pEnvironment
+        - Key: Name
+          Value: Atlas-index Admin
+      TimeoutInMinutes: 5
 
 
 Outputs:
