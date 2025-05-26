@@ -12,6 +12,9 @@ Parameters:
   pEnvironment:
     Type: String
     Description: The AWS environment this belongs to
+  pProductName:
+    Type: String
+    Description: The product name
 
 Conditions:
   IsDev: !Equals

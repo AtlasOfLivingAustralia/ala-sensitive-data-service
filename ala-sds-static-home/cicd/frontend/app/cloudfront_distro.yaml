@@ -104,7 +104,7 @@ Resources:
         MaxTTL: 86400
         MinTTL: 1
         Name: !Sub
-          - "SdsHomePage-cache-Policy-${ResourceName}"
+          - "SdsHomePage-${pComponent}-cache-Policy-${ResourceName}"
           - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
         ParametersInCacheKeyAndForwardedToOrigin:
           CookiesConfig:

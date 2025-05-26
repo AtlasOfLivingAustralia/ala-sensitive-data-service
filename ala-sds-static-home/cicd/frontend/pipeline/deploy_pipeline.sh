@@ -6,10 +6,10 @@ set -ueo pipefail
 # You must have AWS CLI authentication for this to run. 
 
 usage() {
- echo "Usage: $0 [OPTIONS]"
- echo "Options:"
- echo " -e      The environment. Optional but must be \"prod\" to launch in production"
- echo " -b      Branch override. Used when we're not on a branch (detached head)"
+  echo "Usage: $0 [OPTIONS]"
+  echo "Options:"
+  echo " -e      The environment. Optional but must be \"prod\" to launch in production"
+  echo " -b      Branch override. Used when we're not on a branch (detached head)"
 }
 
 ENV=nonprod
@@ -17,20 +17,20 @@ BRANCH_OVERRIDE=
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 while getopts "e:b:" flag; do
- case $flag in
-   e) # Handle the -e environment flag
-   # must be "prod" to launch in production
-   ENV=$OPTARG
-   ;;
-   b) # Handle the -b branch override flag
-   # branch override is used when we're not on a branch (detached head)
-   BRANCH_OVERRIDE=$OPTARG
-   ;;
-   \?)
-   usage
-   exit 1
-   ;;
- esac
+  case $flag in
+    e) # Handle the -e environment flag
+    # must be "prod" to launch in production
+    ENV=$OPTARG
+    ;;
+    b) # Handle the -b branch override flag
+    # branch override is used when we're not on a branch (detached head)
+    BRANCH_OVERRIDE=$OPTARG
+    ;;
+    \?)
+    usage
+    exit 1
+    ;;
+  esac
 done
 
 # get the branch
@@ -150,5 +150,8 @@ aws cloudformation deploy \
         pProductName=$PRODUCT_NAME \
         pRestartExecutionOnUpdate=$RESTART_PIPELINE_ON_UPDATE \
         pUsEast1CodePipelineArtifactBucketName=$US_EAST_ARTIFACT_BUCKET \
+        # pAtlasIndexGitHubBranch=$ATLAS_INDEX_GITHUB_BRANCH \
+        # pAtlasIndexGitHubOwner=$ATLAS_INDEX_GITHUB_OWNER \
+        # pAtlasIndexGitHubRepositoryName=$ATLAS_INDEX_GITHUB_REPO_NAME \
 
 

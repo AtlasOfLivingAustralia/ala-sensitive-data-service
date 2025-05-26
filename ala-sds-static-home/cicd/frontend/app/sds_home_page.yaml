@@ -109,7 +109,7 @@ Resources:
           Value: !Ref pEnvironment
         - Key: Name
           Value: Atlas-index sds
-      TimeoutInMinutes: 5
+      TimeoutInMinutes: 15
 
   RegionsCloudFrontDistro:
     Type: AWS::CloudFormation::Stack
@@ -134,7 +134,7 @@ Resources:
           Value: !Ref pEnvironment
         - Key: Name
           Value: Atlas-index Regions
-      TimeoutInMinutes: 5
+      TimeoutInMinutes: 15
 
   AdminCloudFrontDistro:
     Type: AWS::CloudFormation::Stack
@@ -159,7 +159,7 @@ Resources:
           Value: !Ref pEnvironment
         - Key: Name
           Value: Atlas-index Admin
-      TimeoutInMinutes: 5
+      TimeoutInMinutes: 15
 
 
 Outputs:

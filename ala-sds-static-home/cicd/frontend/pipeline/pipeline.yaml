@@ -105,6 +105,27 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: !Sub cicd/${pProductComponent}/pipeline/empty_bucket_buildspec.yaml
       TimeoutInMinutes: 5
+  
+  BuildSdsHomePageApp:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub
+              - ${pProductName}-${pProductComponent}-build-atlas-index-app-${ResourceName}
+              - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+      Description: Build the sds-home-page app and create the artifact
+      ServiceRole:
+        Fn::ImportValue:
+          Fn::Sub: ${pBootstrapStackName}-CodeBuildServiceRoleArn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        Image: aws/codebuild/standard:7.0
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/build_app_buildspec.yaml
+      TimeoutInMinutes: 10 
 
   DeployNotification:
     Type: AWS::CodeBuild::Project
@@ -192,7 +213,25 @@ Resources:
                 DetectChanges: !Ref pAutoDeploy
               Namespace: CheckoutSrcNS
               OutputArtifacts:
-                - Name: SdsHomePageSourceArtifact
+                - Name: AtlasIndexSourceArtifact
+            # - Name: CheckoutAtlasIndexSrc
+            #   ActionTypeId:
+            #     Category: Source
+            #     Owner: AWS
+            #     Provider: CodeStarSourceConnection
+            #     Version: 1
+            #   Configuration:
+            #     ConnectionArn:
+            #       Fn::ImportValue:
+            #         Fn::Sub: ${pBootstrapStackName}-CodestarConnectionArn
+            #     FullRepositoryId: !Sub ${pAtlasIndexGitHubOwner}/${pAtlasIndexGitHubRepositoryName}
+            #     BranchName: !Ref pAtlasIndexGitHubBranch
+            #     OutputArtifactFormat: CODEBUILD_CLONE_REF
+            #     DetectChanges: !Ref pAutoDeploy
+            #   Namespace: AtlasIndexCheckoutSrcNS
+            #   OutputArtifacts:
+            #     - Name: AtlasIndexAppSourceArtifact
+            #   RunOrder: 1
         - Name: Deploy_Infrastructure
           Actions:
             - Name: ExportConfig
@@ -252,7 +291,7 @@ Resources:
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
                 ParameterOverrides: |
                   { 
-                    "pSdsHomePage": "#{WafCloudFormationOutNS.SdsHomePageWafWebAclArn}"
+                    "pSdsHomePageWafWebAclArn": "#{WafCloudFormationOutNS.SdsHomePageWafWebAclArn}"
                   }
                 RoleArn:
                   Fn::ImportValue:
@@ -265,22 +304,27 @@ Resources:
               RunOrder: 3
         - Name: Publish_Website
           Actions:
-            - Name: EmptyBucket
+            - Name: BuildSdsHomePageApp
               ActionTypeId:
                 Owner: AWS
                 Category: Build
                 Version: 1
                 Provider: CodeBuild
               Configuration:
-                ProjectName: !Ref EmptyBucket
+                ProjectName: !Ref BuildSdsHomePageApp
                 EnvironmentVariables: |
                   [
-                    { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" },
-                    { "name":"BUCKET_PATH", "value":"#{ExportConfigNS.BUCKET_PATH}" }
+                    { "name":"HOME_PAGE_BUCKET_PATH", "value":"#{ExportConfigNS.HOME_PAGE_BUCKET_PATH}" },
+                    { "name":"XML_FILE_BUCKET_PATH", "value":"#{ExportConfigNS.XML_FILE_BUCKET_PATH}" },
+                    { "name":"ENVIRONMENT", "value":"#{ExportConfigNS.ENVIRONMENT}" },
+                    { "name":"NODE_VERSION", "value":"#{ExportConfigNS.NODE_VERSION}" },
+                    { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" }
                   ]
-              Namespace: EmptyBucketPreDeployNS
+                PrimarySource: AtlasIndexSourceArtifact
+              Namespace: BuildAtlasIndexAppNS
               InputArtifacts:
-                - Name: SdsHomePageSourceArtifact
+                - Name: AtlasIndexSourceArtifact
+                - Name: AtlasIndexAppSourceArtifact
               RunOrder: 1
             - Name: DeployNotification
               ActionTypeId:
@@ -297,7 +341,8 @@ Resources:
                     { "name":"ENVIRONMENT", "value":"${pEnvironment}" },
                     { "name":"PRODUCT_COMPONENT", "value":"#{ExportConfigNS.PRODUCT_COMPONENT}" },
                     { "name":"HOSTED_ZONE", "value":"#{ExportConfigNS.HOSTED_ZONE}" },
-                    { "name":"SUB_DOMAIN", "value":"#{ExportConfigNS.SUB_DOMAIN}" },
+                    { "name":"HOME_PAGE_SUB_DOMAIN", "value":"#{ExportConfigNS.HOME_PAGE_SUB_DOMAIN}" },
+                    { "name":"XML_FILE_SUB_DOMAIN", "value":"#{ExportConfigNS.XML_FILE_SUB_DOMAIN}" },
                     { "name":"PRODUCT_NAME", "value":"#{ExportConfigNS.PRODUCT_NAME}" },
                     { "name":"REPO", "value":"#{CheckoutSrcNS.FullRepositoryName}" },
                     { "name":"SLACK_ALERT_CHANNEL", "value":"#{ExportConfigNS.SLACK_ALERT_CHANNEL}" },
@@ -392,16 +437,6 @@ Resources:
     DeletionPolicy: Delete 
     Properties:
       LogGroupName: !Sub /aws/codebuild/${ExportConfig}
-      RetentionInDays: 30
-      Tags:
-        - Key: Name
-          Value: !Ref AWS::StackName
-    
-  BuildCodeLogGroup:
-    Type: AWS::Logs::LogGroup
-    DeletionPolicy: Delete
-    Properties:
-      LogGroupName: !Sub /aws/codebuild/${BuildCode}
       RetentionInDays: 30
       Tags:
         - Key: Name
