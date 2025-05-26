@@ -63,8 +63,8 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub
-              - ${pProductName}-${pProductComponent}-export-config-${ResourceName}
-              - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+        - ${pProductName}-${pProductComponent}-export-config-${ResourceName}
+        - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
       Description: Load the environment and build the CloudFormation template config file
       ServiceRole:
         Fn::ImportValue:
@@ -89,8 +89,8 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub
-              - ${pProductName}-${pProductComponent}-empty-bucket-${ResourceName}
-              - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+        - ${pProductName}-${pProductComponent}-empty-bucket-${ResourceName}
+        - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
       Description: Empty the source s3 bucket so it can be deleted
       ServiceRole:
         Fn::ImportValue:
@@ -110,8 +110,8 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub
-              - ${pProductName}-${pProductComponent}-build-atlas-index-app-${ResourceName}
-              - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+        - ${pProductName}-${pProductComponent}-build-atlas-index-app-${ResourceName}
+        - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
       Description: Build the sds-home-page app and create the artifact
       ServiceRole:
         Fn::ImportValue:
@@ -155,8 +155,8 @@ Resources:
     Type: 'AWS::CodePipeline::Pipeline'
     Properties:
       Name: !Sub
-              - ${pProductName}-${pProductComponent}-${ResourceName}
-              - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+        - ${pProductName}-${pProductComponent}-${ResourceName}
+        - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
       PipelineType: V2
       RoleArn:
         Fn::ImportValue:
@@ -257,27 +257,27 @@ Resources:
               OutputArtifacts:
                 - Name: ExportConfigArtifact
               RunOrder: 1
-            - Name: DeployWafCFStack
-              ActionTypeId:
-                Owner: AWS
-                Category: Deploy
-                Version: 1
-                Provider: CloudFormation
-              Configuration:
-                TemplatePath: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}.yaml'
-                TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}_template_config.json'
-                ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
-                Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-                RoleArn:
-                  Fn::ImportValue:
-                    Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
-                StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
-              InputArtifacts:
-                - Name: ExportConfigArtifact
-              Namespace: WafCloudFormationOutNS
-              OutputArtifacts: []
-              Region: us-east-1
-              RunOrder: 2
+            # - Name: DeployWafCFStack
+            #   ActionTypeId:
+            #     Owner: AWS
+            #     Category: Deploy
+            #     Version: 1
+            #     Provider: CloudFormation
+            #   Configuration:
+            #     TemplatePath: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}.yaml'
+            #     TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}_template_config.json'
+            #     ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
+            #     Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
+            #     RoleArn:
+            #       Fn::ImportValue:
+            #         Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
+            #     StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
+            #   InputArtifacts:
+            #     - Name: ExportConfigArtifact
+            #   Namespace: WafCloudFormationOutNS
+            #   OutputArtifacts: []
+            #   Region: us-east-1
+            #   RunOrder: 2
             - Name: DeploySiteCFStack
               ActionTypeId:
                 Owner: AWS
