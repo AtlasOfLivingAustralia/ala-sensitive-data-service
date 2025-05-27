@@ -143,12 +143,12 @@ aws cloudformation deploy \
         pCleanBranch=$clean_branch \
         pEnvironment=$environment \
         pGitHubBranch=$branch \
-        pGitHubRepositoryName=$GITHUB_REPO_NAME \
         pPipelineFingerprint=$PIPELINE_MD5 \
         pProductComponent=$PRODUCT_COMPONENT \
         pProductName=$PRODUCT_NAME \
         pRestartExecutionOnUpdate=$RESTART_PIPELINE_ON_UPDATE \
         pUsEast1CodePipelineArtifactBucketName=$US_EAST_ARTIFACT_BUCKET \
+        # pGitHubRepositoryName=$GITHUB_REPO_NAME \
         # pGitHubOwner=$GITHUB_OWNER \
         # pAtlasIndexGitHubBranch=$ATLAS_INDEX_GITHUB_BRANCH \
         # pAtlasIndexGitHubOwner=$ATLAS_INDEX_GITHUB_OWNER \
