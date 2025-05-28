@@ -213,7 +213,7 @@ Resources:
                 DetectChanges: !Ref pAutoDeploy
               Namespace: CheckoutSrcNS
               OutputArtifacts:
-                - Name: SdsHomeSourceArtifact
+                - Name: SdsHomePageSourceArtifact
             # - Name: CheckoutAtlasIndexSrc
             #   ActionTypeId:
             #     Category: Source
