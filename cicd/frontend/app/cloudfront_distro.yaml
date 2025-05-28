@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: SDS-home-page Infrastructure
 
 Parameters:
-  pSdsHomePage:
+  pSdsHomePageWebAclArn:
     Type: String
     Description: The WAF Web ACL to attach the CloudFront distribution to
   pSourceBucket:
@@ -89,7 +89,7 @@ Resources:
           AcmCertificateArn: !Ref pSslCertificate
           MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
-        WebACLId: !Ref pSdsHomePage
+        WebACLId: !Ref pSdsHomePageWebAclArn
       Tags:
         - Key: component
           Value: cdn
