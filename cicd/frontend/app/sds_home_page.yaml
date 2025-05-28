@@ -8,9 +8,9 @@ Parameters:
   pHomePageSubDomain:
     Type: String
     Description: The subdomain SDS frontend is accessed on
-  pSdsHomePageWebAclArn:
-    Type: String
-    Description: The WAF Web ACL to attach the CloudFront distribution to
+  # pSdsHomePageWebAclArn:
+  #   Type: String
+  #   Description: The WAF Web ACL to attach the CloudFront distribution to
   pCleanBranch:
     Type: String
     Description: A cleaned version of the code branch name
@@ -91,7 +91,7 @@ Resources:
         pSourceBucket : !Ref pSourceBucket
         pSslCertificate : !Ref pSslCertificate
         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-        pSdsHomePageWebAclArn : !Ref pSdsHomePageWebAclArn
+        #pSdsHomePageWebAclArn : !Ref pSdsHomePageWebAclArn
         pComponent : sds
       TemplateURL: cloudfront_distro.yaml
       Tags:
