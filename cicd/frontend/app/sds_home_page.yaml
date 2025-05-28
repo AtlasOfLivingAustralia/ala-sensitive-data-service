@@ -2,25 +2,22 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: SDS Home Page frontend Infrastructure
 
 Parameters:
-  pAdminBucketPath:
+  pHomePageBucketPath:
     Type: String
-    Description: path that the admin files are stored under
-  pAdminSubDomain:
+    Description: path that the SDS frontend files are stored under
+  pHomePageSubDomain:
     Type: String
-    Description: The subdomain admin is accessed on
-  # pSdsHomePage:
-  #   Type: String
-  #   Description: The WAF Web ACL to attach the CloudFront distribution to
+    Description: The subdomain SDS frontend is accessed on
   pCleanBranch:
     Type: String
     Description: A cleaned version of the code branch name
     Default: development
-  pSdsBucketPath:
+  pXmlBucketPath:
     Type: String
-    Description: path that the sds files are stored under
-  pSdsSubDomain:
+    Description: path that the SDS xml files are stored under
+  pXmlSubDomain:
     Type: String
-    Description: The subdomain the sds is accessed on
+    Description: The subdomain the SDS xml file is accessed on
   pEnvironment:
     Type: String
     Description: The AWS environment this belongs to
@@ -30,12 +27,6 @@ Parameters:
   pProductName:
     Type: String
     Description: The product name
-  pRegionsBucketPath:
-    Type: String
-    Description: path that the regions files are stored under
-  pRegionsSubDomain:
-    Type: String
-    Description: The subdomain regions are accessed on
   pSourceBucket:
     Type: String
     Description: The bucket name for the site
@@ -90,10 +81,10 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        pSubDomain : !Ref psdsSubDomain
+        pSubDomain : !Ref pHomePageSubDomain
         pHostedZone : !Ref pHostedZone
         pEnvironment : !Ref pEnvironment
-        pBucketPath : !Ref psdsBucketPath
+        pBucketPath : !Ref pHomePageBucketPath
         pSourceBucket : !Ref pSourceBucket
         pSslCertificate : !Ref pSslCertificate
         pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
