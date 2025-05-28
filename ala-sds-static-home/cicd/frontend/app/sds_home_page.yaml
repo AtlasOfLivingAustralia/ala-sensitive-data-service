@@ -8,9 +8,9 @@ Parameters:
   pAdminSubDomain:
     Type: String
     Description: The subdomain admin is accessed on
-  pSdsHomePage:
-    Type: String
-    Description: The WAF Web ACL to attach the CloudFront distribution to
+  # pSdsHomePage:
+  #   Type: String
+  #   Description: The WAF Web ACL to attach the CloudFront distribution to
   pCleanBranch:
     Type: String
     Description: A cleaned version of the code branch name
@@ -108,57 +108,57 @@ Resources:
         - Key: environment
           Value: !Ref pEnvironment
         - Key: Name
-          Value: Atlas-index sds
+          Value: SDS home page
       TimeoutInMinutes: 15
 
-  RegionsCloudFrontDistro:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      Parameters:
-        pSubDomain : !Ref pRegionsSubDomain
-        pHostedZone : !Ref pHostedZone
-        pEnvironment : !Ref pEnvironment
-        pBucketPath : !Ref pRegionsBucketPath
-        pSourceBucket : !Ref pSourceBucket
-        pSslCertificate : !Ref pSslCertificate
-        pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-        pSdsHomePage : !Ref pSdsHomePage
-        pComponent : regions
-      TemplateURL: cloudfront_distro.yaml
-      Tags:
-        - Key: product
-          Value: !Ref pProductName
-        - Key: component
-          Value: regions
-        - Key: environment
-          Value: !Ref pEnvironment
-        - Key: Name
-          Value: Atlas-index Regions
-      TimeoutInMinutes: 15
+  # RegionsCloudFrontDistro:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     Parameters:
+  #       pSubDomain : !Ref pRegionsSubDomain
+  #       pHostedZone : !Ref pHostedZone
+  #       pEnvironment : !Ref pEnvironment
+  #       pBucketPath : !Ref pRegionsBucketPath
+  #       pSourceBucket : !Ref pSourceBucket
+  #       pSslCertificate : !Ref pSslCertificate
+  #       pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+  #       pSdsHomePage : !Ref pSdsHomePage
+  #       pComponent : regions
+  #     TemplateURL: cloudfront_distro.yaml
+  #     Tags:
+  #       - Key: product
+  #         Value: !Ref pProductName
+  #       - Key: component
+  #         Value: regions
+  #       - Key: environment
+  #         Value: !Ref pEnvironment
+  #       - Key: Name
+  #         Value: Atlas-index Regions
+      # TimeoutInMinutes: 15
 
-  AdminCloudFrontDistro:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      Parameters:
-        pSubDomain : !Ref pAdminSubDomain
-        pHostedZone : !Ref pHostedZone
-        pEnvironment : !Ref pEnvironment
-        pBucketPath : !Ref pAdminBucketPath
-        pSourceBucket : !Ref pSourceBucket
-        pSslCertificate : !Ref pSslCertificate
-        pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-        pSdsHomePage : !Ref pSdsHomePage
-        pComponent : admin
-      TemplateURL: cloudfront_distro.yaml
-      Tags:
-        - Key: product
-          Value: !Ref pProductName
-        - Key: component
-          Value: admin
-        - Key: environment
-          Value: !Ref pEnvironment
-        - Key: Name
-          Value: Atlas-index Admin
+  # AdminCloudFrontDistro:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     Parameters:
+  #       pSubDomain : !Ref pAdminSubDomain
+  #       pHostedZone : !Ref pHostedZone
+  #       pEnvironment : !Ref pEnvironment
+  #       pBucketPath : !Ref pAdminBucketPath
+  #       pSourceBucket : !Ref pSourceBucket
+  #       pSslCertificate : !Ref pSslCertificate
+  #       pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
+  #       pSdsHomePage : !Ref pSdsHomePage
+  #       pComponent : admin
+  #     TemplateURL: cloudfront_distro.yaml
+  #     Tags:
+  #       - Key: product
+  #         Value: !Ref pProductName
+  #       - Key: component
+  #         Value: admin
+  #       - Key: environment
+  #         Value: !Ref pEnvironment
+  #       - Key: Name
+  #         Value: Atlas-index Admin
       TimeoutInMinutes: 15
 
 

@@ -110,7 +110,7 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub
-        - ${pProductName}-${pProductComponent}-build-atlas-index-app-${ResourceName}
+        - ${pProductName}-${pProductComponent}-build-sds-home-page-app-${ResourceName}
         - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
       Description: Build the sds-home-page app and create the artifact
       ServiceRole:
@@ -213,7 +213,7 @@ Resources:
                 DetectChanges: !Ref pAutoDeploy
               Namespace: CheckoutSrcNS
               OutputArtifacts:
-                - Name: AtlasIndexSourceArtifact
+                - Name: SdsHomeSourceArtifact
             # - Name: CheckoutAtlasIndexSrc
             #   ActionTypeId:
             #     Category: Source
@@ -304,28 +304,28 @@ Resources:
               RunOrder: 3
         - Name: Publish_Website
           Actions:
-            - Name: BuildSdsHomePageApp
-              ActionTypeId:
-                Owner: AWS
-                Category: Build
-                Version: 1
-                Provider: CodeBuild
-              Configuration:
-                ProjectName: !Ref BuildSdsHomePageApp
-                EnvironmentVariables: |
-                  [
-                    { "name":"HOME_PAGE_BUCKET_PATH", "value":"#{ExportConfigNS.HOME_PAGE_BUCKET_PATH}" },
-                    { "name":"XML_FILE_BUCKET_PATH", "value":"#{ExportConfigNS.XML_FILE_BUCKET_PATH}" },
-                    { "name":"ENVIRONMENT", "value":"#{ExportConfigNS.ENVIRONMENT}" },
-                    { "name":"NODE_VERSION", "value":"#{ExportConfigNS.NODE_VERSION}" },
-                    { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" }
-                  ]
-                PrimarySource: AtlasIndexSourceArtifact
-              Namespace: BuildAtlasIndexAppNS
-              InputArtifacts:
-                - Name: AtlasIndexSourceArtifact
-                - Name: AtlasIndexAppSourceArtifact
-              RunOrder: 1
+            # - Name: BuildSdsHomePageApp
+            #   ActionTypeId:
+            #     Owner: AWS
+            #     Category: Build
+            #     Version: 1
+            #     Provider: CodeBuild
+            #   Configuration:
+            #     ProjectName: !Ref BuildSdsHomePageApp
+            #     EnvironmentVariables: |
+            #       [
+            #         { "name":"HOME_PAGE_BUCKET_PATH", "value":"#{ExportConfigNS.HOME_PAGE_BUCKET_PATH}" },
+            #         { "name":"XML_FILE_BUCKET_PATH", "value":"#{ExportConfigNS.XML_FILE_BUCKET_PATH}" },
+            #         { "name":"ENVIRONMENT", "value":"#{ExportConfigNS.ENVIRONMENT}" },
+            #         { "name":"NODE_VERSION", "value":"#{ExportConfigNS.NODE_VERSION}" },
+            #         { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" }
+            #       ]
+            #     PrimarySource: SdsHomeSourceArtifact
+            #   Namespace: BuildAtlasIndexAppNS
+            #   InputArtifacts:
+            #     - Name: SdsHomeSourceArtifact
+            #     - Name: AtlasIndexAppSourceArtifact
+            #   RunOrder: 1
             - Name: DeployNotification
               ActionTypeId:
                 Owner: AWS

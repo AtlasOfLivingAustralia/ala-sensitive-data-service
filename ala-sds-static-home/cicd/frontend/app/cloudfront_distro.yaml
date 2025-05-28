@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Atlas-index frontend Infrastructure
+Description: SDS-home-page Infrastructure
 
 Parameters:
   pSdsHomePage:
@@ -41,7 +41,6 @@ Conditions:
   NotDev: !Not [ Condition: IsDev ]
 
 Resources:
-
   SdsHomePageDnsRecord:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -59,7 +58,7 @@ Resources:
       DistributionConfig:
         Aliases:
           - !Sub '${pSubDomain}.${pHostedZone}'
-        Comment: !Sub CF Distribution for Atlas-index ${pComponent} ${pEnvironment}
+        Comment: !Sub CF Distribution for SDS-home-page ${pComponent} ${pEnvironment}
         CustomErrorResponses:
           - ErrorCode: 403
             ErrorCachingMinTTL: 300
@@ -74,7 +73,7 @@ Resources:
             - HEAD
           CachePolicyId: !Ref SdsHomePageCachePolicy
           Compress: true
-          TargetOriginId: atlas-index-s3
+          TargetOriginId: sds-index-s3
           ViewerProtocolPolicy: redirect-to-https
         DefaultRootObject: index.html
         Enabled: true
@@ -82,7 +81,7 @@ Resources:
         IPV6Enabled: false
         Origins:
           - DomainName: !Sub '${pSourceBucket}.s3.${AWS::Region}.amazonaws.com'
-            Id: atlas-index-s3
+            Id: sds-index-s3
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${pSdsHomePageCloudFrontOai}'
             OriginPath: !Sub '/${pBucketPath}'
@@ -99,7 +98,7 @@ Resources:
     Type: AWS::CloudFront::CachePolicy
     Properties:
       CachePolicyConfig:
-        Comment: !Sub CF Cache Policy for the AVSB site ${pEnvironment}
+        Comment: !Sub CF Cache Policy for the SDS-home-page site ${pEnvironment}
         DefaultTTL: 300
         MaxTTL: 86400
         MinTTL: 1

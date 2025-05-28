@@ -2,7 +2,7 @@
 set -ueo pipefail
 
 ###
-# Deploy the codepipeline for atlas-index frontend site
+# Deploy the codepipeline for sds-home-index frontend site
 # You must have AWS CLI authentication for this to run. 
 
 usage() {
