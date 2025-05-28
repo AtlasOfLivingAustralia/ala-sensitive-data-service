@@ -289,10 +289,7 @@ Resources:
                 TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.APP_STACK_FILE_PFIX}_template_config.json'
                 ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-                ParameterOverrides: |
-                  { 
-                    "pSdsHomePageWafWebAclArn": "#{WafCloudFormationOutNS.SdsHomePageWafWebAclArn}"
-                  }
+                # ParameterOverrides removed because WafCloudFormationOutNS does not exist
                 RoleArn:
                   Fn::ImportValue:
                     Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
@@ -301,7 +298,7 @@ Resources:
                 - Name: ExportConfigArtifact
               Namespace: AppCloudFormationOutNS
               OutputArtifacts: []
-              RunOrder: 3
+              RunOrder: 2
         - Name: Publish_Website
           Actions:
             # - Name: BuildSdsHomePageApp
