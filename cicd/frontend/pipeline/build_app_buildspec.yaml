@@ -21,20 +21,12 @@ phases:
       - yarn --version
   pre_build:
     commands:
-      # cd to the source directory for the app
-      # - cd $CODEBUILD_SRC_DIR
-      # - cd $CODEBUILD_SRC_DIR_AtlasIndexAppSourceArtifact/regions-ui
+      - cd ala-sds-static-home
       - echo running yarn...
       - yarn install
-      # - yarn playwright install --with-deps
-      # - echo running tests...
-      # - yarn test
-      # - echo VITE_GOOGLE_MAP_API_KEY=$GOOGLE_API_KEY >> ./config/.env.playwright
-      # - ./run-playwright-test.sh 1
   build:
     commands:
       - echo building...
-      # - echo VITE_GOOGLE_MAP_API_KEY=$GOOGLE_API_KEY >> ./config/.env.$ENVIRONMENT
       - yarn run build:$ENVIRONMENT
       - echo deploying...
       - aws s3 sync dist/assets s3://$SOURCE_BUCKET/$HOME_PAGE_BUCKET_PATH/assets --delete --cache-control "max-age=86400,public"

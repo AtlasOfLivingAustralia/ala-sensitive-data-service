@@ -278,7 +278,7 @@ Resources:
                   ]
               Namespace: BuildSensitiveAppNS
               InputArtifacts:
-                - Name: SdsHomeSourceArtifact
+                - Name: SdsHomePageSourceArtifact
               RunOrder: 1
             - Name: DeployNotification
               ActionTypeId:
