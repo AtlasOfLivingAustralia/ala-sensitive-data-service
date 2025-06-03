@@ -12,7 +12,7 @@ Parameters:
     Type: String
     Description: A cleaned version of the code branch name
     Default: development
-  pComponent:
+  pProductComponent:
     Type: String
     Description: The product component
   pXmlBucketPath:
@@ -81,7 +81,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       Name: !Sub '${pHomePageSubDomain}.${pHostedZone}'
-      Comment: !Sub ${pComponent} domain for the ${pEnvironment} environment
+      Comment: !Sub ${pProductComponent} domain for the ${pEnvironment} environment
       Type: A
       AliasTarget:
         DNSName: !GetAtt SdsHomePageCloudFrontDistro.DomainName
@@ -94,7 +94,7 @@ Resources:
       DistributionConfig:
         Aliases:
           - !Sub '${pHomePageSubDomain}.${pHostedZone}'
-        Comment: !Sub CF Distribution for SDS-home-page ${pComponent} ${pEnvironment}
+        Comment: !Sub CF Distribution for SDS-home-page ${pProductComponent} ${pEnvironment}
         CustomErrorResponses:
           - ErrorCode: 403
             ErrorCachingMinTTL: 300
@@ -138,7 +138,7 @@ Resources:
         MaxTTL: 86400
         MinTTL: 1
         Name: !Sub
-          - "SdsHomePage-${pComponent}-cache-Policy-${ResourceName}"
+          - "SdsHomePage-${pProductComponent}-cache-Policy-${ResourceName}"
           - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
         ParametersInCacheKeyAndForwardedToOrigin:
           CookiesConfig:
