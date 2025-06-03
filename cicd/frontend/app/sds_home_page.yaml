@@ -120,7 +120,7 @@ Resources:
             Id: sds-index-s3
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${SdsHomePageCloudFrontOai}'
-            OriginPath: !Sub '/${HomePageBucketPath}'
+            OriginPath: !Sub '/${pHomePageBucketPath}'
         ViewerCertificate:
           AcmCertificateArn: !Ref pSslCertificate
           MinimumProtocolVersion: TLSv1.2_2021
