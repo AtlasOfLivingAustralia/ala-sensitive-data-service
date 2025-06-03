@@ -257,27 +257,6 @@ Resources:
               OutputArtifacts:
                 - Name: ExportConfigArtifact
               RunOrder: 1
-            # - Name: DeployWafCFStack
-            #   ActionTypeId:
-            #     Owner: AWS
-            #     Category: Deploy
-            #     Version: 1
-            #     Provider: CloudFormation
-            #   Configuration:
-            #     TemplatePath: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}.yaml'
-            #     TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}_template_config.json'
-            #     ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
-            #     Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-            #     RoleArn:
-            #       Fn::ImportValue:
-            #         Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
-            #     StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
-            #   InputArtifacts:
-            #     - Name: ExportConfigArtifact
-            #   Namespace: WafCloudFormationOutNS
-            #   OutputArtifacts: []
-            #   Region: us-east-1
-            #   RunOrder: 2
             - Name: DeploySiteCFStack
               ActionTypeId:
                 Owner: AWS
@@ -289,7 +268,6 @@ Resources:
                 TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.APP_STACK_FILE_PFIX}_template_config.json'
                 ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-                # ParameterOverrides removed because WafCloudFormationOutNS does not exist
                 RoleArn:
                   Fn::ImportValue:
                     Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
@@ -391,20 +369,6 @@ Resources:
                   Fn::ImportValue:
                     Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
               RunOrder: 3
-            - Name: TeardownSdsHomePageWaf
-              ActionTypeId:
-                Owner: AWS
-                Category: Deploy
-                Version: 1
-                Provider: CloudFormation
-              Configuration:
-                ActionMode: DELETE_ONLY
-                StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
-                RoleArn:
-                  Fn::ImportValue:
-                    Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
-              Region: us-east-1
-              RunOrder: 4
             - Name: ApprovalForPipelineTeardown
               ActionTypeId:
                 Owner: AWS
@@ -413,7 +377,7 @@ Resources:
                 Provider: Manual
               Configuration:
                 CustomData: Approval required to tear down this stack
-              RunOrder: 5
+              RunOrder: 4
             - Name: TeardownCodePipeline
               ActionTypeId:
                 Owner: AWS
@@ -426,7 +390,7 @@ Resources:
                 RoleArn:
                   Fn::ImportValue:
                     Fn::Sub: '${pBootstrapStackName}-CloudFormationServiceRoleArn'
-              RunOrder: 6
+              RunOrder: 5
 
 
   ExportConfigLogGroup:

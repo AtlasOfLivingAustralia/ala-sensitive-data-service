@@ -8,9 +8,6 @@ Parameters:
   pHomePageSubDomain:
     Type: String
     Description: The subdomain SDS frontend is accessed on
-  # pSdsHomePageWebAclArn:
-  #   Type: String
-  #   Description: The WAF Web ACL to attach the CloudFront distribution to
   pCleanBranch:
     Type: String
     Description: A cleaned version of the code branch name
@@ -80,80 +77,81 @@ Resources:
       CloudFrontOriginAccessIdentityConfig:
         Comment: !Sub CF Origin Access Identity for ${pProductName} ${pEnvironment}
 
-  SdsCloudFrontDistro:
-    Type: AWS::CloudFormation::Stack
+  SdsHomePageDnsRecord:
+    Type: AWS::Route53::RecordSet
     Properties:
-      Parameters:
-        pSubDomain : !Ref pHomePageSubDomain
-        pHostedZone : !Ref pHostedZone
-        pEnvironment : !Ref pEnvironment
-        pBucketPath : !Ref pHomePageBucketPath
-        pSourceBucket : !Ref pSourceBucket
-        pSslCertificate : !Ref pSslCertificate
-        pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-        #pSdsHomePageWebAclArn : !Ref pSdsHomePageWebAclArn
-        pComponent : sds
-      TemplateURL: cloudfront_distro.yaml
+      Name: !Sub '${pSubDomain}.${pHostedZone}'
+      Comment: !Sub ${pComponent} domain for the ${pEnvironment} environment
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt SdsHomePageCloudFrontDistro.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+      HostedZoneName: !Sub '${pHostedZone}.'
+
+  SdsHomePageCloudFrontDistro:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Sub '${pSubDomain}.${pHostedZone}'
+        Comment: !Sub CF Distribution for SDS-home-page ${pComponent} ${pEnvironment}
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ErrorCachingMinTTL: 300
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          CachePolicyId: !Ref SdsHomePageCachePolicy
+          Compress: true
+          TargetOriginId: sds-index-s3
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: false
+        Origins:
+          - DomainName: !Sub '${pSourceBucket}.s3.${AWS::Region}.amazonaws.com'
+            Id: sds-index-s3
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${pSdsHomePageCloudFrontOai}'
+            OriginPath: !Sub '/${pBucketPath}'
+        ViewerCertificate:
+          AcmCertificateArn: !Ref pSslCertificate
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
       Tags:
-        - Key: product
-          Value: !Ref pProductName
         - Key: component
-          Value: sds
-        - Key: environment
-          Value: !Ref pEnvironment
-        - Key: Name
-          Value: SDS home page
-      TimeoutInMinutes: 15
+          Value: cdn
 
-  # RegionsCloudFrontDistro:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     Parameters:
-  #       pSubDomain : !Ref pRegionsSubDomain
-  #       pHostedZone : !Ref pHostedZone
-  #       pEnvironment : !Ref pEnvironment
-  #       pBucketPath : !Ref pRegionsBucketPath
-  #       pSourceBucket : !Ref pSourceBucket
-  #       pSslCertificate : !Ref pSslCertificate
-  #       pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-  #       pSdsHomePage : !Ref pSdsHomePage
-  #       pComponent : regions
-  #     TemplateURL: cloudfront_distro.yaml
-  #     Tags:
-  #       - Key: product
-  #         Value: !Ref pProductName
-  #       - Key: component
-  #         Value: regions
-  #       - Key: environment
-  #         Value: !Ref pEnvironment
-  #       - Key: Name
-  #         Value: Atlas-index Regions
-      # TimeoutInMinutes: 15
+  SdsHomePageCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Comment: !Sub CF Cache Policy for the SDS-home-page site ${pEnvironment}
+        DefaultTTL: 300
+        MaxTTL: 86400
+        MinTTL: 1
+        Name: !Sub
+          - "SdsHomePage-${pComponent}-cache-Policy-${ResourceName}"
+          - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          HeadersConfig:
+            HeaderBehavior: none
+          QueryStringsConfig:
+            QueryStringBehavior: whitelist
+            QueryStrings:
+              - cb
 
-  # AdminCloudFrontDistro:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     Parameters:
-  #       pSubDomain : !Ref pAdminSubDomain
-  #       pHostedZone : !Ref pHostedZone
-  #       pEnvironment : !Ref pEnvironment
-  #       pBucketPath : !Ref pAdminBucketPath
-  #       pSourceBucket : !Ref pSourceBucket
-  #       pSslCertificate : !Ref pSslCertificate
-  #       pSdsHomePageCloudFrontOai : !Ref SdsHomePageCloudFrontOai
-  #       pSdsHomePage : !Ref pSdsHomePage
-  #       pComponent : admin
-  #     TemplateURL: cloudfront_distro.yaml
-  #     Tags:
-  #       - Key: product
-  #         Value: !Ref pProductName
-  #       - Key: component
-  #         Value: admin
-  #       - Key: environment
-  #         Value: !Ref pEnvironment
-  #       - Key: Name
-  #         Value: Atlas-index Admin
-      TimeoutInMinutes: 15
 
 
 Outputs:
