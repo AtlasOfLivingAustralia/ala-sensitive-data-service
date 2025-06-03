@@ -12,12 +12,12 @@ Parameters:
     Type: String
     Description: A cleaned version of the code branch name
     Default: development
+  pComponent:
+    Type: String
+    Description: The product component
   pXmlBucketPath:
     Type: String
     Description: path that the SDS xml files are stored under
-  pXmlSubDomain:
-    Type: String
-    Description: The subdomain the SDS xml file is accessed on
   pEnvironment:
     Type: String
     Description: The AWS environment this belongs to
@@ -80,7 +80,7 @@ Resources:
   SdsHomePageDnsRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      Name: !Sub '${pSubDomain}.${pHostedZone}'
+      Name: !Sub '${pHomePageSubDomain}.${pHostedZone}'
       Comment: !Sub ${pComponent} domain for the ${pEnvironment} environment
       Type: A
       AliasTarget:
@@ -93,7 +93,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Sub '${pSubDomain}.${pHostedZone}'
+          - !Sub '${pHomePageSubDomain}.${pHostedZone}'
         Comment: !Sub CF Distribution for SDS-home-page ${pComponent} ${pEnvironment}
         CustomErrorResponses:
           - ErrorCode: 403
@@ -119,8 +119,8 @@ Resources:
           - DomainName: !Sub '${pSourceBucket}.s3.${AWS::Region}.amazonaws.com'
             Id: sds-index-s3
             S3OriginConfig:
-              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${pSdsHomePageCloudFrontOai}'
-            OriginPath: !Sub '/${pBucketPath}'
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${SdsHomePageCloudFrontOai}'
+            OriginPath: !Sub '/${HomePageBucketPath}'
         ViewerCertificate:
           AcmCertificateArn: !Ref pSslCertificate
           MinimumProtocolVersion: TLSv1.2_2021
