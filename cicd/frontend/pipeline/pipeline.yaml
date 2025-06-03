@@ -317,7 +317,6 @@ Resources:
                     { "name":"PRODUCT_COMPONENT", "value":"#{ExportConfigNS.PRODUCT_COMPONENT}" },
                     { "name":"HOSTED_ZONE", "value":"#{ExportConfigNS.HOSTED_ZONE}" },
                     { "name":"HOME_PAGE_SUB_DOMAIN", "value":"#{ExportConfigNS.HOME_PAGE_SUB_DOMAIN}" },
-                    { "name":"XML_FILE_SUB_DOMAIN", "value":"#{ExportConfigNS.XML_FILE_SUB_DOMAIN}" },
                     { "name":"PRODUCT_NAME", "value":"#{ExportConfigNS.PRODUCT_NAME}" },
                     { "name":"REPO", "value":"#{CheckoutSrcNS.FullRepositoryName}" },
                     { "name":"SLACK_ALERT_CHANNEL", "value":"#{ExportConfigNS.SLACK_ALERT_CHANNEL}" },
@@ -350,7 +349,7 @@ Resources:
                 EnvironmentVariables: |
                   [
                     { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" },
-                    { "name":"BUCKET_PATH", "value":"#{ExportConfigNS.BUCKET_PATH}" }
+                    { "name":"HOME_PAGE_BUCKET_PATH", "value":"#{ExportConfigNS.HOME_PAGE_BUCKET_PATH}" }
                   ]
               Namespace: EmptyBucketPreDeleteNS
               InputArtifacts:
