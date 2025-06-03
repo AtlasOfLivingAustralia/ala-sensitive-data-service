@@ -214,24 +214,6 @@ Resources:
               Namespace: CheckoutSrcNS
               OutputArtifacts:
                 - Name: SdsHomePageSourceArtifact
-            # - Name: CheckoutAtlasIndexSrc
-            #   ActionTypeId:
-            #     Category: Source
-            #     Owner: AWS
-            #     Provider: CodeStarSourceConnection
-            #     Version: 1
-            #   Configuration:
-            #     ConnectionArn:
-            #       Fn::ImportValue:
-            #         Fn::Sub: ${pBootstrapStackName}-CodestarConnectionArn
-            #     FullRepositoryId: !Sub ${pAtlasIndexGitHubOwner}/${pAtlasIndexGitHubRepositoryName}
-            #     BranchName: !Ref pAtlasIndexGitHubBranch
-            #     OutputArtifactFormat: CODEBUILD_CLONE_REF
-            #     DetectChanges: !Ref pAutoDeploy
-            #   Namespace: AtlasIndexCheckoutSrcNS
-            #   OutputArtifacts:
-            #     - Name: AtlasIndexAppSourceArtifact
-            #   RunOrder: 1
         - Name: Deploy_Infrastructure
           Actions:
             - Name: ExportConfig
@@ -279,28 +261,25 @@ Resources:
               RunOrder: 2
         - Name: Publish_Website
           Actions:
-            # - Name: BuildSdsHomePageApp
-            #   ActionTypeId:
-            #     Owner: AWS
-            #     Category: Build
-            #     Version: 1
-            #     Provider: CodeBuild
-            #   Configuration:
-            #     ProjectName: !Ref BuildSdsHomePageApp
-            #     EnvironmentVariables: |
-            #       [
-            #         { "name":"HOME_PAGE_BUCKET_PATH", "value":"#{ExportConfigNS.HOME_PAGE_BUCKET_PATH}" },
-            #         { "name":"XML_FILE_BUCKET_PATH", "value":"#{ExportConfigNS.XML_FILE_BUCKET_PATH}" },
-            #         { "name":"ENVIRONMENT", "value":"#{ExportConfigNS.ENVIRONMENT}" },
-            #         { "name":"NODE_VERSION", "value":"#{ExportConfigNS.NODE_VERSION}" },
-            #         { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" }
-            #       ]
-            #     PrimarySource: SdsHomeSourceArtifact
-            #   Namespace: BuildAtlasIndexAppNS
-            #   InputArtifacts:
-            #     - Name: SdsHomeSourceArtifact
-            #     - Name: AtlasIndexAppSourceArtifact
-            #   RunOrder: 1
+            - Name: BuildSdsHomePageApp
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Version: 1
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref BuildSdsHomePageApp
+                EnvironmentVariables: |
+                  [
+                    { "name":"HOME_PAGE_BUCKET_PATH", "value":"#{ExportConfigNS.HOME_PAGE_BUCKET_PATH}" },
+                    { "name":"ENVIRONMENT", "value":"#{ExportConfigNS.ENVIRONMENT}" },
+                    { "name":"NODE_VERSION", "value":"#{ExportConfigNS.NODE_VERSION}" },
+                    { "name":"SOURCE_BUCKET", "value":"#{ExportConfigNS.SOURCE_BUCKET}" }
+                  ]
+              Namespace: BuildSensitiveAppNS
+              InputArtifacts:
+                - Name: SdsHomeSourceArtifact
+              RunOrder: 1
             - Name: DeployNotification
               ActionTypeId:
                 Owner: AWS
