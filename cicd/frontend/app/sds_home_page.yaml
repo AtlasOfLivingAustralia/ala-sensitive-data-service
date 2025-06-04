@@ -81,22 +81,6 @@ Resources:
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${SdsHomePageCloudFrontOai}'
 
-  SdsXmlFileBucket:
-    Type: 'AWS::S3::Bucket'
-    DeletionPolicy: Delete
-    Properties:
-      BucketName: !Ref pXmlFileBucketName
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: TRUE
-        BlockPublicPolicy: TRUE
-        IgnorePublicAcls: TRUE
-        RestrictPublicBuckets: TRUE
-      Tags:
-        - Key: component
-          Value: website-xml-file
-        - Key: Name
-          Value: !Ref pXmlFileBucketName
-
   SdsXmlFileCloudFrontOai:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
@@ -167,7 +151,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${SdsHomePageCloudFrontOai}'
             OriginPath: !Sub '/${pHomePageBucketPath}' # e.g., /development/sds-home-page
-          - DomainName: !Sub '${pXmlFileBucketName}.s3.${AWS::Region}.amazonaws.com'
+          - DomainName: !Sub '${pXmlFileBucketName}.s3.${AWS::Region}.amazonaws.com' # Reference the existing bucket name
             Id: sds-xml-file-s3 # Unique ID for this new origin
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${SdsXmlFileCloudFrontOai}'
@@ -222,7 +206,4 @@ Outputs:
     Value: !Ref SdsHomePageBucket
   SdsHomePageBucketArn:
     Value: !GetAtt SdsHomePageBucket.Arn
-  SdsXmlFileBucketName:
-    Value: !Ref SdsXmlFileBucket
-  SdsXmlFileBucketArn:
-    Value: !GetAtt SdsXmlFileBucket.Arn
+
