@@ -30,6 +30,16 @@ Parameters:
   pSourceBucket:
     Type: String
     Description: The bucket name for the site
+  pXmlFileBucketName:
+    Type: String
+    Description: The S3 bucket name for other files/assets.
+  pXmlFileS3KeyPrefix:
+    Type: String
+    Description: The key prefix (folder) in the other files S3 bucket.
+    Default: "other-assets"
+  pXmlFilePathPattern:
+    Type: String
+    Description: The CloudFront path pattern to route to the other files bucket (e.g., /other-assets/*).
   pSslCertificate:
     Type: String
     Description: The arn of the SSL certificate to be used
@@ -70,6 +80,42 @@ Resources:
             Resource: !Sub 'arn:aws:s3:::${SdsHomePageBucket}/*'
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${SdsHomePageCloudFrontOai}'
+
+  SdsXmlFileBucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Ref pXmlFileBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: TRUE
+        BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
+        RestrictPublicBuckets: TRUE
+      Tags:
+        - Key: component
+          Value: website-xml-file
+        - Key: Name
+          Value: !Ref pXmlFileBucketName
+
+  SdsXmlFileCloudFrontOai:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub CF Origin Access Identity for ${pProductName} ${pEnvironment} Other Files
+
+  SdsXmlFileBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SdsXmlFileBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${SdsXmlFileBucket}/*'
+            Principal:
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${SdsXmlFileCloudFrontOai}'
 
   SdsHomePageCloudFrontOai:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -120,11 +166,28 @@ Resources:
             Id: sds-index-s3
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${SdsHomePageCloudFrontOai}'
-            OriginPath: !Sub '/${pHomePageBucketPath}'
+            OriginPath: !Sub '/${pHomePageBucketPath}' # e.g., /development/sds-home-page
+          - DomainName: !Sub '${pXmlFileBucketName}.s3.${AWS::Region}.amazonaws.com'
+            Id: sds-xml-file-s3 # Unique ID for this new origin
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${SdsXmlFileCloudFrontOai}'
+            OriginPath: !Sub '/${pXmlFileS3KeyPrefix}' # e.g., /other-assets
         ViewerCertificate:
           AcmCertificateArn: !Ref pSslCertificate
           MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
+        CacheBehaviors: # Add this section for path-based routing
+          - PathPattern: !Ref pXmlFilePathPattern # e.g., /other-assets/* or /specific-file.pdf
+            TargetOriginId: sds-xml-file-s3 # Must match the Id of the new origin
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            CachePolicyId: !Ref SdsHomePageCachePolicy # You might want a different cache policy
+            Compress: true
+            ViewerProtocolPolicy: redirect-to-https
       Tags:
         - Key: component
           Value: cdn
@@ -159,3 +222,7 @@ Outputs:
     Value: !Ref SdsHomePageBucket
   SdsHomePageBucketArn:
     Value: !GetAtt SdsHomePageBucket.Arn
+  SdsXmlFileBucketName:
+    Value: !Ref SdsXmlFileBucket
+  SdsXmlFileBucketArn:
+    Value: !GetAtt SdsXmlFileBucket.Arn
