@@ -90,14 +90,14 @@ Resources:
   SdsXmlFileBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref SdsXmlFileBucket
+      Bucket: !Ref pXmlFileBucketName
       PolicyDocument:
         Version: 2012-10-17
         Statement:
           - Action:
               - 's3:GetObject'
             Effect: Allow
-            Resource: !Sub 'arn:aws:s3:::${SdsXmlFileBucket}/*'
+            Resource: !Sub 'arn:aws:s3:::${pXmlFileBucketName}/*'
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${SdsXmlFileCloudFrontOai}'
 
@@ -206,4 +206,3 @@ Outputs:
     Value: !Ref SdsHomePageBucket
   SdsHomePageBucketArn:
     Value: !GetAtt SdsHomePageBucket.Arn
-
