@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 function SensitiveDataServicePage() {
   const [xmlLastModified, setXmlLastModified] = useState('(loading...)');
   const sds_ws_url = import.meta.env.VITE_APP_SENSITIVE_WS_URL;
-  const ssdXmlUrl = import.meta.env.VITE_APP_SENSITIVE_SPECIES_XML_URL;
+  const ssdXmlUrl = import.meta.env.VITE_APP_SENSITIVE_SPECIES_XML_URL || '/sensitive-species-data.xml';
 
   useEffect(() => {
     async function getLastModified() {
+      console.log('Fetching last modified date for:', ssdXmlUrl);
       try {
-        const xmlUrl = ssdXmlUrl || '/sensitive-species-data.xml'; // Assuming this file will be in your public directory
-        const response = await fetch(xmlUrl, { method: 'HEAD' });
+        const response = await fetch(ssdXmlUrl, { method: 'GET' });
 
         if (!response.ok) {
           throw new Error('Failed to fetch file information');
@@ -34,7 +34,7 @@ function SensitiveDataServicePage() {
         }
       } catch (error) {
         if (error instanceof Error) {
-          setXmlLastModified('Error: ' + error.message);
+          setXmlLastModified('Error: <code>' + error.message + '</code>');
         } else {
           setXmlLastModified('An unknown error occurred');
         }
@@ -82,12 +82,11 @@ function SensitiveDataServicePage() {
         </thead>
         <tbody>
           <tr>
-            <td><a href="/sensitive-species-data.xml" target="_blank">Sensitive Species Data</a></td>
+            <td><a href={`${ssdXmlUrl}`} target="_blank">Sensitive Species Data</a></td>
             <td>The xml file that supplies all the sensitive species and the categories and zones to which they
               belong.</td>
-            <td>This file was last generated on: <span id="xmlLastModified">{xmlLastModified}</span>.</td>
+            <td>This file was last generated on: <span id="xmlLastModified" dangerouslySetInnerHTML={{ __html: xmlLastModified }} />.</td>
             <td>
-              {/* <a className="btn" href="/refresh">Refresh</a> */}
             </td>
           </tr>
           <tr>
