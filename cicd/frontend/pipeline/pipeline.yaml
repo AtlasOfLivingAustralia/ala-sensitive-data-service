@@ -186,6 +186,7 @@ Resources:
                 FilePaths:
                   Includes:
                     - !Sub cicd/${pProductComponent}/**
+                    - ala-sds-static-home/**
             SourceActionName: CheckoutSrc
       Variables:
         - Name: SRC_BRANCH
