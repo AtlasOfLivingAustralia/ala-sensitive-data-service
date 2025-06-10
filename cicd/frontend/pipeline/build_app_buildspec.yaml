@@ -3,8 +3,6 @@ version: 0.2
 # build the app
 env:
   shell: bash
-  secrets-manager:
-    GOOGLE_API_KEY: ala-secrets-production:google-api-key
 
 phases:
   install:
