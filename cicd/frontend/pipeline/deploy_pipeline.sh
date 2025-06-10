@@ -44,20 +44,19 @@ if [[ ( "$branch" == "master" || "$branch" == "main" ) &&  "$ENV" == "nonprod" ]
   read -r -p "Enter your choice (1 or 2): " choice
 
   case "$choice" in
-      1)
-        ENV="prod"
-        ;;
-      2)
-        ENV="nonprod"
-        ;;
-      *)
-        echo "Invalid choice. Exiting."
-        exit 1
-        ;;
+    1)
+      ENV="prod"
+      ;;
+    2)
+      ENV="nonprod"
+      ;;
+    *)
+      echo "Invalid choice. Exiting."
+      exit 1
+      ;;
   esac
 fi
 
-exit 1
 
 # check if we're on a detached head
 if [[ -n $branch ]]; then
