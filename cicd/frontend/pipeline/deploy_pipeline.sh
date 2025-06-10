@@ -37,7 +37,7 @@ done
 branch=$(git branch --show-current)
 
 # confirm which environment we're deploying to if it wasnt explicitly set
-if [[ "$branch" == "feature/zsh-compatability"  &&  "$ENV" == "nonprod" ]]; then
+if [[ ( "$branch" == "feature/zsh-compatability" || "$branch" == "main" ) &&  "$ENV" == "nonprod" ]]; then
   echo "Deploy to production or staging?"
   echo "1) production"
   echo "2) staging"
