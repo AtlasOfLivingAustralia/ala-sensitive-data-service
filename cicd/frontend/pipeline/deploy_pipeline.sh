@@ -57,7 +57,6 @@ if [[ ( "$branch" == "master" || "$branch" == "main" ) &&  "$ENV" == "nonprod" ]
   esac
 fi
 
-
 # check if we're on a detached head
 if [[ -n $branch ]]; then
   real_branch=1
