@@ -37,16 +37,23 @@ done
 branch=$(git branch --show-current)
 
 # confirm which environment we're deploying to if it wasnt explicitly set
-if [ "$branch" = "main" ] && [ "$ENV" = "nonprod" ]; then
+if [[ "$branch" == "main"  &&  "$ENV" == "nonprod" ]]; then
   echo "Deploy to production or staging?"
   echo "1) production"
   echo "2) staging"
-  read -p "Enter your choice (1 or 2): " choice
+  read -r -p "Enter your choice (1 or 2): " choice
 
-  case $choice in
-    1)
-      ENV="prod"
-      ;;
+  case "$choice" in
+      1)
+        ENV="prod"
+        ;;
+      2)
+        ENV="nonprod"
+        ;;
+      *)
+        echo "Invalid choice. Exiting."
+        exit 1
+        ;;
   esac
 fi
 
