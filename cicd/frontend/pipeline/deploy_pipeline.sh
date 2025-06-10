@@ -37,7 +37,7 @@ done
 branch=$(git branch --show-current)
 
 # confirm which environment we're deploying to if it wasnt explicitly set
-if [[ ( "$branch" == "feature/zsh-compatability" || "$branch" == "main" ) &&  "$ENV" == "nonprod" ]]; then
+if [[ ( "$branch" == "feaure/zsh-compatability" || "$branch" == "main" ) &&  "$ENV" == "nonprod" ]]; then
   echo "Deploy to production or staging?"
   echo "1) production"
   echo "2) staging"
@@ -60,6 +60,8 @@ if [[ ( "$branch" == "feature/zsh-compatability" || "$branch" == "main" ) &&  "$
         ;;
   esac
 fi
+
+exit 1
 
 # check if we're on a detached head
 if [[ -n $branch ]]; then
