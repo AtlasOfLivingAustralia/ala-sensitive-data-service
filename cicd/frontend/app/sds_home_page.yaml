@@ -2,47 +2,50 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: SDS Home Page frontend Infrastructure
 
 Parameters:
-  pHomePageBucketPath:
-    Type: String
-    Description: path that the SDS frontend files are stored under
-  pHomePageSubDomain:
-    Type: String
-    Description: The subdomain SDS frontend is accessed on
   pCleanBranch:
     Type: String
     Description: A cleaned version of the code branch name
     Default: development
-  pProductComponent:
-    Type: String
-    Description: The product component
-  pXmlBucketPath:
-    Type: String
-    Description: path that the SDS xml files are stored under
   pEnvironment:
     Type: String
     Description: The AWS environment this belongs to
+  pHomePageBucketPath:
+    Type: String
+    Description: path that the SDS frontend files are stored under
+  pHomePageOldSubDomain:
+    Type: String
+    Description: The old subdomain, aliased to the CF distribution
+  pHomePageSubDomain:
+    Type: String
+    Description: The subdomain SDS frontend is accessed on
   pHostedZone:
     Type: String
     Description: The hosted zone the site are accessed under
+  pProductComponent:
+    Type: String
+    Description: The product component
   pProductName:
     Type: String
     Description: The product name
   pSourceBucket:
     Type: String
     Description: The bucket name for the site
+  pSslCertificate:
+    Type: String
+    Description: The arn of the SSL certificate to be used
+  pXmlBucketPath:
+    Type: String
+    Description: path that the SDS xml files are stored under
   pXmlFileBucketName:
     Type: String
     Description: The S3 bucket name for other files/assets.
+  pXmlFilePathPattern:
+    Type: String
+    Description: The CloudFront path pattern to route to the other files bucket (e.g., /other-assets/*).
   pXmlFileS3KeyPrefix:
     Type: String
     Description: The key prefix (folder) in the other files S3 bucket.
     Default: "other-assets"
-  pXmlFilePathPattern:
-    Type: String
-    Description: The CloudFront path pattern to route to the other files bucket (e.g., /other-assets/*).
-  pSslCertificate:
-    Type: String
-    Description: The arn of the SSL certificate to be used
 
 Conditions:
   IsDev: !Equals
@@ -51,6 +54,7 @@ Conditions:
   NotDev: !Not [ Condition: IsDev ]
 
 Resources:
+
   SdsHomePageBucket:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Delete
@@ -118,12 +122,24 @@ Resources:
         HostedZoneId: Z2FDTNDATAQYW2
       HostedZoneName: !Sub '${pHostedZone}.'
 
+  SdsHomePageOldDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Sub '${pHomePageOldSubDomain}.${pHostedZone}'
+      Comment: !Sub Old ${pProductComponent} domain for the ${pEnvironment} environment
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt SdsHomePageCloudFrontDistro.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+      HostedZoneName: !Sub '${pHostedZone}.'
+
   SdsHomePageCloudFrontDistro:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Aliases:
           - !Sub '${pHomePageSubDomain}.${pHostedZone}'
+          - !Sub '${pHomePageOldSubDomain}.${pHostedZone}'
         Comment: !Sub CF Distribution for SDS-home-page ${pProductComponent} ${pEnvironment}
         CustomErrorResponses:
           - ErrorCode: 403
