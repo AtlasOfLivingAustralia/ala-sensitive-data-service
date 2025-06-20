@@ -33,20 +33,26 @@ case "$1" in
         SPATIAL_URL_ESCAPED=$(printf '%s\n' "$SPATIAL_URL" | sed -e 's/[\/&]/\\&/g')
         sed -i "s/https\:\/\/spatial\.ala\.org\.au/$SPATIAL_URL_ESCAPED/" "$CONF"
 
-        echo "Downloading SDS configs..."
+        echo "Downloading SDS configs..." >&2
         for DEST in sensitive-species-data.xml sensitivity-zones.xml sensitivity-categories.xml
         do
-           curl -sL -o "/data/sds/$DEST" "$SDS_URL/$DEST"
+           curl -sL -o "/data/sds/$DEST" "$SDS_URL/$DEST" || echo "Warning: Failed to download $SDS_URL/$DEST"
         done
-        curl -sf -o /data/sds/layers.json -L "$SDS_URL/ws/layers"
 
-        echo "Downloading SDS layers..."
-        curl -sf -o /data/biocache/layers/sds-layers.tgz -L $LAYERS_URL
+        echo "Downloading SDS layers.json..." >&2
+        curl -sf -o /data/sds/layers.json -L "$SDS_URL/ws/layers" || echo "Warning: Failed to download layers.json"
 
-        echo "Extracting SDS layers..."
-        # SDS def ALA tgz is created with a MacOS tar
-        # https://github.com/yarnpkg/yarn/issues/770
-        tar --no-same-owner --warning=no-unknown-keyword -zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
+        echo "Downloading SDS layers.tgz..." >&2
+        curl -sf -o /data/biocache/layers/sds-layers.tgz -L "$LAYERS_URL" || echo "Warning: Failed to download SDS layers tgz"
+
+        if [ -f /data/biocache/layers/sds-layers.tgz ]; then
+          echo "Extracting SDS layers.tgz..." >&2
+          # SDS def ALA tgz is created with a MacOS tar
+          # https://github.com/yarnpkg/yarn/issues/770
+          tar --no-same-owner --warning=no-unknown-keyword -zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
+        else
+          echo "Warning: SDS layers tgz not found, skipping extraction"
+        fi
 
         chown -R sds-data:sds-data /opt/atlas/ala-sensitive-data-service
 
@@ -58,4 +64,4 @@ case "$1" in
     ;;
 esac
 
-echo ala-sensitive-data-service installed
+echo ala-sensitive-data-service installed >&2
