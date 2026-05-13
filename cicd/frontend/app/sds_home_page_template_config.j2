@@ -1,0 +1,36 @@
+{
+  "Parameters" : {
+    "pCleanBranch"         : "{{ clean_branch }}",
+    "pEnvironment"         : "{{ environment }}",
+    "pProductComponent"    : "{{ product_component }}",
+    "pHomePageBucketPath"  : "{{ home_page_bucket_path }}",
+    "pHomePageOldSubDomain": "{{ home_page_old_sub_domain }}",
+    "pHomePageSubDomain"   : "{{ home_page_sub_domain }}",
+    "pHostedZone"          : "{{ hosted_zone }}",
+    "pProductName"         : "{{ product_name }}",
+    "pSourceBucket"        : "{{ source_bucket }}",
+    "pXmlFileBucketName"   : "{{ xml_file_bucket_name }}",
+    "pXmlFileS3KeyPrefix"  : "{{ xml_file_s3_key_prefix }}",
+    "pXmlFilePathPattern"  : "{{ xml_file_path_pattern }}",
+    "pSslCertificate"      : "{{ ssl_certificate }}",
+    "pXmlBucketPath"       : "{{ xml_file_bucket_path }}"
+  },
+  "Tags" : {
+    "product"     : "{{ product_name }}",
+    "component"   : "{{ product_component }}",
+    "environment" : "{{ environment }}",
+    "branch"      : "{{ src_branch }}",
+    "version"     : "{{ commit_id }}",
+    "build"       : "{{ codebuild_build_number }}"
+  },
+  "StackPolicy" : {
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : "Update:*",
+        "Principal": "*",
+        "Resource" : "*"
+      }
+    ]
+  }
+}

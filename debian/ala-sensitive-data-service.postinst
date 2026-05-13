@@ -46,7 +46,7 @@ case "$1" in
         echo "Extracting SDS layers..."
         # SDS def ALA tgz is created with a MacOS tar
         # https://github.com/yarnpkg/yarn/issues/770
-        tar --warning=no-unknown-keyword -zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
+        tar --no-same-owner --warning=no-unknown-keyword -zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
 
         chown -R sds-data:sds-data /opt/atlas/ala-sensitive-data-service
 

@@ -12,7 +12,7 @@ It consists of three components. all with maven groupId `au.org.ala.sds`:
 1. Run `mvn clean install` to build your application
 1. Download a pre-built name matching index (e.g https://archives.ala.org.au/archives/nameindexes/20210811-3/namematching-20210811-3.tgz), and untar in `/data/lucene` This will create a `/data/lucene/namematching-20210811-3` directory.
 1. cd to the `server` subdirectory
-1. Start the application with `java -jar target/ala-sensitive-data-server-1.1-SNAPSHOT.jar server config.yml`
+1. Start the application with `java -jar target/ala-sensitive-data-server-1.2.jar server config.yml`
 1. To check that your application is running enter url `http://localhost:9190`
 1. Test with `http://localhost:9189/api/isSensitive?scientificName=Caladenia+actensis`. The response should look similar to:
 

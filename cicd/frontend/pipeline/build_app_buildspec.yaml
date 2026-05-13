@@ -1,0 +1,36 @@
+version: 0.2
+###
+# build the app
+env:
+  shell: bash
+
+phases:
+  install:
+    on-failure: ABORT
+    runtime-versions:
+      nodejs: $NODE_VERSION
+    commands:
+      - echo installing node http-server
+      - npm install http-server -g
+      - echo installing yarn...
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      - apt-get update && apt-get install -y yarn lsof
+      - yarn --version
+  pre_build:
+    commands:
+      - cd ala-sds-static-home
+      - echo running yarn...
+      - yarn install
+  build:
+    commands:
+      - echo building...
+      - yarn run build:$ENVIRONMENT
+      - echo deploying...
+      - aws s3 sync dist/assets s3://$SOURCE_BUCKET/$HOME_PAGE_BUCKET_PATH/assets --delete --cache-control "max-age=86400,public"
+      - aws s3 cp dist/index.html s3://$SOURCE_BUCKET/$HOME_PAGE_BUCKET_PATH/index.html --cache-control "no-cache, max-age=0, must-revalidate"
+
+artifacts:
+  base-directory: ./dist
+  files:
+    - '**/*'

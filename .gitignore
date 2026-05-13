@@ -13,3 +13,5 @@
 *.substvars
 debian/files
 debian/ala-sensitive-data-service
+ala-sds-static-home/sensitive-species-data.xml
+env.txt
