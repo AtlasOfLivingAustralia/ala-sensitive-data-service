@@ -102,7 +102,7 @@ public class SDSConfiguration {
                 ObjectMapper mapper = new ObjectMapper();
                 config.setSpatialLayers(mapper.readValue(new URL(this.layersUrl), List.class));
             } catch (Exception ex) {
-                log.error("Unable to read layer URL " + this.layers, ex);
+                log.error("Unable to read layer URL " + this.layersUrl, ex);
             }
         }
         config.setCategoriesUrl(this.categoriesUrl);

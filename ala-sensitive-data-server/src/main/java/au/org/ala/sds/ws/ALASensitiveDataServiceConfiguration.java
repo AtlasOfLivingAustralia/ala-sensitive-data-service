@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class ALASensitiveDataServiceConfiguration extends Configuration {
+    private static final String DEFAULT_SWAGGER_VERSION = "1.0";
+
     /** The swagger configuration */
     @Valid
     @NotNull
@@ -37,7 +39,12 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
         this.swagger.setContactEmail("support@ala.org.au");
         this.swagger.setResourcePackage(ConservationResource.class.getPackage().getName());
         this.swagger.setLicense("Mozilla Public Licence 1.1");
-        this.swagger.setVersion("1.2");
+        this.swagger.setVersion(resolveSwaggerVersion());
         this.swagger.getSwaggerViewConfiguration().setPageTitle("ALA Sensitive Data API");
+    }
+
+    private String resolveSwaggerVersion() {
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        return implementationVersion != null ? implementationVersion : DEFAULT_SWAGGER_VERSION;
     }
 }
