@@ -59,7 +59,7 @@ public class ALASDSServiceClientTest extends TestUtils {
         String response = this.getResource("response-is-1.json");
 
         server.enqueue(new MockResponse().setBody(response));
-        SpeciesCheck check = SpeciesCheck.builder().scientificName("Acacia dealbata").build();
+        SpeciesCheck check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51286863").build();
         Boolean sensitive = client.isSensitive(check);
 
         assertNotNull(sensitive);
@@ -80,7 +80,6 @@ public class ALASDSServiceClientTest extends TestUtils {
 
         server.enqueue(new MockResponse().setBody(response));
         SpeciesCheck check = SpeciesCheck.builder()
-            .scientificName("Varanus semiremex")
             .taxonId("urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739")
             .build();
         Boolean sensitive = client.isSensitive(check);
@@ -96,13 +95,21 @@ public class ALASDSServiceClientTest extends TestUtils {
 
 
     /** Sensitive check */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testIsSensitiveParams1() throws Exception {
+        client.isSensitive(
+            "Varanus semiremex",
+            "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739"
+        );
+    }
+
+    @Test
+    public void testIsSensitiveParams2() throws Exception {
         String response = this.getResource("response-is-2.json");
 
         server.enqueue(new MockResponse().setBody(response));
         Boolean sensitive = client.isSensitive(
-            "Varanus semiremex",
+            null,
             "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739"
         );
         assertNotNull(sensitive);
@@ -110,7 +117,7 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertEquals(1, server.getRequestCount());
         RecordedRequest req = server.takeRequest();
         assertEquals("GET", req.getMethod());
-        assertEquals("/api/isSensitive?scientificName=Varanus%20semiremex&taxonId=urn%3Alsid%3Abiodiversity.org.au%3Aafd.taxon%3A81244b7e-7145-42fe-b28c-3d672310e739", req.getPath());
+        assertEquals("/api/isSensitive?taxonId=urn%3Alsid%3Abiodiversity.org.au%3Aafd.taxon%3A81244b7e-7145-42fe-b28c-3d672310e739", req.getPath());
     }
 
     @Test
@@ -120,7 +127,6 @@ public class ALASDSServiceClientTest extends TestUtils {
 
         server.enqueue(new MockResponse().setBody(response));
         SensitivityQuery query = SensitivityQuery.builder()
-            .scientificName("Varanus semiremex")
             .taxonId("urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739")
             .stateProvince("Queensland")
             .country("Australia")
@@ -158,14 +164,26 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertEquals(request, req.getBody().readUtf8());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testReport2() throws Exception {
+        client.report(
+            "Varanus semiremex",
+            "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739",
+            "dr6567",
+            "Queensland",
+            "Australia",
+            Arrays.asList("FFEZ")
+        );
+    }
+
+    @Test
+    public void testReport3() throws Exception {
         String response = this.getResource("response-r-1.json");
         Map<String, String> properties = new HashMap<>();
 
         server.enqueue(new MockResponse().setBody(response));
         SensitivityReport report = client.report(
-            "Varanus semiremex",
+            null,
             "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739",
             "dr6567",
             "Queensland",
@@ -218,7 +236,6 @@ public class ALASDSServiceClientTest extends TestUtils {
         properties.put("eventDate", "2020-01-02");
         server.enqueue(new MockResponse().setBody(response));
         ProcessQuery query = ProcessQuery.builder()
-            .scientificName("Varanus semiremex")
             .taxonId("urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739")
             .properties(properties)
             .build();

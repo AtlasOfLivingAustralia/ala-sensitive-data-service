@@ -11,6 +11,8 @@ public class SDSConfigurationTest {
     @Test
     public void testConfig1() throws Exception {
         SDSConfiguration configuration = new SDSConfiguration();
+        String layersUrl = this.getClass().getResource("/layers-1.json").toExternalForm();
+        configuration.setLayersUrl(layersUrl);
         configuration.configureSds();
         Configuration config = Configuration.getInstance();
         assertEquals("https://sds.ala.org.au/sensitive-species-data.xml", config.getSpeciesUrl());
@@ -18,7 +20,6 @@ public class SDSConfigurationTest {
         assertEquals("https://sds.ala.org.au/sensitivity-zones.xml", config.getZoneUrl());
         assertNotNull(config.getGeospatialLayers());
         assertFalse(config.getGeospatialLayers().isEmpty());
-        assertTrue(config.getGeospatialLayers().contains("cl22"));
     }
 
     @Test

@@ -65,11 +65,11 @@ public class ConservationResourceTest {
         // Acacia dealbata -> https://id.biodiversity.org.au/taxon/apni/51286863
         check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51286863").build();
         assertFalse(resource.isSensitive(check));
-        // Caesia talingka -> https://id.biodiversity.org.au/taxon/apni/51433010
-        check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51433010").build();
+        // Caesia talingka -> https://id.biodiversity.org.au/name/apni/50620826
+        check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/name/apni/50620826").build();
         assertTrue(resource.isSensitive(check));
-        // Caesia sp. Koolanooka Hills -> ALA_Caesia_sp_Koolanooka_Hills_R_Meissner_Y_Caruso_78
-        check = SpeciesCheck.builder().taxonId("ALA_Caesia_sp_Koolanooka_Hills_R_Meissner_Y_Caruso_78").build();
+        // Caesia sp. Koolanooka Hills -> ALA_DR2201_2911
+        check = SpeciesCheck.builder().taxonId("ALA_DR2201_2911").build();
         assertTrue(resource.isSensitive(check));
     }
 
@@ -78,9 +78,9 @@ public class ConservationResourceTest {
         SpeciesCheck check;
         check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51286863").build();
         assertFalse(resource.isSensitive(check));
-        check = SpeciesCheck.builder().taxonId("http://id.biodiversity.org.au/node/apni/2914477").build();
+        check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/node/apni/2914477").build();
         assertTrue(resource.isSensitive(check));
-        check = SpeciesCheck.builder().taxonId("ALA_Caesia_sp_Koolanooka_Hills_R_Meissner_Y_Caruso_78").build();
+        check = SpeciesCheck.builder().taxonId("ALA_DR2201_2911").build();
         assertTrue(resource.isSensitive(check));
         check = SpeciesCheck.builder().taxonId("Some random junk").build();
         assertFalse(resource.isSensitive(check));
@@ -89,7 +89,7 @@ public class ConservationResourceTest {
     @Test
     public void testIsSensitive1() throws Exception {
         assertFalse(resource.isSensitive(null, "https://id.biodiversity.org.au/taxon/apni/51286863"));
-        assertTrue(resource.isSensitive(null, "http://id.biodiversity.org.au/node/apni/2914477"));
+        assertTrue(resource.isSensitive(null, "https://id.biodiversity.org.au/node/apni/2914477"));
     }
 
 
@@ -219,7 +219,7 @@ public class ConservationResourceTest {
     // Test for multiple instances
     @Test
     public void testReport6() throws Exception {
-        SensitivityReport report = resource.report(null, "urn:lsid:biodiversity.org.au:afd.taxon:56514a28-86db-4296-be0f-5f96f46e07c4", "dr1411", "Victoria", "Australia", null);
+        SensitivityReport report = resource.report(null, "https://biodiversity.org.au/afd/taxa/6c646af8-06fb-40ae-83aa-3dd001cc4ea6", "dr1411", "Victoria", "Australia", null);
         assertNotNull(report);
         assertTrue(report.isValid());
         assertTrue(report.isSensitive());
@@ -272,7 +272,7 @@ public class ConservationResourceTest {
         properties.put(DwcTerm.decimalLatitude.qualifiedName(), "-33.757122");
         properties.put(DwcTerm.decimalLongitude.qualifiedName(), "121.9266423");
         properties.put(DwcTerm.eventDate.qualifiedName(), "2020-08-14");
-        ProcessQuery query = ProcessQuery.builder().taxonId("http://id.biodiversity.org.au/node/apni/2914499").properties(properties).build();
+        ProcessQuery query = ProcessQuery.builder().taxonId("https://id.biodiversity.org.au/node/apni/2914499").properties(properties).build();
         SensitivityReport report = resource.process(query);
         assertNotNull(report);
         assertTrue(report.isValid());
@@ -309,7 +309,7 @@ public class ConservationResourceTest {
         properties.put(FactCollection.DECIMAL_LATITUDE_KEY, "-27.327739");
         properties.put(FactCollection.DECIMAL_LONGITUDE_KEY, "152.527914");
         properties.put(FactCollection.EVENT_DATE_KEY, "1990-04-12");
-        ProcessQuery query = ProcessQuery.builder().taxonId("urn:lsid:biodiversity.org.au:afd.taxon:8002722e-d0f8-4de2-af61-5cba07d44cd2").properties(properties).build();
+        ProcessQuery query = ProcessQuery.builder().taxonId("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7").properties(properties).build();
         SensitivityReport report = resource.process(query);
         assertNotNull(report);
         assertTrue(report.isValid());
@@ -349,7 +349,7 @@ public class ConservationResourceTest {
         properties.put(FactCollection.DECIMAL_LATITUDE_KEY, "-26.453510");
         properties.put(FactCollection.DECIMAL_LONGITUDE_KEY, "114.653393");
         properties.put(FactCollection.EVENT_DATE_KEY, "1990-04-12");
-        ProcessQuery query = ProcessQuery.builder().taxonId("urn:lsid:biodiversity.org.au:afd.taxon:8002722e-d0f8-4de2-af61-5cba07d44cd2").properties(properties).build();
+        ProcessQuery query = ProcessQuery.builder().taxonId("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7").properties(properties).build();
         SensitivityReport report = resource.process(query);
         assertNotNull(report);
         assertTrue(report.isValid());

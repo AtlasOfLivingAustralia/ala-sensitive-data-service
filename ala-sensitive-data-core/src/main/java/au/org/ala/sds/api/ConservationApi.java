@@ -46,6 +46,15 @@ public interface ConservationApi {
     /**
      * Provide a sensitivity report based on taxon and zone.
      *
+     * @param query The query parameters.
+     *
+     * @return A sensitivity report
+     */
+    public SensitivityReport report(SensitivityQuery query);
+
+    /**
+     * Provide a sensitivity report based on taxon and zone.
+     *
      * @param scientificName The taxon scientific name (DEPRECATED - use taxonId)
      * @param taxonId The taxon identifier
      * @param dataResourceUid The source data resource for the occurrecne record

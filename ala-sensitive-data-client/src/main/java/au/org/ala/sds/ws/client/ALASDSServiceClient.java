@@ -82,7 +82,7 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
      */
     @Override
     public boolean isSensitive(@Deprecated String scientificName, String taxonId) {
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(scientificName)) {
+        if (scientificName != null && !scientificName.trim().isEmpty()) {
             throw new IllegalArgumentException("The scientificName parameter has been removed. Please use the taxonId parameter instead.");
         }
         return this.call(this.alaSdsService.isSensitive(taxonId));
@@ -112,7 +112,7 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
      */
     @Override
     public SensitivityReport report(@Deprecated String scientificName, String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(scientificName)) {
+        if (scientificName != null && !scientificName.trim().isEmpty()) {
             throw new IllegalArgumentException("The scientificName parameter has been removed. Please use the taxonId parameter instead.");
         }
         return this.call(this.alaSdsService.report(taxonId, dataResourceUid, stateProvince, country, zones));
