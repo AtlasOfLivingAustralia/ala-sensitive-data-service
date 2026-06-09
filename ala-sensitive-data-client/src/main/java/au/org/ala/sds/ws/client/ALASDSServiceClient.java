@@ -76,11 +76,15 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
     /**
      * Test to see whether a taxon is potentially sensitive
      *
+     * @param scientificName The scientific name (DEPRECATED)
      * @param taxonId        The taxon identifier
      * @return True if this species is sensitive in some location
      */
     @Override
-    public boolean isSensitive(String taxonId) {
+    public boolean isSensitive(@Deprecated String scientificName, String taxonId) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(scientificName)) {
+            throw new IllegalArgumentException("The scientificName parameter has been removed. Please use the taxonId parameter instead.");
+        }
         return this.call(this.alaSdsService.isSensitive(taxonId));
     }
 
@@ -100,13 +104,17 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
     /**
      * Provide a sensitivty report for an occurrence.
      *
+     * @param scientificName The scientific name (DEPRECATED)
      * @param taxonId        The taxon identifier
      * @param dataResourceUid The source data resource
      * @param zones          The occurrence record zones
      * @return A sensitivitiy report
      */
     @Override
-    public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
+    public SensitivityReport report(@Deprecated String scientificName, String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(scientificName)) {
+            throw new IllegalArgumentException("The scientificName parameter has been removed. Please use the taxonId parameter instead.");
+        }
         return this.call(this.alaSdsService.report(taxonId, dataResourceUid, stateProvince, country, zones));
     }
 

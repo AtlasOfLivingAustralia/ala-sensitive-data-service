@@ -36,15 +36,17 @@ public interface ConservationApi {
     /**
      * Test to see whether a taxon is potentially sensitive
      *
+     * @param scientificName The scientific name (DEPRECATED - use taxonId)
      * @param taxonId The taxon identifier
      *
      * @return True if this species is sensitive in some location
      */
-    public boolean isSensitive(String taxonId);
+    public boolean isSensitive(@Deprecated String scientificName, String taxonId);
 
     /**
      * Provide a sensitivity report based on taxon and zone.
      *
+     * @param scientificName The taxon scientific name (DEPRECATED - use taxonId)
      * @param taxonId The taxon identifier
      * @param dataResourceUid The source data resource for the occurrecne record
      * @param stateProvince The state/province identifier
@@ -53,7 +55,7 @@ public interface ConservationApi {
      *
      * @return A report giving the sensitivity status for that taxon/area
      */
-    public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones);
+    public SensitivityReport report(@Deprecated String scientificName, String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones);
 
     /**
      * Process an occurrence record and supply modified values.
