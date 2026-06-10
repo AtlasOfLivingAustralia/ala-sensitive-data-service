@@ -209,9 +209,12 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @POST
     @Timed
     @Path("/isSensitive")
-    public boolean isSensitive(SpeciesCheck check) {
-        validateScientificNameRemoved(check.getScientificName());
-        validateTaxonIdRequired(check.getTaxonId());
+public boolean isSensitive(SpeciesCheck check) {
+    if (check == null) {
+        throw new BadRequestException("Request body is required.");
+    }
+    validateScientificNameRemoved(check.getScientificName());
+    validateTaxonIdRequired(check.getTaxonId());
         try {
             return this.isSensitiveCache.get(check);
         } catch (Exception e){
@@ -254,10 +257,13 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     )
     @POST
     @Path("/report")
-    public SensitivityReport report(SensitivityQuery query) {
-        validateScientificNameRemoved(query.getScientificName());
-        validateTaxonIdRequired(query.getTaxonId());
-        return this.report(
+public SensitivityReport report(SensitivityQuery query) {
+    if (query == null) {
+        throw new BadRequestException("Request body is required.");
+    }
+    validateScientificNameRemoved(query.getScientificName());
+    validateTaxonIdRequired(query.getTaxonId());
+    return this.report(
             query.getScientificName(),
             query.getTaxonId(),
             query.getDataResourceUid(),
@@ -309,10 +315,13 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     )
     @POST
     @Path("/process")
-    public SensitivityReport process(ProcessQuery query) {
-        validateScientificNameRemoved(query.getScientificName());
-        validateTaxonIdRequired(query.getTaxonId());
-        Map<String, String> properties = new HashMap<>(query.getProperties());
+public SensitivityReport process(ProcessQuery query) {
+    if (query == null) {
+        throw new BadRequestException("Request body is required.");
+    }
+    validateScientificNameRemoved(query.getScientificName());
+    validateTaxonIdRequired(query.getTaxonId());
+    Map<String, String> properties = new HashMap<>(query.getProperties());
         // Ensure key facts are present in the way expected
         for (String fact: FactCollection.FACT_NAMES) {
             if (properties.containsKey(fact))
