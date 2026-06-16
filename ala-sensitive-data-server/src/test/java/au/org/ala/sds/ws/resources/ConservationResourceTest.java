@@ -4,12 +4,9 @@ import au.org.ala.sds.api.*;
 import au.org.ala.sds.generalise.Generalisation;
 import au.org.ala.sds.generalise.RetainGeneralisation;
 import au.org.ala.sds.validation.FactCollection;
-import au.org.ala.sds.ws.ALASensitiveDataServiceApplication;
-import au.org.ala.sds.ws.ALASensitiveDataServiceConfiguration;
 import au.org.ala.sds.ws.core.SDSConfiguration;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.gbif.dwc.terms.DwcTerm;
 import org.junit.*;
 import org.slf4j.LoggerFactory;
@@ -21,13 +18,6 @@ import static org.junit.Assert.*;
 public class ConservationResourceTest {
     private static SDSConfiguration configuration;
     private static ConservationResource resource;
-
-    @ClassRule
-    public static final DropwizardAppRule<ALASensitiveDataServiceConfiguration> APP =
-        new DropwizardAppRule<ALASensitiveDataServiceConfiguration>(
-            ALASensitiveDataServiceApplication.class,
-            "config.yml"
-        );
 
     // It takes a while to build the SDS
     @BeforeClass
@@ -430,8 +420,7 @@ public class ConservationResourceTest {
     @Test
     public void testValidationScientificNameRejected() throws Exception {
         // Skip these tests if the scientific name exclusion is not enforced, as the parameter will still be accepted (but ignored)
-        ALASensitiveDataServiceConfiguration config = APP.getConfiguration();
-        Assume.assumeTrue(config.getConservation().isEnforceScientificNameExclusion());
+        Assume.assumeTrue(configuration.isEnforceScientificNameExclusion());
     
         try {
             resource.isSensitive("Eucalyptus", "taxon1");
