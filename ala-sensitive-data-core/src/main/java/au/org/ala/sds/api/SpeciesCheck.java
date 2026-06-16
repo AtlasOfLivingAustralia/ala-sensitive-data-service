@@ -24,29 +24,27 @@ public class SpeciesCheck {
     // The scientificName parameter has been removed. Please use the taxonId parameter instead.
     // Retained temporarily to return a 400 Bad Request error if a client sends it.
     @ApiModelProperty(
-        value = "The scientific name",
-        hidden = true,
-        example = "Eucalyptus rossii",
-        notes = "The scientificName parameter has been removed. Please use the taxonId parameter instead.",
+        value = "The scientific name - DEPRECATED. Use `taxonId`, which is a required field.",
         extensions = {
-           @Extension(
-               name = "x-reference",
-               properties = {
-                   @ExtensionProperty(
-                       name = "uri",
-                       value = "http://rs.tdwg.org/dwc/terms/scientificName"
-                   )
-               }
-           )
+            @Extension(
+                name = "x-reference",
+                properties = {
+                    @ExtensionProperty(
+                        name = "uri",
+                        value = "http://rs.tdwg.org/dwc/terms/scientificName"
+                    )
+                }
+            )
         }
     )
-    @JsonProperty
     @Deprecated
+    @JsonProperty
     private String scientificName;
+
     @ApiModelProperty(
-        value = "The taxon identifier",
+        value = "The taxon identifier (required)",
         required = true,
-        example = "https://id.biodiversity.org.au/node/apni/2900822",
+        example = "https://id.biodiversity.org.au/node/apni/2899640",
         extensions = {
             @Extension(
                 name = "x-reference" ,

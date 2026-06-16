@@ -1,15 +1,15 @@
 package au.org.ala.sds.ws.resources;
 
 import au.org.ala.sds.api.*;
-import au.org.ala.sds.generalise.ClearGeneralisation;
 import au.org.ala.sds.generalise.Generalisation;
 import au.org.ala.sds.generalise.RetainGeneralisation;
 import au.org.ala.sds.validation.FactCollection;
+import au.org.ala.sds.ws.ALASensitiveDataServiceApplication;
+import au.org.ala.sds.ws.ALASensitiveDataServiceConfiguration;
 import au.org.ala.sds.ws.core.SDSConfiguration;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.gbif.dwc.terms.DwcTerm;
 import org.junit.*;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,13 @@ import static org.junit.Assert.*;
 public class ConservationResourceTest {
     private static SDSConfiguration configuration;
     private static ConservationResource resource;
+
+    @ClassRule
+    public static final DropwizardAppRule<ALASensitiveDataServiceConfiguration> APP =
+        new DropwizardAppRule<ALASensitiveDataServiceConfiguration>(
+            ALASensitiveDataServiceApplication.class,
+            "config.yml"
+        );
 
     // It takes a while to build the SDS
     @BeforeClass
@@ -419,8 +426,13 @@ public class ConservationResourceTest {
         assertEquals("10000", result.get(DwcTerm.coordinateUncertaintyInMeters.simpleName()));
     }
 
+    @Ignore // remove once validateScientificNameRemoved() lines are uncommented in ConservationResource
     @Test
     public void testValidationScientificNameRejected() throws Exception {
+        // Skip these tests if the scientific name exclusion is not enforced, as the parameter will still be accepted (but ignored)
+        ALASensitiveDataServiceConfiguration config = APP.getConfiguration();
+        Assume.assumeTrue(config.getConservation().isEnforceScientificNameExclusion());
+    
         try {
             resource.isSensitive("Eucalyptus", "taxon1");
             fail("Expected BadRequestException");

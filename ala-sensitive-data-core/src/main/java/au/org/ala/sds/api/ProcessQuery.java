@@ -2,11 +2,8 @@ package au.org.ala.sds.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.Extension;
-import io.swagger.annotations.ExtensionProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -25,10 +22,17 @@ import java.util.Map;
         "The result from the query may choose to process the values to meet the sensitivity rules."
 )
 public class ProcessQuery extends SensitivityQuery {
+    // Note the examples don't work due to the swagger 2.0 implementation, so we hide them.
     @ApiModelProperty(
-        value = "The occurrence record properties"
+        value = "The occurrence record properties",
+        notes = "Key/value properties using Darwin Core terms or other relevant terms. " +
+                "Example: {\"decimalLatitude\": \"-25.345\", \"decimalLongitude\": \"135.456\"}",
+        hidden = true
     )
     @JsonProperty
     private Map<String, String> properties;
 
+    @ApiModelProperty(hidden = true)
+    @JsonProperty
+    private List<String> zones;
 }

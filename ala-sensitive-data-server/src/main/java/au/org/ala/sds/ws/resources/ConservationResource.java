@@ -32,7 +32,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * TODO add diagnostics to payload - similar to GBIF
+ * Conservation API resources. This is the main entry point for the SDS service, 
+ * providing endpoints to check if a taxon is sensitive, get a sensitivity report 
+ * and process occurrence details.
+ * 
+ * TODO: add diagnostics to payload - similar to GBIF
  */
 @Api(
     value = "Conservation status management"
@@ -118,6 +122,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     private Set<Term> requestTerms;
     /** The URL of the name matching service */
     private String nameMatchingServiceUrl;
+    /** Flag to exclude scientific name parameter */
+    private boolean enforceScientificNameExclusion;
 
     //Cache2k instance
     private final Cache<SpeciesCheck, Boolean> isSensitiveCache;
@@ -128,6 +134,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             this.searcher = new ALANameSearcher(configuration.getIndex());
             this.finder = SensitiveSpeciesFinderFactory.getSensitiveSpeciesFinder(configuration.getSpeciesUrl(), this.searcher, true);
             this.sds = new SensitiveDataService();
+            this.enforceScientificNameExclusion = configuration.isEnforceScientificNameExclusion();
             this.translator = new ApiTranslator(false);
             this.generalisations = configuration.getGeneralisations();
             this.nameMatchingServiceUrl = configuration.getNameMatchingServiceUrl();
@@ -144,7 +151,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             throw new RuntimeException("Unable to initialise searcher: " + e.getMessage(), e);
         }
         this.requestTerms = this.buildRequestTerms();
-     }
+    }
 
     /**
      * Build the list of terms that might be needed.
@@ -152,19 +159,19 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
      * @return A set of terms that get used somewhere
      */
     protected Set<Term> buildRequestTerms() {
-         TermFactory factory = TermFactory.instance();
-         Set<Term> fields = new HashSet<>();
-         Configuration config = Configuration.getInstance();
-         for (String flag: config.getFlagRules().split(",")) {
-             fields.add(factory.findTerm(flag));
-         }
-         for (Generalisation generalisation: this.generalisations)
-             fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
-         for (String fact: FactCollection.FACT_NAMES) {
-             fields.add(factory.findTerm(fact));
-         }
-         return fields;
-     }
+        TermFactory factory = TermFactory.instance();
+        Set<Term> fields = new HashSet<>();
+        Configuration config = Configuration.getInstance();
+        for (String flag: config.getFlagRules().split(",")) {
+            fields.add(factory.findTerm(flag));
+        }
+        for (Generalisation generalisation: this.generalisations)
+            fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
+        for (String fact: FactCollection.FACT_NAMES) {
+            fields.add(factory.findTerm(fact));
+        }
+        return fields;
+    }
 
     /**
      * Make sure that the system is still operating.
@@ -209,12 +216,14 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @POST
     @Timed
     @Path("/isSensitive")
-public boolean isSensitive(SpeciesCheck check) {
-    if (check == null) {
-        throw new BadRequestException("Request body is required.");
-    }
-    validateScientificNameRemoved(check.getScientificName());
-    validateTaxonIdRequired(check.getTaxonId());
+    public boolean isSensitive(SpeciesCheck check) {
+        if (check == null) {
+            throw new BadRequestException("Request body is required.");
+        }
+        if (this.enforceScientificNameExclusion) {
+            validateScientificNameRemoved(check.getScientificName());
+        }
+        validateTaxonIdRequired(check.getTaxonId());
         try {
             return this.isSensitiveCache.get(check);
         } catch (Exception e){
@@ -231,10 +240,12 @@ public boolean isSensitive(SpeciesCheck check) {
     @Timed
     @Path("/isSensitive")
     public boolean isSensitive(
-        @QueryParam("scientificName") String scientificName,
+        @ApiParam(hidden = true) @QueryParam("scientificName") String scientificName,
         @ApiParam(value = "The taxonomic identifier for the taxon", required = true) @QueryParam("taxonId") String taxonId
     ) {
-        validateScientificNameRemoved(scientificName);
+        if (this.enforceScientificNameExclusion) {
+            validateScientificNameRemoved(scientificName);
+        }
         validateTaxonIdRequired(taxonId);
         SpeciesCheck check = SpeciesCheck.builder().taxonId(taxonId).build();
         return this.isSensitive(check);
@@ -257,13 +268,15 @@ public boolean isSensitive(SpeciesCheck check) {
     )
     @POST
     @Path("/report")
-public SensitivityReport report(SensitivityQuery query) {
-    if (query == null) {
-        throw new BadRequestException("Request body is required.");
-    }
-    validateScientificNameRemoved(query.getScientificName());
-    validateTaxonIdRequired(query.getTaxonId());
-    return this.report(
+    public SensitivityReport report(SensitivityQuery query) {
+        if (query == null) {
+            throw new BadRequestException("Request body is required.");
+        }
+        if (this.enforceScientificNameExclusion) {
+            validateScientificNameRemoved(query.getScientificName());
+        }
+        validateTaxonIdRequired(query.getTaxonId());
+        return this.report(
             query.getScientificName(),
             query.getTaxonId(),
             query.getDataResourceUid(),
@@ -280,13 +293,15 @@ public SensitivityReport report(SensitivityQuery query) {
     @GET
     @Path("/report")
     public SensitivityReport report(
-        @QueryParam("scientificName") String scientificName,
+        @ApiParam(hidden = true) @QueryParam("scientificName") String scientificName,
         @ApiParam(value = "The taxon identifier", required = true, example = "https://id.biodiversity.org.au/node/apni/2914286") @QueryParam("taxonId")String taxonId,
         @ApiParam(value = "The source data resource identifier", example = "dr1654") @QueryParam("dataResourceUid")String dataResourceUid,
         @ApiParam(value = "The state or province zone identifier", example = "NSW") @QueryParam("stateProvince") String stateProvince,
         @ApiParam(value = "The country zone identifier", example = "AUS") @QueryParam("country") String country,
         @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones) {
-        validateScientificNameRemoved(scientificName);
+        if (this.enforceScientificNameExclusion) {
+            validateScientificNameRemoved(scientificName);
+        }
         validateTaxonIdRequired(taxonId);
         Map<String, String> properties = new HashMap<>();
         properties.put("samplesProvided", "yes");
@@ -315,13 +330,17 @@ public SensitivityReport report(SensitivityQuery query) {
     )
     @POST
     @Path("/process")
-public SensitivityReport process(ProcessQuery query) {
-    if (query == null) {
-        throw new BadRequestException("Request body is required.");
-    }
-    validateScientificNameRemoved(query.getScientificName());
-    validateTaxonIdRequired(query.getTaxonId());
-    Map<String, String> properties = new HashMap<>(query.getProperties());
+    public SensitivityReport process(ProcessQuery query) {
+        if (query == null) {
+            throw new BadRequestException("Request body is required.");
+        }
+        if (this.enforceScientificNameExclusion) {
+            validateScientificNameRemoved(query.getScientificName());
+        }
+        validateTaxonIdRequired(query.getTaxonId());
+        Map<String, String> properties = new HashMap<>(
+            query.getProperties() != null ? query.getProperties() : Collections.emptyMap()
+        );
         // Ensure key facts are present in the way expected
         for (String fact: FactCollection.FACT_NAMES) {
             if (properties.containsKey(fact))
@@ -338,7 +357,7 @@ public SensitivityReport process(ProcessQuery query) {
         ValidationOutcome outcome = this.sds.testMapDetails(
             this.finder,
             properties,
-            query.getScientificName(),
+            this.enforceScientificNameExclusion ? null : query.getScientificName(),
             query.getTaxonId()
         );
         this.amendOutcome(query, outcome);

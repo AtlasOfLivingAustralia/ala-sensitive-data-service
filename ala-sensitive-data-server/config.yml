@@ -114,3 +114,4 @@ conservation:
       field: dwc:infraspecificEpithet
     - action: retain
       field: intraspecificEpithet
+  enforceScientificNameExclusion: false

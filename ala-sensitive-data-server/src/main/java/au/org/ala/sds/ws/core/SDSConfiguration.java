@@ -14,9 +14,7 @@ import org.gbif.dwc.terms.TermFactory;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Configuration for name search operations.
@@ -55,6 +53,9 @@ public class SDSConfiguration {
     /** The URL of the name matching service */
     @JsonProperty
     private String nameMatchingServiceUrl = "https://namematching-ws.ala.org.au/swagger";
+    /** Flag to exclude scientific name parameter */
+    @JsonProperty
+    private boolean enforceScientificNameExclusion = false;
     /** The cache configuration */
     @JsonProperty
     private CacheConfiguration cache = new CacheConfiguration();

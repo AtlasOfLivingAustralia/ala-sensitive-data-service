@@ -2,7 +2,6 @@ package au.org.ala.sds.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.Extension;
@@ -12,7 +11,6 @@ import lombok.experimental.NonFinal;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Value
@@ -23,14 +21,13 @@ import java.util.Map;
 @ApiModel(
     description = "The basic information needed to process an occurrence record, including taxon, broad location and source. "
 )
+@Data
 public class SensitivityQuery {
-    // The scientificName parameter has been removed. Please use the taxonId parameter instead.
+    // The scientificName parameter has been deprecated. Please use the taxonId parameter instead.
     // Retained temporarily to return a 400 Bad Request error if a client sends it.
+
     @ApiModelProperty(
-        value = "The scientific name",
-        hidden = true,
-        example = "Eucalyptus rossii",
-        notes = "The scientificName parameter has been removed. Please use the taxonId parameter instead.",
+        value = "The scientific name - DEPRECATED. Use taxonId, which is a required field.",
         extensions = {
             @Extension(
                 name = "x-reference",
@@ -43,12 +40,12 @@ public class SensitivityQuery {
             )
         }
     )
-    @JsonProperty
     @Deprecated
+    @JsonProperty
     private String scientificName;
 
     @ApiModelProperty(
-        value = "The taxon identifier",
+        value = "The taxon identifier (required)",
         required = true,
         example = "https://id.biodiversity.org.au/node/apni/2900822",
         extensions = {
@@ -125,8 +122,10 @@ public class SensitivityQuery {
     @ApiModelProperty(
         value = "The zone identifiers that cover the occurrence record location",
         notes = "State/province and country are supplied separately. Corresponds to the identifiers provided in the zones list",
-        example = "FFEZ"
+        example = "FFEZ",
+        hidden = true
     )
     @JsonProperty
     private List<String> zones;
+
 }
