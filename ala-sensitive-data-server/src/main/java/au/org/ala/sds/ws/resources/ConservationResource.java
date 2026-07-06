@@ -213,11 +213,21 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         validateScientificNameRemoved(check.getScientificName());
         validateTaxonIdRequired(check.getTaxonId());
         try {
-            return this.isSensitiveCache.get(check);
+            SpeciesCheck normalized = SpeciesCheck.builder()
+                .scientificName(check.getScientificName())
+                .taxonId(normalizeTaxonId(check.getTaxonId()))
+                .build();
+            return this.isSensitiveCache.get(normalized);
         } catch (Exception e){
             log.warn("Problem cheking species : " + e.getMessage() + " with specices: " + check);
             throw e;
         }
+    }
+
+    @Override
+    public boolean isSensitive(String taxonId) {
+        validateTaxonIdRequired(taxonId);
+        return this.isSensitive(SpeciesCheck.builder().taxonId(normalizeTaxonId(taxonId)).build());
     }
 
     @ApiOperation(
@@ -233,7 +243,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     ) {
         validateScientificNameRemoved(scientificName);
         validateTaxonIdRequired(taxonId);
-        SpeciesCheck check = SpeciesCheck.builder().taxonId(taxonId).build();
+        SpeciesCheck check = SpeciesCheck.builder().taxonId(normalizeTaxonId(taxonId)).build();
         return this.isSensitive(check);
     }
 
@@ -258,13 +268,17 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         validateScientificNameRemoved(query.getScientificName());
         validateTaxonIdRequired(query.getTaxonId());
         return this.report(
-            query.getScientificName(),
             query.getTaxonId(),
             query.getDataResourceUid(),
             query.getStateProvince(),
             query.getCountry(),
             query.getZones()
         );
+    }
+
+    @Override
+    public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
+        return this.report(null, normalizeTaxonId(taxonId), dataResourceUid, stateProvince, country, zones);
     }
 
     @ApiOperation(
@@ -282,6 +296,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones) {
         validateScientificNameRemoved(scientificName);
         validateTaxonIdRequired(taxonId);
+        taxonId = normalizeTaxonId(taxonId);
         Map<String, String> properties = new HashMap<>();
         properties.put("samplesProvided", "yes");
         if (dataResourceUid != null && !dataResourceUid.isEmpty())
@@ -330,7 +345,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             this.finder,
             properties,
             query.getScientificName(),
-            query.getTaxonId()
+            normalizeTaxonId(query.getTaxonId())
         );
         this.amendOutcome(query, outcome);
         SensitivityReport report = this.translator.buildSensitivityReport(outcome, false);
@@ -357,6 +372,13 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         if (StringUtils.isBlank(taxonId)) {
             throw new BadRequestException("The taxonId parameter is required.");
         }
+    }
+
+    private String normalizeTaxonId(String taxonId) {
+        if (StringUtils.startsWith(taxonId, "http://id.biodiversity.org.au/") || StringUtils.startsWith(taxonId, "http://biodiversity.org.au/")) {
+            return "https://" + taxonId.substring("http://".length());
+        }
+        return taxonId;
     }
 
     /**
