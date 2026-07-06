@@ -348,7 +348,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     }
 
     private void validateScientificNameRemoved(String scientificName) {
-        if (StringUtils.isNotBlank(scientificName)) {
+        if (StringUtils.isNotEmpty(scientificName)) {
             throw new BadRequestException("The scientificName parameter has been removed. Please use the taxonId parameter instead. To obtain a taxonId for a given scientific name, use the ALA Name Matching API: " + this.nameMatchingServiceUrl);
         }
     }
