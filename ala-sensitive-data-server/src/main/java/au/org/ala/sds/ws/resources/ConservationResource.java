@@ -103,7 +103,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         DwcTerm.infraspecificEpithet,
         TermFactory.instance().findTerm("intraspecificEpithet") // Misspelling
     ));
-    
+
     /** Name searcher */
     private final ALANameSearcher searcher;
     /** Find sensitive species */
@@ -116,6 +116,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     private List<Generalisation> generalisations;
     /** The list of terms to request */
     private Set<Term> requestTerms;
+    /** The URL of the name matching service */
+    private String nameMatchingServiceUrl;
 
     //Cache2k instance
     private final Cache<SpeciesCheck, Boolean> isSensitiveCache;
@@ -128,6 +130,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             this.sds = new SensitiveDataService();
             this.translator = new ApiTranslator(false);
             this.generalisations = configuration.getGeneralisations();
+            this.nameMatchingServiceUrl = configuration.getNameMatchingServiceUrl();
             this.isSensitiveCache = configuration.getCache().builder(SpeciesCheck.class, Boolean.class)
                     .loader(new CacheLoader<SpeciesCheck, Boolean>() {
                         @Override
@@ -141,7 +144,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             throw new RuntimeException("Unable to initialise searcher: " + e.getMessage(), e);
         }
         this.requestTerms = this.buildRequestTerms();
-     }
+    }
 
     /**
      * Build the list of terms that might be needed.
@@ -149,19 +152,19 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
      * @return A set of terms that get used somewhere
      */
     protected Set<Term> buildRequestTerms() {
-         TermFactory factory = TermFactory.instance();
-         Set<Term> fields = new HashSet<>();
-         Configuration config = Configuration.getInstance();
-         for (String flag: config.getFlagRules().split(",")) {
-             fields.add(factory.findTerm(flag));
-         }
-         for (Generalisation generalisation: this.generalisations)
-             fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
-         for (String fact: FactCollection.FACT_NAMES) {
-             fields.add(factory.findTerm(fact));
-         }
-         return fields;
-     }
+        TermFactory factory = TermFactory.instance();
+        Set<Term> fields = new HashSet<>();
+        Configuration config = Configuration.getInstance();
+        for (String flag: config.getFlagRules().split(",")) {
+            fields.add(factory.findTerm(flag));
+        }
+        for (Generalisation generalisation: this.generalisations)
+            fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
+        for (String fact: FactCollection.FACT_NAMES) {
+            fields.add(factory.findTerm(fact));
+        }
+        return fields;
+    }
 
     /**
      * Make sure that the system is still operating.
@@ -200,35 +203,46 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     }
 
     @ApiOperation(
-            value = "Check to see if a species is potentially sensitive",
-            notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
-                    "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive."
+        value = "Check to see if a species is potentially sensitive",
+        notes = "Note: The scientificName parameter has been removed. Please use the taxonId parameter. To obtain a taxonId for a given scientific name, use the ALA Name Matching service."
     )
     @POST
     @Timed
     @Path("/isSensitive")
     public boolean isSensitive(SpeciesCheck check) {
+        validateScientificNameRemoved(check.getScientificName());
+        validateTaxonIdRequired(check.getTaxonId());
         try {
-            return this.isSensitiveCache.get(check);
+            SpeciesCheck normalized = SpeciesCheck.builder()
+                .scientificName(check.getScientificName())
+                .taxonId(normalizeTaxonId(check.getTaxonId()))
+                .build();
+            return this.isSensitiveCache.get(normalized);
         } catch (Exception e){
-            log.warn("Problem cheking species : " + e.getMessage() + " with specices: " + check);
+            log.warn("Problem checking species : " + e.getMessage() + " with species: " + check);
             throw e;
         }
     }
 
+    public boolean isSensitive(String taxonId) {
+        validateTaxonIdRequired(taxonId);
+        return this.isSensitive(SpeciesCheck.builder().taxonId(normalizeTaxonId(taxonId)).build());
+    }
+
     @ApiOperation(
         value = "Check to see if a species is potentially sensitive",
-        notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
-            "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive."
+        notes = "Note: The scientificName parameter has been removed. Please use the taxonId parameter. To obtain a taxonId for a given scientific name, use the ALA Name Matching service."
     )
     @GET
     @Timed
     @Path("/isSensitive")
     public boolean isSensitive(
-        @ApiParam(value = "The scientific name of the taxon", required = true, example = "Acacia dealbata") @QueryParam("scientificName") String scientificName,
-        @ApiParam(value = "The taxonomc identifier for the taxon") @QueryParam("taxonId") String taxonId
+        @QueryParam("scientificName") String scientificName,
+        @ApiParam(value = "The taxonomic identifier for the taxon", required = true) @QueryParam("taxonId") String taxonId
     ) {
-        SpeciesCheck check = SpeciesCheck.builder().scientificName(scientificName).taxonId(taxonId).build();
+        validateScientificNameRemoved(scientificName);
+        validateTaxonIdRequired(taxonId);
+        SpeciesCheck check = SpeciesCheck.builder().taxonId(normalizeTaxonId(taxonId)).build();
         return this.isSensitive(check);
     }
 
@@ -245,14 +259,14 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
 
     @ApiOperation(
         value = "Provide a sensitivity report for a taxon/zone combination.",
-        notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
-          "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+        notes = "Note: The scientificName parameter has been removed. Please use the taxonId parameter. To obtain a taxonId for a given scientific name, use the ALA Name Matching service."
     )
     @POST
     @Path("/report")
     public SensitivityReport report(SensitivityQuery query) {
+        validateScientificNameRemoved(query.getScientificName());
+        validateTaxonIdRequired(query.getTaxonId());
         return this.report(
-            query.getScientificName(),
             query.getTaxonId(),
             query.getDataResourceUid(),
             query.getStateProvince(),
@@ -261,21 +275,26 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         );
     }
 
+    public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
+        return this.report(null, normalizeTaxonId(taxonId), dataResourceUid, stateProvince, country, zones);
+    }
+
     @ApiOperation(
         value = "Provide a sensitivity report for a taxon/zone combination.",
-        notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
-            "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+        notes = "Note: The scientificName parameter has been removed. Please use the taxonId parameter. To obtain a taxonId for a given scientific name, use the ALA Name Matching service."
     )
     @GET
     @Path("/report")
     public SensitivityReport report(
-        @ApiParam(value = "The scientific name of the taxon", required = true, example = "Psilotum complanatum") @QueryParam("scientificName") String scientificName,
-        @ApiParam(value = "The taxon identifier", example = "https://id.biodiversity.org.au/node/apni/2914286") @QueryParam("taxonId")String taxonId,
+        @QueryParam("scientificName") String scientificName,
+        @ApiParam(value = "The taxon identifier", required = true, example = "https://id.biodiversity.org.au/node/apni/2914286") @QueryParam("taxonId")String taxonId,
         @ApiParam(value = "The source data resource identifier", example = "dr1654") @QueryParam("dataResourceUid")String dataResourceUid,
         @ApiParam(value = "The state or province zone identifier", example = "NSW") @QueryParam("stateProvince") String stateProvince,
         @ApiParam(value = "The country zone identifier", example = "AUS") @QueryParam("country") String country,
-        @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones
-    ) {
+        @ApiParam(value = "The zone identifiers ", allowMultiple = true, example = "FFEZ") @QueryParam("zone") List<String> zones) {
+        validateScientificNameRemoved(scientificName);
+        validateTaxonIdRequired(taxonId);
+        taxonId = normalizeTaxonId(taxonId);
         Map<String, String> properties = new HashMap<>();
         properties.put("samplesProvided", "yes");
         if (dataResourceUid != null && !dataResourceUid.isEmpty())
@@ -299,11 +318,13 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
 
     @ApiOperation(
         value = "Process occurrence properties for a sensitive species",
-        notes = "Applies the sensitivity processing rules for a sensitive species to properties from an occurrence record."
+        notes = "Note: The scientificName parameter has been removed. Please use the taxonId parameter. To obtain a taxonId for a given scientific name, use the ALA Name Matching service."
     )
     @POST
     @Path("/process")
     public SensitivityReport process(ProcessQuery query) {
+        validateScientificNameRemoved(query.getScientificName());
+        validateTaxonIdRequired(query.getTaxonId());
         Map<String, String> properties = new HashMap<>(query.getProperties());
         // Ensure key facts are present in the way expected
         for (String fact: FactCollection.FACT_NAMES) {
@@ -322,7 +343,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             this.finder,
             properties,
             query.getScientificName(),
-            query.getTaxonId()
+            normalizeTaxonId(query.getTaxonId())
         );
         this.amendOutcome(query, outcome);
         SensitivityReport report = this.translator.buildSensitivityReport(outcome, false);
@@ -337,6 +358,25 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
      */
     @Override
     public void close()  {
+    }
+
+    private void validateScientificNameRemoved(String scientificName) {
+        if (StringUtils.isNotEmpty(scientificName)) {
+            throw new BadRequestException("The scientificName parameter has been removed. Please use the taxonId parameter instead. To obtain a taxonId for a given scientific name, use the ALA Name Matching API: " + this.nameMatchingServiceUrl);
+        }
+    }
+
+    private void validateTaxonIdRequired(String taxonId) {
+        if (StringUtils.isBlank(taxonId)) {
+            throw new BadRequestException("The taxonId parameter is required.");
+        }
+    }
+
+    private String normalizeTaxonId(String taxonId) {
+        if (StringUtils.startsWith(taxonId, "http://id.biodiversity.org.au/") || StringUtils.startsWith(taxonId, "http://biodiversity.org.au/")) {
+            return "https://" + taxonId.substring("http://".length());
+        }
+        return taxonId;
     }
 
     /**

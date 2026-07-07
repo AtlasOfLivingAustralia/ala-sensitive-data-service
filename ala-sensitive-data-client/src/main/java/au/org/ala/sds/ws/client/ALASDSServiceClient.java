@@ -76,40 +76,26 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
     /**
      * Test to see whether a taxon is potentially sensitive
      *
-     * @param scientificName The scientific name
      * @param taxonId        The taxon identifier
      * @return True if this species is sensitive in some location
      */
     @Override
-    public boolean isSensitive(String scientificName, String taxonId) {
-        return this.call(this.alaSdsService.isSensitive(scientificName, taxonId));
+    public boolean isSensitive(String taxonId) {
+        return this.call(this.alaSdsService.isSensitive(taxonId));
     }
 
 
     /**
      * Provide a sensitivty report for an occurrence.
      *
-     * @param query The information from the occurrence record.
-     * @return A sensitivitiy report
-     */
-    @Override
-    public SensitivityReport report(SensitivityQuery query) {
-        return this.call(this.alaSdsService.report(query));
-    }
-
-
-    /**
-     * Provide a sensitivty report for an occurrence.
-     *
-     * @param scientificName The scientific name
      * @param taxonId        The taxon identifier
      * @param dataResourceUid The source data resource
      * @param zones          The occurrence record zones
      * @return A sensitivitiy report
      */
     @Override
-    public SensitivityReport report(String scientificName, String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
-        return this.call(this.alaSdsService.report(scientificName, taxonId, dataResourceUid, stateProvince, country, zones));
+    public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
+        return this.call(this.alaSdsService.report(taxonId, dataResourceUid, stateProvince, country, zones));
     }
 
     /**
