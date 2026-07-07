@@ -224,7 +224,6 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         }
     }
 
-    @Override
     public boolean isSensitive(String taxonId) {
         validateTaxonIdRequired(taxonId);
         return this.isSensitive(SpeciesCheck.builder().taxonId(normalizeTaxonId(taxonId)).build());
@@ -276,7 +275,6 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
         );
     }
 
-    @Override
     public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones) {
         return this.report(null, normalizeTaxonId(taxonId), dataResourceUid, stateProvince, country, zones);
     }

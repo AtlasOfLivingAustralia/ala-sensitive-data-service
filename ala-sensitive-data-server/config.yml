@@ -24,7 +24,7 @@ conservation:
   speciesUrl: https://sds.ala.org.au/sensitive-species-data.xml
   zonesUrl: https://sds.ala.org.au/sensitivity-zones.xml
   categoriesUrl: https://sds.ala.org.au/sensitivity-categories.xml
-  layersUrl: https://sds.ala.org.au/ws/layers
+  layersUrl: https://sensitive-ws.ala.org.au/ws/layers
   layersServiceUrl: https://spatial.ala.org.au/layers-service
   cache:
     entryCapacity: 10000

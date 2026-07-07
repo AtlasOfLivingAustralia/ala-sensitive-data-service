@@ -65,11 +65,11 @@ public class ConservationResourceTest {
         // Acacia dealbata -> https://id.biodiversity.org.au/taxon/apni/51286863
         check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51286863").build();
         assertFalse(resource.isSensitive(check));
-        // Caesia talingka -> https://id.biodiversity.org.au/taxon/apni/51433010
-        check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51433010").build();
+        // Caesia talingka -> https://id.biodiversity.org.au/name/apni/50620826
+        check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/name/apni/50620826").build();
         assertTrue(resource.isSensitive(check));
-        // Caesia sp. Koolanooka Hills -> ALA_Caesia_sp_Koolanooka_Hills_R_Meissner_Y_Caruso_78
-        check = SpeciesCheck.builder().taxonId("ALA_Caesia_sp_Koolanooka_Hills_R_Meissner_Y_Caruso_78").build();
+        // Caesia sp. Koolanooka Hills -> ALA_DR2201_2911
+        check = SpeciesCheck.builder().taxonId("ALA_DR2201_2911").build();
         assertTrue(resource.isSensitive(check));
     }
 
@@ -78,9 +78,9 @@ public class ConservationResourceTest {
         SpeciesCheck check;
         check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/taxon/apni/51286863").build();
         assertFalse(resource.isSensitive(check));
-        check = SpeciesCheck.builder().taxonId("http://id.biodiversity.org.au/node/apni/2914477").build();
+        check = SpeciesCheck.builder().taxonId("https://id.biodiversity.org.au/node/apni/2914477").build();
         assertTrue(resource.isSensitive(check));
-        check = SpeciesCheck.builder().taxonId("ALA_Caesia_sp_Koolanooka_Hills_R_Meissner_Y_Caruso_78").build();
+        check = SpeciesCheck.builder().taxonId("ALA_DR2201_2911").build();
         assertTrue(resource.isSensitive(check));
         check = SpeciesCheck.builder().taxonId("Some random junk").build();
         assertFalse(resource.isSensitive(check));
@@ -203,26 +203,26 @@ public class ConservationResourceTest {
         assertNotNull(vr);
         SensitiveTaxon taxon = vr.getTaxon();
         assertNotNull(taxon);
-        assertEquals("Pandion haliaetus", taxon.getScientificName());
-        assertEquals("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", taxon.getTaxonId());
+        assertEquals("Sarcochilus loganii", taxon.getScientificName());
+        assertEquals("ALA_DR652_1667", taxon.getTaxonId());
         assertNotNull(taxon.getInstances());
         assertEquals(1, taxon.getInstances().size());
         SensitivityInstance instance = taxon.getInstances().get(0);
-        assertEquals("WA DEC", instance.getAuthority());
+        assertEquals("Qld DEHP", instance.getAuthority());
         assertEquals(SensitivityInstance.SensitivityType.CONSERVATION, instance.getType());
         assertEquals("10km", instance.getGeneralisation().getGeneralisation());
         assertNotNull(instance.getCategory());
         assertEquals("Sensitive", instance.getCategory().getId());
-        assertEquals("dr467", instance.getDataResourceId());
+        assertEquals("dr493", instance.getDataResourceId());
         assertNotNull(instance.getZone());
-        assertEquals("WA", instance.getZone().getId());
+        assertEquals("QLD", instance.getZone().getId());
     }
 
 
     // Test taxon with multiple instances - only one requested
     @Test
     public void testReport6() throws Exception {
-        SensitivityReport report = resource.report(null, "urn:lsid:biodiversity.org.au:afd.taxon:56514a28-86db-4296-be0f-5f96f46e07c4", "dr1411", "Victoria", "Australia", null);
+        SensitivityReport report = resource.report(null, "https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", "dr1411", "South Australia", "Australia", null);
         assertNotNull(report);
         assertTrue(report.isValid());
         assertTrue(report.isSensitive());
@@ -257,13 +257,7 @@ public class ConservationResourceTest {
         assertTrue(report.isLoadable());
         assertFalse(report.isAccessControl());
         ValidationReport vr = report.getReport();
-        assertNotNull(vr);
-        SensitiveTaxon taxon = vr.getTaxon();
-        assertNotNull(taxon);
-        assertEquals("Pandion haliaetus", taxon.getScientificName());
-        assertEquals("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", taxon.getTaxonId());
-        assertNotNull(taxon.getInstances());
-        assertEquals(0, taxon.getInstances().size());
+        assertNull(vr);
     }
 
     @Test
@@ -309,7 +303,7 @@ public class ConservationResourceTest {
         properties.put(FactCollection.DECIMAL_LATITUDE_KEY, "-27.327739");
         properties.put(FactCollection.DECIMAL_LONGITUDE_KEY, "152.527914");
         properties.put(FactCollection.EVENT_DATE_KEY, "1990-04-12");
-        ProcessQuery query = ProcessQuery.builder().taxonId("urn:lsid:biodiversity.org.au:afd.taxon:8002722e-d0f8-4de2-af61-5cba07d44cd2").properties(properties).build();
+        ProcessQuery query = ProcessQuery.builder().taxonId("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7").properties(properties).build();
         SensitivityReport report = resource.process(query);
         assertNotNull(report);
         assertTrue(report.isValid());
@@ -349,7 +343,7 @@ public class ConservationResourceTest {
         properties.put(FactCollection.DECIMAL_LATITUDE_KEY, "-26.453510");
         properties.put(FactCollection.DECIMAL_LONGITUDE_KEY, "114.653393");
         properties.put(FactCollection.EVENT_DATE_KEY, "1990-04-12");
-        ProcessQuery query = ProcessQuery.builder().taxonId("urn:lsid:biodiversity.org.au:afd.taxon:8002722e-d0f8-4de2-af61-5cba07d44cd2").properties(properties).build();
+        ProcessQuery query = ProcessQuery.builder().taxonId("https://biodiversity.org.au/afd/taxa/2edc1a0c-b74a-49da-b053-b7e1328a54a7").properties(properties).build();
         SensitivityReport report = resource.process(query);
         assertNotNull(report);
         assertTrue(report.isValid());

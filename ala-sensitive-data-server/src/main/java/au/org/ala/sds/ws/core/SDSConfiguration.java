@@ -48,7 +48,7 @@ public class SDSConfiguration {
     private List<String> layers = null;
     /** Source of spatial layers, used if there isn't a specific list of layers (a JSON file) */
     @JsonProperty
-    private String layersUrl = "https://sds.ala.org.au/ws/layers";
+    private String layersUrl = "https://sensitive-ws.ala.org.au/ws/layers";
     /** Source of layer information */
     @JsonProperty
     private String layersServiceUrl = "https://spatial.ala.org.au/layers-service";

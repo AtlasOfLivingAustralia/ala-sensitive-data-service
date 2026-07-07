@@ -88,18 +88,6 @@ public class ALASDSServiceClient implements ConservationApi, Closeable {
     /**
      * Provide a sensitivty report for an occurrence.
      *
-     * @param query The information from the occurrence record.
-     * @return A sensitivitiy report
-     */
-    @Override
-    public SensitivityReport report(SensitivityQuery query) {
-        return this.call(this.alaSdsService.report(query));
-    }
-
-
-    /**
-     * Provide a sensitivty report for an occurrence.
-     *
      * @param taxonId        The taxon identifier
      * @param dataResourceUid The source data resource
      * @param zones          The occurrence record zones

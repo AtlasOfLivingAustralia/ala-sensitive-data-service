@@ -28,10 +28,6 @@ interface ALASDSRetrofitService {
             @Query("taxonId") String taxonId
     );
 
-    @POST("/api/report")
-    @Headers({"Content-Type: application/json"})
-    Call<SensitivityReport> report(@Body SensitivityQuery query);
-
     @GET("/api/report")
      Call<SensitivityReport> report(
         @Query("taxonId") String taxonId,

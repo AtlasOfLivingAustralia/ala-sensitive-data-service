@@ -128,19 +128,19 @@ public class ALASensitiveDataServiceApplicationIT {
 
     @Test
     public void testIsSensitive1() throws Exception {
-        assertTrue(this.client.isSensitive("Pterostylis oreophila", null));
+        assertTrue(this.client.isSensitive("https://id.biodiversity.org.au/taxon/apni/51412246"));
     }
 
     // In normal list but not in reduced list
     @Test
     public void testIsSensitive2() throws Exception {
-        assertFalse(this.client.isSensitive("Bertmainius monachus", null));
+        assertFalse(this.client.isSensitive("urn:lsid:biodiversity.org.au:afd.taxon:262fce63-04b3-4f9e-ad61-26798e27ca4c"));
     }
 
     // Not sensitive
     @Test
     public void testIsSensitive3() throws Exception {
-        assertFalse(this.client.isSensitive("Acacia dealbata", null));
+        assertFalse(this.client.isSensitive("https://id.biodiversity.org.au/taxon/apni/51286863"));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class ALASensitiveDataServiceApplicationIT {
 
     @Test
     public void testGetReport1() throws Exception {
-        SensitivityReport report = this.client.report("Pterostylis oreophila", null, null, "Australian Capital Territory", "Australia", null);
+        SensitivityReport report = this.client.report("https://id.biodiversity.org.au/taxon/apni/51412246", null, "Australian Capital Territory", "Australia", null);
         assertNotNull(report);
         assertTrue(report.isSensitive());
     }
@@ -175,14 +175,14 @@ public class ALASensitiveDataServiceApplicationIT {
 
     @Test
     public void testGetReport2() throws Exception {
-        SensitivityReport report = this.client.report("Pterostylis oreophila", null, null, "Victoria", "Australia", null);
+        SensitivityReport report = this.client.report("https://id.biodiversity.org.au/taxon/apni/51412246", null, "Victoria", "Australia", null);
         assertNotNull(report);
         assertFalse(report.isSensitive());
     }
 
     @Test
     public void testGetReport3() throws Exception {
-        SensitivityReport report = this.client.report("Macropius rufus", null, null, "Victoria", "Australia", null);
+        SensitivityReport report = this.client.report("Macropius rufus", null, "Victoria", "Australia", null);
         assertNotNull(report);
         assertFalse(report.isSensitive());
     }
@@ -190,7 +190,7 @@ public class ALASensitiveDataServiceApplicationIT {
     @Test
     public void testGetReport4() throws Exception {
         List<Generalisation> generalisations = this.client.getGeneralisations();
-        SensitivityReport report = this.client.report("Pandion haliaetus", null, null, "South Australia", "Australia", null);
+        SensitivityReport report = this.client.report("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", null, "South Australia", "Australia", null);
         assertNotNull(report);
         assertTrue(report.isSensitive());
         Map<String, String> supplied = new HashMap<>();
@@ -212,7 +212,7 @@ public class ALASensitiveDataServiceApplicationIT {
     @Test
     public void testGetReport5() throws Exception {
         List<Generalisation> generalisations = this.client.getGeneralisations();
-        SensitivityReport report = this.client.report("Pandion haliaetus", null, null, "Western Australia", "Australia", null);
+        SensitivityReport report = this.client.report("https://biodiversity.org.au/afd/taxa/23a8017a-3a2b-4a52-8ca6-d168bf52659c", null, "Western Australia", "Australia", null);
         assertNotNull(report);
         assertTrue(report.isSensitive());
         Map<String, String> supplied = new HashMap<>();
