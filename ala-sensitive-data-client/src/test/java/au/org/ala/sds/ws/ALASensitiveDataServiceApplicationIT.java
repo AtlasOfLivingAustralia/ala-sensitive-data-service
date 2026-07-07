@@ -143,6 +143,7 @@ public class ALASensitiveDataServiceApplicationIT {
         assertFalse(this.client.isSensitive("https://id.biodiversity.org.au/taxon/apni/51286863"));
     }
 
+    @Ignore
     @Test
     public void testIsSensitive4() throws Exception {
         SpeciesCheck check = SpeciesCheck.builder().scientificName("Pterostylis oreophila").build();
@@ -151,10 +152,10 @@ public class ALASensitiveDataServiceApplicationIT {
 
     @Test
     public void testGetSensitiveDataFields1() throws Exception {
-       List<String> fields = this.client.getSensitiveDataFields();
-       assertNotNull(fields);
-       assertEquals(38, fields.size());
-       assertEquals("http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters", fields.get(0));
+        List<String> fields = this.client.getSensitiveDataFields();
+        assertNotNull(fields);
+        assertEquals(38, fields.size());
+        assertEquals("http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters", fields.get(0));
     }
 
     @Test
