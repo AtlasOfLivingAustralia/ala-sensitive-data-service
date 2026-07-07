@@ -144,7 +144,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
             throw new RuntimeException("Unable to initialise searcher: " + e.getMessage(), e);
         }
         this.requestTerms = this.buildRequestTerms();
-     }
+    }
 
     /**
      * Build the list of terms that might be needed.
@@ -152,19 +152,19 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
      * @return A set of terms that get used somewhere
      */
     protected Set<Term> buildRequestTerms() {
-         TermFactory factory = TermFactory.instance();
-         Set<Term> fields = new HashSet<>();
-         Configuration config = Configuration.getInstance();
-         for (String flag: config.getFlagRules().split(",")) {
-             fields.add(factory.findTerm(flag));
-         }
-         for (Generalisation generalisation: this.generalisations)
-             fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
-         for (String fact: FactCollection.FACT_NAMES) {
-             fields.add(factory.findTerm(fact));
-         }
-         return fields;
-     }
+        TermFactory factory = TermFactory.instance();
+        Set<Term> fields = new HashSet<>();
+        Configuration config = Configuration.getInstance();
+        for (String flag: config.getFlagRules().split(",")) {
+            fields.add(factory.findTerm(flag));
+        }
+        for (Generalisation generalisation: this.generalisations)
+            fields.addAll(generalisation.getFields().stream().map(FieldAccessor::getField).collect(Collectors.toSet()));
+        for (String fact: FactCollection.FACT_NAMES) {
+            fields.add(factory.findTerm(fact));
+        }
+        return fields;
+    }
 
     /**
      * Make sure that the system is still operating.
@@ -219,7 +219,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
                 .build();
             return this.isSensitiveCache.get(normalized);
         } catch (Exception e){
-            log.warn("Problem cheking species : " + e.getMessage() + " with specices: " + check);
+            log.warn("Problem checking species : " + e.getMessage() + " with species: " + check);
             throw e;
         }
     }
