@@ -21,13 +21,9 @@ import lombok.Value;
         "Information on a potential species match, both name and, if available, the taxon identifier"
 )
 public class SpeciesCheck {
-    // The scientificName parameter has been removed. Please use the taxonId parameter instead.
-    // Retained temporarily to return a 400 Bad Request error if a client sends it.
     @ApiModelProperty(
         value = "The scientific name",
-        hidden = true,
         example = "Eucalyptus rossii",
-        notes = "The scientificName parameter has been removed. Please use the taxonId parameter instead.",
         extensions = {
            @Extension(
                name = "x-reference",
@@ -41,11 +37,9 @@ public class SpeciesCheck {
         }
     )
     @JsonProperty
-    @Deprecated
     private String scientificName;
     @ApiModelProperty(
         value = "The taxon identifier",
-        required = true,
         example = "https://id.biodiversity.org.au/node/apni/2900822",
         extensions = {
             @Extension(

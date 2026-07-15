@@ -25,11 +25,17 @@ interface ALASDSRetrofitService {
 
     @GET("/api/isSensitive")
     Call<Boolean> isSensitive(
+            @Query("scientificName") String scientificName,
             @Query("taxonId") String taxonId
     );
 
+    @POST("/api/report")
+    @Headers({"Content-Type: application/json"})
+    Call<SensitivityReport> report(@Body SensitivityQuery query);
+
     @GET("/api/report")
      Call<SensitivityReport> report(
+        @Query("scientificName") String scientificName,
         @Query("taxonId") String taxonId,
         @Query("dataResourceUid") String dataResourceUid,
         @Query("stateProvince") String stateProvince,

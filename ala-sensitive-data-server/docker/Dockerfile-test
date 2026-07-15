@@ -28,7 +28,7 @@ RUN tar zxf /data/biocache/layers/sds-layers.tgz -C /data/biocache/layers/
 RUN curl -sf -o /data/sds/sensitive-species-data.xml -L https://sds.ala.org.au/sensitive-species-data.xml
 RUN curl -sf -o /data/sds/sensitivity-zones.xml -L https://sds.ala.org.au/sensitivity-zones.xml
 RUN curl -sf -o /data/sds/sensitivity-categories.xml -L https://sds.ala.org.au/sensitivity-categories.xml
-RUN curl -sf -o /data/sds/layers.json -L https://sensitive-ws.ala.org.au/ws/layers
+RUN curl -sf -o /data/sds/layers.json -L https://sds.ala.org.au/ws/layers
 
 EXPOSE 9189
 EXPOSE 9190

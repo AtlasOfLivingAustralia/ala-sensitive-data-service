@@ -24,13 +24,9 @@ import java.util.Map;
     description = "The basic information needed to process an occurrence record, including taxon, broad location and source. "
 )
 public class SensitivityQuery {
-    // The scientificName parameter has been removed. Please use the taxonId parameter instead.
-    // Retained temporarily to return a 400 Bad Request error if a client sends it.
     @ApiModelProperty(
         value = "The scientific name",
-        hidden = true,
         example = "Eucalyptus rossii",
-        notes = "The scientificName parameter has been removed. Please use the taxonId parameter instead.",
         extensions = {
             @Extension(
                 name = "x-reference",
@@ -44,12 +40,10 @@ public class SensitivityQuery {
         }
     )
     @JsonProperty
-    @Deprecated
     private String scientificName;
 
     @ApiModelProperty(
         value = "The taxon identifier",
-        required = true,
         example = "https://id.biodiversity.org.au/node/apni/2900822",
         extensions = {
             @Extension(
