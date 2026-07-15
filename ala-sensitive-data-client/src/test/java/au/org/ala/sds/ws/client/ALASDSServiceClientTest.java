@@ -102,6 +102,7 @@ public class ALASDSServiceClientTest extends TestUtils {
 
         server.enqueue(new MockResponse().setBody(response));
         Boolean sensitive = client.isSensitive(
+            "Varanus semiremex",
             "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739"
         );
         assertNotNull(sensitive);
@@ -109,7 +110,48 @@ public class ALASDSServiceClientTest extends TestUtils {
         assertEquals(1, server.getRequestCount());
         RecordedRequest req = server.takeRequest();
         assertEquals("GET", req.getMethod());
-        assertEquals("/api/isSensitive?taxonId=urn%3Alsid%3Abiodiversity.org.au%3Aafd.taxon%3A81244b7e-7145-42fe-b28c-3d672310e739", req.getPath());
+        assertEquals("/api/isSensitive?scientificName=Varanus%20semiremex&taxonId=urn%3Alsid%3Abiodiversity.org.au%3Aafd.taxon%3A81244b7e-7145-42fe-b28c-3d672310e739", req.getPath());
+    }
+
+    @Test
+    public void testReport1() throws Exception {
+        String request = this.getResource("request-r-1.json");
+        String response = this.getResource("response-r-1.json");
+
+        server.enqueue(new MockResponse().setBody(response));
+        SensitivityQuery query = SensitivityQuery.builder()
+            .scientificName("Varanus semiremex")
+            .taxonId("urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739")
+            .stateProvince("Queensland")
+            .country("Australia")
+            .build();
+        SensitivityReport report = client.report(query);
+        assertNotNull(report);
+        assertTrue(report.isValid());
+        assertTrue(report.isSensitive());
+        assertTrue(report.isLoadable());
+        assertFalse(report.isAccessControl());
+        ValidationReport vr = report.getReport();
+        assertNotNull(vr);
+        SensitiveTaxon taxon = vr.getTaxon();
+        assertNotNull(taxon);
+        assertEquals("Varanus semiremex", taxon.getScientificName());
+        assertEquals("urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739", taxon.getTaxonId());
+        assertEquals("rusty monitor", taxon.getCommonName());
+        assertNotNull(taxon.getInstances());
+        assertEquals(1, taxon.getInstances().size());
+        SensitivityInstance instance = taxon.getInstances().get(0);
+        assertEquals("Qld DEHP", instance.getAuthority());
+        assertNotNull(instance.getCategory());
+        assertEquals("Sensitive", instance.getCategory().getId());
+        assertEquals("dr493", instance.getDataResourceId());
+        assertNotNull(instance.getZone());
+        assertEquals("QLD", instance.getZone().getId());
+        assertEquals(1, server.getRequestCount());
+        RecordedRequest req = server.takeRequest();
+        assertEquals("POST", req.getMethod());
+        assertEquals("/api/report", req.getPath());
+        assertEquals(request, req.getBody().readUtf8());
     }
 
     @Test
@@ -119,6 +161,7 @@ public class ALASDSServiceClientTest extends TestUtils {
 
         server.enqueue(new MockResponse().setBody(response));
         SensitivityReport report = client.report(
+            "Varanus semiremex",
             "urn:lsid:biodiversity.org.au:afd.taxon:81244b7e-7145-42fe-b28c-3d672310e739",
             "dr6567",
             "Queensland",

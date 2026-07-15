@@ -1,8 +1,8 @@
-dist: jammy
+dist: trusty
 sudo: required
 language: java
 jdk:
-  - openjdk8
+- oraclejdk8
 branches:
   only:
   - master

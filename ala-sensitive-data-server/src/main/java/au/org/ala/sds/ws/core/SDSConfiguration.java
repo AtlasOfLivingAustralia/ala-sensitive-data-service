@@ -48,13 +48,10 @@ public class SDSConfiguration {
     private List<String> layers = null;
     /** Source of spatial layers, used if there isn't a specific list of layers (a JSON file) */
     @JsonProperty
-    private String layersUrl = "https://sensitive-ws.ala.org.au/ws/layers";
-    /** Source of layer information */
+    private String layersUrl = "https://sds.ala.org.au/ws/layers";
+    /** The source of layer information */
     @JsonProperty
     private String layersServiceUrl = "https://spatial.ala.org.au/layers-service";
-    /** The URL of the name matching service */
-    @JsonProperty
-    private String nameMatchingServiceUrl = "https://namematching-ws.ala.org.au/swagger";
     /** The cache configuration */
     @JsonProperty
     private CacheConfiguration cache = new CacheConfiguration();

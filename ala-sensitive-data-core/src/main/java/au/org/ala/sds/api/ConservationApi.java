@@ -36,15 +36,34 @@ public interface ConservationApi {
     /**
      * Test to see whether a taxon is potentially sensitive
      *
+     * @param scientificName The scientific name
      * @param taxonId The taxon identifier
      *
      * @return True if this species is sensitive in some location
      */
-    public boolean isSensitive(String taxonId);
+    public boolean isSensitive(String scientificName, String taxonId);
+
+    /**
+     * Provide a sensitivity report based on a taxon and zone.
+     * <p>
+     * Ths method only produces a sensitivity report on the supplied taxon/zones.
+     * To generalise an occurrence record, the report must be applied to an occurrence
+     * record using the generalisation rules.
+     * </p>
+     *
+     * @param query The information from the occurrence record.
+     *
+     * @return A report giving whether the combination of taxon/area is sensitive
+     *
+     * @see #process(ProcessQuery)
+     * @see #getGeneralisations()
+     */
+    public SensitivityReport report(SensitivityQuery query);
 
     /**
      * Provide a sensitivity report based on taxon and zone.
      *
+     * @param scientificName The taxon scientific name
      * @param taxonId The taxon identifier
      * @param dataResourceUid The source data resource for the occurrecne record
      * @param stateProvince The state/province identifier
@@ -53,7 +72,7 @@ public interface ConservationApi {
      *
      * @return A report giving the sensitivity status for that taxon/area
      */
-    public SensitivityReport report(String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones);
+    public SensitivityReport report(String scientificName, String taxonId, String dataResourceUid, String stateProvince, String country, List<String> zones);
 
     /**
      * Process an occurrence record and supply modified values.
