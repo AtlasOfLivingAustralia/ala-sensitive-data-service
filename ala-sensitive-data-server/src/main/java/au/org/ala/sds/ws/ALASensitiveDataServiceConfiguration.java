@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +21,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -27,7 +33,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class ALASensitiveDataServiceConfiguration extends Configuration {
-    private static final ResourceBundle SWAGGER_MESSAGES = ResourceBundle.getBundle("messages");
+    private static final String EXTERNAL_MESSAGES_FILE = "/data/ala-sensitive-data-service/config/messages.properties";
+    private static final ResourceBundle SWAGGER_MESSAGES = loadMessagesBundle();
     private static final String DEFAULT_VERSION = "UNKNOWN";
 
     /** The swagger configuration */
@@ -153,5 +160,39 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
             version = XPathFactory.newInstance().newXPath().evaluate("/project/parent/version", document);
         }
         return version;
+    }
+
+    private static ResourceBundle loadMessagesBundle() {
+        ResourceBundle bundledMessages = ResourceBundle.getBundle("messages");
+        ResourceBundle externalMessages = loadExternalMessagesBundle();
+        if (externalMessages == null) {
+            return bundledMessages;
+        }
+
+        return new ResourceBundle() {
+            @Override
+            protected Object handleGetObject(String key) {
+                if (externalMessages.containsKey(key)) {
+                    return externalMessages.getObject(key);
+                }
+                return bundledMessages.getObject(key);
+            }
+
+            @Override
+            public Enumeration<String> getKeys() {
+                Set<String> keys = new LinkedHashSet<>();
+                keys.addAll(externalMessages.keySet());
+                keys.addAll(bundledMessages.keySet());
+                return Collections.enumeration(keys);
+            }
+        };
+    }
+
+    private static ResourceBundle loadExternalMessagesBundle() {
+        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(EXTERNAL_MESSAGES_FILE))) {
+            return new java.util.PropertyResourceBundle(new java.io.InputStreamReader(inputStream, java.nio.charset.StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
