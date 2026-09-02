@@ -12,10 +12,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.text.MessageFormat;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,6 +28,7 @@ import org.xml.sax.SAXException;
 
 public class ALASensitiveDataServiceConfiguration extends Configuration {
     private static final ResourceBundle SWAGGER_MESSAGES = ResourceBundle.getBundle("messages");
+    private static final String DEFAULT_VERSION = "UNKNOWN";
 
     /** The swagger configuration */
     @Valid
@@ -43,7 +46,7 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
     private SDSConfiguration conservation = new SDSConfiguration();
 
     /**
-     * Construct with default setttings.
+     * Construct with default settings.
      */
     public ALASensitiveDataServiceConfiguration()  {
         this.swagger.setTitle(SWAGGER_MESSAGES.getString("swagger.title"));
@@ -62,11 +65,11 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
     }
 
     /**
-     * Resolve the application version from the runtime package metadata, falling back to the
-     * module {@code pom.xml} when the manifest does not contain it.
+     * Resolve the application version from runtime metadata, preferring the package manifest and
+     * then classpath Maven metadata, with a filesystem {@code pom.xml} fallback for local runs.
+     * If no version source can be resolved, {@value #DEFAULT_VERSION} is returned.
      *
      * @return the application version string
-     * @throws IllegalStateException if the version cannot be determined
      */
     private static String resolveVersion() {
         String implementationVersion = ALASensitiveDataServiceConfiguration.class.getPackage().getImplementationVersion();
@@ -74,12 +77,43 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
             return implementationVersion;
         }
 
+        String pomPropertiesVersion = readVersionFromPomProperties();
+        if (pomPropertiesVersion != null && !pomPropertiesVersion.trim().isEmpty()) {
+            return pomPropertiesVersion;
+        }
+
         String pomVersion = readVersionFromPom();
         if (pomVersion != null && !pomVersion.trim().isEmpty()) {
             return pomVersion;
         }
 
-        throw new IllegalStateException("Unable to determine application version");
+        return DEFAULT_VERSION;
+    }
+
+    private static String readVersionFromPomProperties() {
+        String[] resourcePaths = {
+                "/META-INF/maven/au.org.ala.sds/ala-sensitive-data-server/pom.properties",
+                "/META-INF/maven/au.org.ala.sds/ala-sensitive-data-service/pom.properties"
+        };
+
+        for (String resourcePath : resourcePaths) {
+            try (InputStream inputStream = ALASensitiveDataServiceConfiguration.class.getResourceAsStream(resourcePath)) {
+                if (inputStream == null) {
+                    continue;
+                }
+
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                String version = properties.getProperty("version");
+                if (version != null && !version.trim().isEmpty()) {
+                    return version;
+                }
+            } catch (IOException e) {
+                // Keep searching other metadata sources.
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -104,7 +138,7 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
                 directory = directory.getParent();
             }
         } catch (URISyntaxException | IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
-            throw new IllegalStateException("Unable to determine application version from pom.xml", e);
+            return null;
         }
 
         return null;
