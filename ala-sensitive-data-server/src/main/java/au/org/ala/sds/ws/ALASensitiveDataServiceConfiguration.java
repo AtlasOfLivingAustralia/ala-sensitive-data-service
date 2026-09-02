@@ -53,7 +53,8 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
         this.swagger.setDescription(MessageFormat.format(
                 SWAGGER_MESSAGES.getString("swagger.description"),
                 SWAGGER_MESSAGES.getString("swagger.nameMatchingServiceUrl"),
-                SWAGGER_MESSAGES.getString("swagger.moreInforLinkUrl")));
+                SWAGGER_MESSAGES.getString("swagger.moreInfoLinkUrl"),
+                SWAGGER_MESSAGES.getString("swagger.apiDocsUrl")));
         this.swagger.setContact(SWAGGER_MESSAGES.getString("swagger.contactName"));
         this.swagger.setContactUrl(SWAGGER_MESSAGES.getString("swagger.contactUrl"));
         this.swagger.setContactEmail(SWAGGER_MESSAGES.getString("swagger.contactEmail"));
