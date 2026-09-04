@@ -42,6 +42,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Singleton
 public class ConservationResource implements ConservationApi, Closeable, Checkable {
+    private static final String TAXON_ID_ADVISORY_NOTE =
+            "<br/>In order to prevent taxonomic matching errors, it is recommended to query using both "
+                    + "<kbd>taxonId</kbd> and <kbd>scientificName</kbd>. The <kbd>taxonId</kbd> can be obtained by via the "
+                    + "<a href=\"https://namematching-ws.ala.org.au/swagger\">Name Matching Service API</a> "
+                    + "using a combination of scientific name and other higher taxa values, such as kingdom and/or family.";
+
     public static final Set<Term> PROPERTIES_TO_REMOVE = new HashSet<Term>(Arrays.asList(
         TermFactory.instance().findTerm("northing"),
         TermFactory.instance().findTerm("easting"),
@@ -202,7 +208,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @ApiOperation(
             value = "Check to see if a species is potentially sensitive",
             notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
-                    "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive."
+                    "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive. " +
+                    TAXON_ID_ADVISORY_NOTE
     )
     @POST
     @Timed
@@ -219,7 +226,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @ApiOperation(
         value = "Check to see if a species is potentially sensitive",
         notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
-            "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive."
+            "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive. " +
+            TAXON_ID_ADVISORY_NOTE
     )
     @GET
     @Timed
@@ -246,7 +254,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @ApiOperation(
         value = "Provide a sensitivity report for a taxon/zone combination.",
         notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
-          "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+          "The resulting report can be used, in combination with the list of generalisations, to process an occurrence. " +
+          TAXON_ID_ADVISORY_NOTE
     )
     @POST
     @Path("/report")
@@ -264,7 +273,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @ApiOperation(
         value = "Provide a sensitivity report for a taxon/zone combination.",
         notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
-            "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+            "The resulting report can be used, in combination with the list of generalisations, to process an occurrence. " +
+            TAXON_ID_ADVISORY_NOTE
     )
     @GET
     @Path("/report")
@@ -299,7 +309,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
 
     @ApiOperation(
         value = "Process occurrence properties for a sensitive species",
-        notes = "Applies the sensitivity processing rules for a sensitive species to properties from an occurrence record."
+        notes = "Applies the sensitivity processing rules for a sensitive species to properties from an occurrence record. " +
+            TAXON_ID_ADVISORY_NOTE
     )
     @POST
     @Path("/process")
