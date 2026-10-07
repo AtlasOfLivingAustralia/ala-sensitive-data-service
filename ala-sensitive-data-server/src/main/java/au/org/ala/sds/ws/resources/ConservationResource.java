@@ -42,6 +42,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Singleton
 public class ConservationResource implements ConservationApi, Closeable, Checkable {
+    private static final String TAXON_ID_ADVISORY_NOTE =
+            "<br/>Using a scientific name rather than a taxonID may lead to erroneous results. "
+                    + "Use the <a href=\"https://namematching-ws.ala.org.au/swagger\">names-matching API</a> to get the current taxonID.";
+
+    private static final String REPORT_ENDPOINT_NOTES =
+            "Returns sensitivity status and generalisation rules applicable for a given taxonID and region. "
+                    + "Using a scientific name rather than a taxonID may lead to erroneous results. "
+                    + "Use the <a href=\"https://namematching-ws.ala.org.au/swagger\">names-matching API</a> to get the current taxonID.";
+
     public static final Set<Term> PROPERTIES_TO_REMOVE = new HashSet<Term>(Arrays.asList(
         TermFactory.instance().findTerm("northing"),
         TermFactory.instance().findTerm("easting"),
@@ -202,7 +211,9 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @ApiOperation(
             value = "Check to see if a species is potentially sensitive",
             notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
-                    "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive."
+                    "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive. " +
+                    TAXON_ID_ADVISORY_NOTE,
+            hidden = true
     )
     @POST
     @Timed
@@ -219,13 +230,15 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
     @ApiOperation(
         value = "Check to see if a species is potentially sensitive",
         notes = "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. " +
-            "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive."
+            "Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive. " +
+            TAXON_ID_ADVISORY_NOTE,
+        hidden = true
     )
     @GET
     @Timed
     @Path("/isSensitive")
     public boolean isSensitive(
-        @ApiParam(value = "The scientific name of the taxon", required = true, example = "Acacia dealbata") @QueryParam("scientificName") String scientificName,
+        @ApiParam(value = "The scientific name of the taxon", example = "Acacia dealbata") @QueryParam("scientificName") String scientificName,
         @ApiParam(value = "The taxonomc identifier for the taxon") @QueryParam("taxonId") String taxonId
     ) {
         SpeciesCheck check = SpeciesCheck.builder().scientificName(scientificName).taxonId(taxonId).build();
@@ -245,8 +258,7 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
 
     @ApiOperation(
         value = "Provide a sensitivity report for a taxon/zone combination.",
-        notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
-          "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+        notes = REPORT_ENDPOINT_NOTES
     )
     @POST
     @Path("/report")
@@ -263,13 +275,12 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
 
     @ApiOperation(
         value = "Provide a sensitivity report for a taxon/zone combination.",
-        notes = "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. " +
-            "The resulting report can be used, in combination with the list of generalisations, to process an occurrence."
+        notes = REPORT_ENDPOINT_NOTES
     )
     @GET
     @Path("/report")
     public SensitivityReport report(
-        @ApiParam(value = "The scientific name of the taxon", required = true, example = "Psilotum complanatum") @QueryParam("scientificName") String scientificName,
+        @ApiParam(value = "The scientific name of the taxon", example = "Psilotum complanatum") @QueryParam("scientificName") String scientificName,
         @ApiParam(value = "The taxon identifier", example = "https://id.biodiversity.org.au/node/apni/2914286") @QueryParam("taxonId")String taxonId,
         @ApiParam(value = "The source data resource identifier", example = "dr1654") @QueryParam("dataResourceUid")String dataResourceUid,
         @ApiParam(value = "The state or province zone identifier", example = "NSW") @QueryParam("stateProvince") String stateProvince,
@@ -299,7 +310,8 @@ public class ConservationResource implements ConservationApi, Closeable, Checkab
 
     @ApiOperation(
         value = "Process occurrence properties for a sensitive species",
-        notes = "Applies the sensitivity processing rules for a sensitive species to properties from an occurrence record."
+        notes = "Returns sensitivity status and generalisation rules applicable for a given taxonID and region, along with generalised version of original values (where provided). " +
+            TAXON_ID_ADVISORY_NOTE
     )
     @POST
     @Path("/process")
