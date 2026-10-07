@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Collections;
@@ -70,6 +71,19 @@ public class ALASensitiveDataServiceConfiguration extends Configuration {
         this.swagger.setLicenseUrl(SWAGGER_MESSAGES.getString("swagger.licenseUrl"));
         this.swagger.setVersion(resolveVersion());
         this.swagger.getSwaggerViewConfiguration().setPageTitle(SWAGGER_MESSAGES.getString("swagger.pageTitle"));
+        if (SWAGGER_MESSAGES.containsKey("swagger.schemes")
+                && !SWAGGER_MESSAGES.getString("swagger.schemes").trim().isEmpty()) {
+            String schemes = SWAGGER_MESSAGES.getString("swagger.schemes");
+            this.swagger.setSchemes(Arrays.stream(schemes.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toArray(String[]::new));
+        } else {
+            // Dropwizard-swagger defaults schemes to ["http"]. Setting an empty array ensures that
+            // swagger.json omits the "schemes" field. Per the OpenAPI 2.0 specification, Swagger UI
+            // then dynamically adopts the protocol (http or https) used to access the page at runtime.
+            this.swagger.setSchemes(new String[0]);
+        }
     }
 
     /**
